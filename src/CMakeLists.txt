@@ -16,7 +16,6 @@ set(theforgottenserver_SRC
   ${CMAKE_CURRENT_LIST_DIR}/database.cpp
   ${CMAKE_CURRENT_LIST_DIR}/databasemanager.cpp
   ${CMAKE_CURRENT_LIST_DIR}/databasemysql.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/databasesqlite.cpp
   ${CMAKE_CURRENT_LIST_DIR}/depot.cpp
   ${CMAKE_CURRENT_LIST_DIR}/dispatcher.cpp
   ${CMAKE_CURRENT_LIST_DIR}/exception.cpp
@@ -97,7 +96,6 @@ set(theforgottenserver_HDR
   ${CMAKE_CURRENT_LIST_DIR}/database.h
   ${CMAKE_CURRENT_LIST_DIR}/databasemanager.h
   ${CMAKE_CURRENT_LIST_DIR}/databasemysql.h
-  ${CMAKE_CURRENT_LIST_DIR}/databasesqlite.h
   ${CMAKE_CURRENT_LIST_DIR}/definitions.h
   ${CMAKE_CURRENT_LIST_DIR}/depot.h
   ${CMAKE_CURRENT_LIST_DIR}/dispatcher.h
