@@ -357,7 +357,7 @@
 	<monster name="Goblin Leader" file="Goblins/goblin leader.xml"/>
 	<monster name="Goblin Scavenger" file="Goblins/goblin scavenger.xml"/>
 	<monster name="Grynch Clan Goblin" file="Goblins/grynch clan goblin.xml"/>
-	<monster name="Demon Goblin" file="goblins/demon goblin.xml"/>
+	<monster name="Demon Goblin" file="Goblins/demon goblin.xml"/>
 
 	<!-- Hydro-Elementals -->
 	<monster name="Ice Overlord" file="Hydro-Elementals/ice overlord.xml"/>
@@ -563,8 +563,8 @@
 	<monster name="Swamp Troll" file="Trolls/swamp troll.xml"/>
 	<monster name="Troll" file="Trolls/troll.xml"/>
 	<monster name="Troll Champion" file="Trolls/troll champion.xml"/>
-	<monster name="Troll Legionnaire" file="trolls/troll legionnaire.xml"/>
-	<monster name="Furious Troll" file="trolls/furious troll.xml"/>
+	<monster name="Troll Legionnaire" file="Trolls/troll legionnaire.xml"/>
+	<monster name="Furious Troll" file="Trolls/furious troll.xml"/>
 
 	<!-- Undead Humanoids -->
 	<monster name="Banshee" file="Undead Humanoids/banshee.xml"/>

@@ -13,7 +13,7 @@
 		<flag pushable="0"/>
 		<flag canpushitems="1"/>
 		<flag canpushcreatures="1"/>
-		<flag targetdistance="2"/>
+		<flag targetdistance="0"/>
 		<flag staticattack="90"/>
 		<flag runonhealth="2500"/>
 	</flags>
@@ -34,15 +34,12 @@
 		<attack name="lifedrain" interval="2000" chance="21" radius="6" target="0" min="-200" max="-450">
 			<attribute key="areaEffect" value="poff"/>
 		</attack>
-		<attack name="effect" interval="3000" chance="20" radius="5" target="0" min="-200" max="-600">
+		<attack name="physical" interval="3000" chance="20" radius="5" target="0" min="0" max="-900">
 			<attribute key="areaEffect" value="blackspark"/>
 		</attack>
 		<attack name="firecondition" interval="3000" chance="20" range="7" radius="7" target="1" min="-200" max="-800">
 			<attribute key="shootEffect" value="fire"/>
 			<attribute key="areaEffect" value="firearea"/>
-		</attack>
-		<attack name="lifedrain" interval="2000" chance="25" length="8" spread="0" min="-50" max="-250">
-			<attribute key="areaEffect" value="greenspark"/>
 		</attack>
 	</attacks>
 	<defenses armor="100" defense="120">
@@ -52,7 +49,7 @@
 		<defense name="speed" interval="3000" chance="30" speedchange="360" duration="7000">
 			<attribute key="areaEffect" value="blueshimmer"/>
 		</defense>
-		<defense name="invisible" interval="4000" chance="20" duration="5000">
+		<defense name="invisible" interval="2000" chance="20" duration="5000">
 			<attribute key="areaEffect" value="blueshimmer"/>
 		</defense>
 	</defenses>
