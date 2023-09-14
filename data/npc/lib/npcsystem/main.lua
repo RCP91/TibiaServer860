@@ -7,6 +7,8 @@ if(NpcSystem == nil) then
 	dofile(getDataDir() .. 'npc/lib/npcsystem/queue.lua')
 	dofile(getDataDir() .. 'npc/lib/npcsystem/npchandler.lua')
 	dofile(getDataDir() .. 'npc/lib/npcsystem/modules.lua')
+	--dofile(getDataDir() .. 'npc/lib/npcsystem/customModules.lua')
+	
 
 	-- Global npc constants:
 

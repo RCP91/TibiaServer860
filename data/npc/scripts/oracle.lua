@@ -1,6 +1,7 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
+local talkState = {}
 
 function onCreatureAppear(cid)				npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid) 			npcHandler:onCreatureDisappear(cid)			end
@@ -11,6 +12,7 @@ function oracle(cid, message, keywords, parameters, node)
 	if(not npcHandler:isFocused(cid)) then
 		return false
 	end
+	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	local cityNode = node:getParent():getParent()
 	local vocNode = node:getParent()
@@ -21,11 +23,11 @@ function oracle(cid, message, keywords, parameters, node)
 
 	if(destination ~= nil and vocation ~= nil and town ~= nil) then
 		if(getPlayerLevel(cid) < parameters.level) then
-			npcHandler:say('You must first reach level ' .. parameters.level .. '!', cid)
+			selfSay('You must first reach level ' .. parameters.level .. '!', cid)
 			npcHandler:resetNpc()
 		else
 			if(getPlayerVocation(cid) > 0) then
-				npcHandler:say('Sorry, You already have a vocation!')
+				selfSay('Sorry, You already have a vocation!')
 				npcHandler:resetNpc()
 			else
 				doPlayerSetVocation(cid, vocation)
@@ -45,7 +47,7 @@ end
 
 function greetCallback(cid)
 	if(getPlayerLevel(cid) < 8) then
-		npcHandler:say('COME BACK WHEN YOU GROW UP, CHILD!')
+		selfSay('COME BACK WHEN YOU GROW UP, CHILD!')
 		return false
 	else
 		return true

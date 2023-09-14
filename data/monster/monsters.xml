@@ -225,6 +225,7 @@
 	<monster name="Werewolf" file="Canines/werewolf.xml"/>
 	<monster name="Winter wolf" file="Canines/winter wolf.xml"/>
 	<monster name="Wolf" file="Canines/wolf.xml"/>
+	<monster name="Gnarlhound" file="Canines/gnarlhound.xml"/>
 
 	<!-- Chakoyas -->
 	<monster name="Chakoya Toolshaper" file="Chakoyas/chakoya toolshaper.xml"/>
@@ -276,6 +277,7 @@
 	<monster name="Frost Dragon Hatchling" file="Dragons/frost dragon hatchling.xml"/>
 	<monster name="Undead Dragon" file="Dragons/undead dragon.xml"/>
 	<monster name="Wyrm" file="Dragons/wyrm.xml"/>
+	<monster name="Ghastly Dragon" file="Dragons/ghastly dragon.xml"/>
 
 	<!-- Dwarves -->
 	<monster name="Dwarf Geomancer" file="Dwarves/dwarf geomancer.xml"/>
@@ -329,6 +331,8 @@
 	<monster name="Stone Golem" file="Geo-Elementals/stone golem.xml"/>
 	<monster name="War Golem" file="Geo-Elementals/war golem.xml"/>
 	<monster name="Worker Golem" file="Geo-Elementals/worker golem.xml"/>
+	<monster name="Eternal Guardian" file="Geo-Elementals/eternal guardian.xml"/>
+	<monster name="Shard Of Corruption" file="Geo-Elementals/shard of corruption.xml"/>
 
 	<!-- Ghosts -->
 	<monster name="Ghost" file="Ghosts/ghost.xml"/>
@@ -336,6 +340,7 @@
 	<monster name="Phantasm" file="Ghosts/phantasm.xml"/>
 	<monster name="Spectre" file="Ghosts/spectre.xml"/>
 	<monster name="Wisp" file="Ghosts/wisp.xml"/>
+	<monster name="Souleater" file="Ghosts/souleater.xml"/>
 
 	<!-- Giants -->
 	<monster name="Behemoth" file="Giants/behemoth.xml"/>
@@ -352,6 +357,7 @@
 	<monster name="Goblin Leader" file="Goblins/goblin leader.xml"/>
 	<monster name="Goblin Scavenger" file="Goblins/goblin scavenger.xml"/>
 	<monster name="Grynch Clan Goblin" file="Goblins/grynch clan goblin.xml"/>
+	<monster name="Demon Goblin" file="goblins/demon goblin.xml"/>
 
 	<!-- Hydro-Elementals -->
 	<monster name="Ice Overlord" file="Hydro-Elementals/ice overlord.xml"/>
@@ -378,6 +384,18 @@
 	<monster name="Lizard Snakecharmer" file="Lizards/lizard snakecharmer.xml"/>
 	<monster name="Lizard Templar" file="Lizards/lizard templar.xml"/>
 	<monster name="Wyvern" file="Lizards/wyvern.xml"/>
+	
+	<monster name="Lizard High Guard" file="Lizards/lizard high guard.xml"/>
+	<monster name="Lizard Legionnaire" file="Lizards/lizard legionnaire.xml"/>
+	<monster name="Lizard Magistratus" file="Lizards/lizard magistratus.xml"/>
+	<monster name="Lizard Noble" file="Lizards/lizard noble.xml"/>
+	<monster name="Lizard Zaogun" file="Lizards/lizard zaogun.xml"/>
+	<monster name="Draken Abomination" file="Lizards/draken abomination.xml"/>
+	<monster name="Draken Elite" file="Lizards/draken elite.xml"/>
+	<monster name="Draken Spellweaver" file="Lizards/draken spellweaver.xml"/>
+	<monster name="Draken Warmaster" file="Lizards/draken warmaster.xml"/>
+	<monster name="Lizard Chosen" file="Lizards/lizard chosen.xml"/>
+	<monster name="Lizard Dragon Priest" file="Lizards/lizard dragon priest.xml"/>
 
 	<!-- Minotaurs -->
 	<monster name="Minotaur Archer" file="Minotaurs/minotaur archer.xml"/>
@@ -537,6 +555,7 @@
 	<monster name="Magicthrower" file="Traps/magicthrower.xml"/>
 	<monster name="Plaguethrower" file="Traps/plaguethrower.xml"/>
 	<monster name="Shredderthrower" file="Traps/shredderthrower.xml"/>
+	<monster name="Ferumbrasthrower" file="Traps/ferumbrasthrower.xml"/>
 
 	<!-- Trolls -->
 	<monster name="Frost Troll" file="Trolls/frost troll.xml"/>
@@ -544,6 +563,8 @@
 	<monster name="Swamp Troll" file="Trolls/swamp troll.xml"/>
 	<monster name="Troll" file="Trolls/troll.xml"/>
 	<monster name="Troll Champion" file="Trolls/troll champion.xml"/>
+	<monster name="Troll Legionnaire" file="trolls/troll legionnaire.xml"/>
+	<monster name="Furious Troll" file="trolls/furious troll.xml"/>
 
 	<!-- Undead Humanoids -->
 	<monster name="Banshee" file="Undead Humanoids/banshee.xml"/>
