@@ -24,16 +24,16 @@
 		<immunity invisible="1"/>
 	</immunities>
 	<summons maxSummons="2">
-		<summon name="Mechanical Fighter" interval="2000" chance="90"/>
+		<summon name="Mechanical Fighter" interval="2000" max="2" chance="90"/>
 	</summons>
 	<voices interval="5000" chance="10">
 		<voice sentence="Slice! Slice!"/>
 		<voice sentence="DIE!!!"/>
 	</voices>
 	<loot>
-		<item name="gold coin" countmax="146" chance="93000"/>
-		<item name="platinum coin" chance="6000"/>
+		<item name="gold coin" countmax="179" chance="93000"/>
+		<item name="platinum coin" countmax="1" chance="6000"/>
+		<item name="bunch of troll hair" chance="6400"/>
 		<item name="war hammer" chance="750"/>
-		<item name="bunch of troll hair" chance="4400"/>
 	</loot>
 </monster>
