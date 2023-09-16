@@ -950,7 +950,13 @@ BlockType_t Creature::blockHit(Creature* attacker, CombatType_t combatType, int3
 	bool checkDefense/* = false*/, bool checkArmor/* = false*/, bool /*reflect = true*/)
 {
 	BlockType_t blockType = BLOCK_NONE;
+
 	if(isImmune(combatType))
+	{
+		damage = 0;
+		blockType = BLOCK_IMMUNITY;
+	}
+	else if (attacker && attacker->isSummon() && attacker->getMaster() == this)
 	{
 		damage = 0;
 		blockType = BLOCK_IMMUNITY;
