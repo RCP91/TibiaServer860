@@ -10,6 +10,7 @@ RUN apt-get install --no-install-recommends -y \
 WORKDIR /home/otserv860
 
 COPY . .
+RUN mv config.lua.dist config.lua
 RUN mkdir build && \
     cd build && \
     cmake .. && \
