@@ -36,7 +36,7 @@
 		<item id="2512" chance="15000"/><!-- wooden shield -->
 		<item id="2666" chance="15000"/><!-- meat -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="5901" chance="15000"/><!-- wood -->		
 				<item id="2643" chance="11500"/><!-- leather boots -->
 				<item id="2461" chance="10000"/><!-- leather helmet -->
@@ -44,7 +44,7 @@
 				<item id="2448" chance="6000"/><!-- studded club -->
 				<item id="2170" chance="50"/><!-- silver amulet -->
 				<item id="7963" chance="150"/><!-- marlin -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

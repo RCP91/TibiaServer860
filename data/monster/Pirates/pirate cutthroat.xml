@@ -45,7 +45,7 @@
 		<item id="2483" chance="2600"/><!-- scale armor -->
 		<item id="2509" chance="3300"/><!-- steel shield -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="6126" chance="600"/><!-- peg leg -->
 				<item id="6097" chance="600"/><!-- hook -->
 				<item id="6098" chance="600"/><!-- eye patch -->
@@ -55,7 +55,7 @@
 				<item id="5710" chance="200"/><!-- light shovel -->
 				<item id="5091" chance="1000"/><!-- treasure map -->
 				<item id="5927" chance="1000"/><!-- pirate bag -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

@@ -30,10 +30,10 @@
 	<loot>
 		<item id="2148" countmax="17" chance="38500"/><!-- gold coin -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2398" chance="4500"/><!-- mace -->
 				<item id="2376" chance="4000"/><!-- sword -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

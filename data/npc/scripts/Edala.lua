@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -19,17 +18,17 @@ local config = {
 }
 
 local function greetCallback(cid)
-	
-	local lyreProgress = getPlayerStorageValue(cid, Storage.Diapason.Lyre)
+	local player = Player(cid)
+	local lyreProgress = player:getStorageValue(Storage.Diapason.Lyre)
 	local greetMessage = config[lyreProgress]
 	if greetMessage
-			and getPlayerStorageValue(cid, Storage.Diapason.Edala) == 1
-			and getPlayerStorageValue(cid, Storage.Diapason.EdalaTimer) < os.time() then
-		setPlayerStorageValue(cid, Storage.Diapason.Edala, 0)
-		setPlayerStorageValue(cid, Storage.Diapason.EdalaTimer, os.time() + 86400)
+			and player:getStorageValue(Storage.Diapason.Edala) == 1
+			and player:getStorageValue(Storage.Diapason.EdalaTimer) < os.time() then
+		player:setStorageValue(Storage.Diapason.Edala, 0)
+		player:setStorageValue(Storage.Diapason.EdalaTimer, os.time() + 86400)
 		if lyreProgress == 7 then
-			setPlayerStorageValue(cid, Storage.Diapason.Lyre, 8)
-			doPlayerAddItem(cid, 13536, 1)
+			player:setStorageValue(Storage.Diapason.Lyre, 8)
+			player:addItem(13536, 1)
 		end
 		npcHandler:setMessage(MESSAGE_GREET, greetMessage)
 	else
@@ -37,7 +36,6 @@ local function greetCallback(cid)
 	end
 	return true
 end
-
 
 -- Fire of the Suns
 local blessKeyword = keywordHandler:addKeyword({'suns'}, StdModule.say, {npcHandler = npcHandler, text = 'Would you like to receive that protection for a sacrifice of |BLESSCOST| gold, child?'})

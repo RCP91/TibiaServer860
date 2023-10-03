@@ -40,12 +40,12 @@
 		<item id="2671" chance="18000"/><!-- ham -->
 		<item id="3976" countmax="5" chance="50000"/><!-- worm -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2398" chance="9000"/><!-- mace -->
 				<item id="2376" chance="5000"/><!-- sword -->
 				<item id="2412" chance="1000"/><!-- katana -->
 				<item id="2530" chance="1000"/><!-- copper shield -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

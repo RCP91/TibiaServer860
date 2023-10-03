@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,7 +8,7 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()		npcHandler:onThink()		end
 
 local voices = { {text = 'Passage to Cormaya! Unforgettable steamboat ride!'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local function creatureSayCallback(cid, type, msg)
 
@@ -19,28 +18,28 @@ local function creatureSayCallback(cid, type, msg)
 
 	if msgcontains(msg, 'ticket') then
 		if Player(cid):getStorageValue(Storage.wagonTicket) >= os.time() then
-			selfSay('Your weekly ticket is still valid. Would be a waste of money to purchase a second one', cid)
+			npcHandler:say('Your weekly ticket is still valid. Would be a waste of money to purchase a second one', cid)
 			return true
 		end
 
-		selfSay('Do you want to purchase a weekly ticket for the ore wagons? With it you can travel freely and swiftly through Kazordoon for one week. 250 gold only. Deal?', cid)
-		talkState[talkUser] = 1
-	elseif msgcontains(msg, 'yes') and talkState[talkUser] > 0 then
-		
-		if talkState[talkUser] == 1 then
-			if not doPlayerRemoveMoney(cid, 250) then
-				selfSay('You don\'t have enough money.', cid)
-				talkState[talkUser] = 0
+		npcHandler:say('Do you want to purchase a weekly ticket for the ore wagons? With it you can travel freely and swiftly through Kazordoon for one week. 250 gold only. Deal?', cid)
+		npcHandler.topic[cid] = 1
+	elseif msgcontains(msg, 'yes') and npcHandler.topic[cid] > 0 then
+		local player = Player(cid)
+		if npcHandler.topic[cid] == 1 then
+			if not player:removeMoneyNpc(250) then
+				npcHandler:say('You don\'t have enough money.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.wagonTicket, os.time() + 7 * 24 * 60 * 60)
-			selfSay('Here is your stamp. It can\'t be transferred to another person and will last one week from now. You\'ll get notified upon using an ore wagon when it isn\'t valid anymore.', cid)
+			player:setStorageValue(Storage.wagonTicket, os.time() + 7 * 24 * 60 * 60)
+			npcHandler:say('Here is your stamp. It can\'t be transferred to another person and will last one week from now. You\'ll get notified upon using an ore wagon when it isn\'t valid anymore.', cid)
 		end
-		talkState[talkUser] = 0
-	elseif msgcontains(msg, 'no') and talkState[talkUser] > 0 then
-		selfSay('No then.', cid)
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
+	elseif msgcontains(msg, 'no') and npcHandler.topic[cid] > 0 then
+		npcHandler:say('No then.', cid)
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end
@@ -54,9 +53,9 @@ end
 addTravelKeyword('farmine', 210, {'postman', 'new frontier'},
 	function(player)
 		local destination = Position(33025, 31553, 14)
-		if getPlayerStorageValue(cid, Storage.TheNewFrontier.Mission05) == 7 then --if The New Frontier Quest 'Mission 05: Getting Things Busy' complete then Stage 3
+		if player:getStorageValue(Storage.TheNewFrontier.Mission05) == 7 then --if The New Frontier Quest 'Mission 05: Getting Things Busy' complete then Stage 3
 			destination.z = 10
-		elseif getPlayerStorageValue(cid, Storage.TheNewFrontier.Mission03) >= 2 then --if The New Frontier Quest 'Mission 03: Strangers in the Night' complete then Stage 2
+		elseif player:getStorageValue(Storage.TheNewFrontier.Mission03) >= 2 then --if The New Frontier Quest 'Mission 03: Strangers in the Night' complete then Stage 2
 			destination.z = 12
 		end
 
@@ -65,8 +64,8 @@ addTravelKeyword('farmine', 210, {'postman', 'new frontier'},
 )
 addTravelKeyword('cormaya', 160, 'postman', Position(33311, 31989, 15),
 	function(player)
-		if getPlayerStorageValue(cid, Storage.postman.Mission01) == 4 then
-			setPlayerStorageValue(cid, Storage.postman.Mission01, 5)
+		if player:getStorageValue(Storage.postman.Mission01) == 4 then
+			player:setStorageValue(Storage.postman.Mission01, 5)
 		end
 	end
 )

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Ungreez" nameDescription="ungreez" race="blood" experience="5000" speed="330" manacost="10000">
+<monster name="Ungreez" nameDescription="Ungreez" race="blood" experience="500" speed="240" manacost="10000">
 	<health now="8200" max="8200"/>
 	<look type="35" corpse="5995"/>
 	<targetchange interval="5000" chance="8"/>
-	<strategy attack="100" defense="0"/>
 	<flags>
 		<flag summonable="0"/>
 		<flag attackable="1"/>
@@ -44,19 +43,15 @@
 		<element icePercent="-15"/>
 	</elements>
 	<immunities>
-		<immunity physical="0"/>
 		<immunity energy="1"/>
 		<immunity fire="1"/>
-		<immunity poison="0"/>
 		<immunity lifedrain="1"/>
 		<immunity paralyze="1"/>
-		<immunity outfit="1"/>
-		<immunity drunk="1"/>
 		<immunity invisible="1"/>
 	</immunities>
-	<voices interval="5000" chance="10">
-		<voice sentence="I'll teach you that even heros can die" yell="1"/>
-		<voice sentence="You wil die Begging like the others did" yell="1"/>
+	<voices interval="2000" chance="7">
+		<voice sentence="I teach you that even heroes can die!" yell="1"/>
+		<voice sentence="You will die begging like the others did!" yell="1"/>
 	</voices>
 	<loot>
 		<item id="2148" countmax="90" chance="21000"/><!-- gold coin -->

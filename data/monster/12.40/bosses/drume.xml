@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Drume" nameDescription="a drume" race="blood" experience="14100" speed="340" script="rewardboss.lua">
+	<health now="94100" max="94100" />
+	<look type="1317"  head="114" body="78" legs="114" feet="114" corpse="38812" addons="3"/>
+	<targetchange interval="4000" chance="60" />
+	<flags>
+		<flag rewardboss="1" />
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-0" max="-20" />
+		<attack name="blightwalker curse" interval="2000" chance="100" range="7" min="-1200" max="-2320" />		
+		<attack name="energy" interval="2000" chance="35" radius="3" min="-0" max="-100">
+			<attribute key="shootEffect" value="energy" />
+			<attribute key="areaEffect" value="bigclouds" />
+		</attack>		
+	</attacks>
+	<defenses armor="80" defense="110">
+		<defense name="healing" interval="2000" chance="15" min="1500" max="3000">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>		
+	</defenses>
+	<immunities>
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>	
+	<loot>
+		<item name="platinum coin" countmax="6" chance="25000" />
+		<item name="broken helmet"  chance="4000" />
+		<item name="bug meat"  chance="5000" />
+		<item name="Combat Knife"  chance="8000" />
+		<item name="Dark Armor"  chance="4000" />
+		<item name="Dark Shield"  chance="3500" />
+		<item name="Dirty Cape"  chance="3200" />
+		<item name="Dirty Fur"  chance="3100" />
+		<item name="Dwarven Shield"  chance="5000" />
+		<item name="Fishbone"  chance="8000" />
+		<item name="Ham"  chance="10000" />
+		<item name="Knife"  chance="7000" />
+		<item name="Life Preserver"  chance="4000" />
+		<item name="Plate Armor"  chance="3900" />
+		<item name="Studded Shield"  chance="9500" />
+		<item name="Twigs"  chance="7000" />
+		<item name="Lion Axe"  chance="80" />
+		<item name="Lion Hammer"  chance="80" />
+		<item name="Lion Longbow"  chance="80" />
+		<item name="Lion Plate"  chance="80" />
+		<item name="Lion Rod"  chance="80" />
+		<item name="Lion Spangenhelm"  chance="80" />
+		<item name="Lion Spellbook"  chance="80" />
+	</loot>
+</monster>

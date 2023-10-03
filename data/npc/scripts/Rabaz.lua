@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,11 +12,11 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, "mission") then
-		if getPlayerStorageValue(cid, Storage.TibiaTales.AnInterestInBotany) < 1 then
-			talkState[talkUser] = 1
-				selfSay({
+		if player:getStorageValue(Storage.TibiaTales.AnInterestInBotany) < 1 then
+			npcHandler.topic[cid] = 1
+				npcHandler:say({
 					"Why yes, there is indeed some minor issue I could need your help with. I was always a friend of nature and it was not recently I discovered the joys of plants, growths, of all the flora around us. ...",
 					"Botany my friend. The study of plants is of great importance for our future. Many of the potions we often depend on are made of plants you know. Plants can help us tending our wounds, cure us from illness or injury. ...",
 					"I am currently writing an excessive compilation of all the knowledge I have gathered during my time here in Farmine and soon hope to publish it as 'Rabaz' Unabridged Almanach Of Botany'. ...",
@@ -28,32 +27,32 @@ local function creatureSayCallback(cid, type, msg)
 					"Once you find what I need, best use a knife to carefully cut and gather a leaf or a scrap of their integument and press it directly under their appropriate entry into my botanical almanach. ...",
 					"Simply return to me after you have done that and we will discuss your reward. What do you say, are you in?"
 				}, cid)
-		elseif getPlayerStorageValue(cid, Storage.TibiaTales.AnInterestInBotany) == 3 then
-			talkState[talkUser] = 2
-			selfSay("Well fantastic work, you gathered both samples! Now I can continue my work on the almanach, thank you very much for your help indeed. Can I take a look at my book please?", cid)
+		elseif player:getStorageValue(Storage.TibiaTales.AnInterestInBotany) == 3 then
+			npcHandler.topic[cid] = 2
+			npcHandler:say("Well fantastic work, you gathered both samples! Now I can continue my work on the almanach, thank you very much for your help indeed. Can I take a look at my book please?", cid)
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			setPlayerStorageValue(cid, Storage.TibiaTales.DefaultStart, 1)
-			setPlayerStorageValue(cid, Storage.TibiaTales.AnInterestInBotany, 1)
-			setPlayerStorageValue(cid, Storage.TibiaTales.AnInterestInBotanyChest, 0)
-			selfSay("Yes? Yes! That's the enthusiasm I need! Remember to bring a sharp knife to gather the samples, plants - even mutated deformed plants - are very sensitive you know. Off you go and be careful out there, Zao is no place for the feint hearted mind you.", cid)
-			talkState[talkUser] = 0
-		elseif talkState[talkUser] == 2 then
-			if doPlayerRemoveItem(cid, 12655, 1) then
-				doPlayerAddItem(cid, 12656, 1)
-				doPlayerAddItem(cid, 2152, 10)
+		if npcHandler.topic[cid] == 1 then
+			player:setStorageValue(Storage.TibiaTales.DefaultStart, 1)
+			player:setStorageValue(Storage.TibiaTales.AnInterestInBotany, 1)
+			player:setStorageValue(Storage.TibiaTales.AnInterestInBotanyChest, 0)
+			npcHandler:say("Yes? Yes! That's the enthusiasm I need! Remember to bring a sharp knife to gather the samples, plants - even mutated deformed plants - are very sensitive you know. Off you go and be careful out there, Zao is no place for the feint hearted mind you.", cid)
+			npcHandler.topic[cid] = 0
+		elseif npcHandler.topic[cid] == 2 then
+			if player:removeItem(12655, 1) then
+				player:addItem(12656, 1)
+				player:addItem(2152, 10)
 				player:addExperience(3000, true)
-				setPlayerStorageValue(cid, Storage.TibiaTales.AnInterestInBotany, 4)
-				selfSay({
+				player:setStorageValue(Storage.TibiaTales.AnInterestInBotany, 4)
+				npcHandler:say({
 					"Ah, thank you. Now look at that texture and fine colour, simply marvellous. ...",
 					"I hope the sun in the steppe did not exhaust you too much? Shellshock. A dangerous foe in the world of field science and exploration. ...",
 					"Here, I always wore this comfortable hat when travelling, take it. It may be of use for you on further reconnaissances in Zao. Again you have my thanks, friend."
 				}, cid)
-				talkState[talkUser] = 0
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("Oh, you don't have my book.", cid)
-				talkState[talkUser] = 0
+				npcHandler:say("Oh, you don't have my book.", cid)
+				npcHandler.topic[cid] = 0
 			end
 		end
 	end

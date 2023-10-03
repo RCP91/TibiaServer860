@@ -23,6 +23,10 @@
 			dagger,2379,5;
 			doublet,2485,16;
 			dwarven shield,2525,500;
+			exercise sword,32384,262500,500;
+			exercise axe,32385,262500,500;
+			exercise club,32386,262500,500;
+			exercise bow,32387,262500,500;
 			hand axe,2380,8;
 			iron helmet,2459,390;
 			jacket,2650,12;
@@ -112,6 +116,7 @@
 			studded helmet,2482,20;
 			studded legs,2468,15;
 			studded shield,2526,16;
+			swampling club,20104,40;
 			sword,2376,25;
 			throwing knife,2410,2;
 			two handed sword,2377,450;

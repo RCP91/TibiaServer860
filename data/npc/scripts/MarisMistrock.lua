@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -17,17 +16,16 @@ end
 
 addTravelKeyword('yalahar', 'back to Yalahar', 100, Position(32649, 31292, 6))
 addTravelKeyword('fenrock', 'to the Fenrock', 100, Position(32563, 31313, 7))
-addTravelKeyword('mistrock', 'to the Mistrock', 50, Position(32640, 31439, 7))
 
 -- Kick
---keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = {Position(32634, 31437, 7), Position(32634, 31438, 7)}})
+keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = {Position(32634, 31437, 7), Position(32634, 31438, 7)}})
 
 -- Basic
 keywordHandler:addKeyword({'mistrock'}, StdModule.say, {npcHandler = npcHandler,
 	text = {
 		"Do you smell this? It's the smell of fire... the fire of a forge. Many people searched this rock here for a hidden path, but they haven't found anything. ...",
 		"I'd search on Fenrock if I were you. Even though there's snow on the surface, it's still warm underground. There are often caves under fresh lava streams."
-	}}, nil, function(player) if getPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.WayToBeregar) ~= 1 then setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.WayToBeregar, 1) end end
+	}}, nil, function(player) if player:getStorageValue(Storage.hiddenCityOfBeregar.WayToBeregar) ~= 1 then player:setStorageValue(Storage.hiddenCityOfBeregar.WayToBeregar, 1) end end
 )
 keywordHandler:addKeyword({'offer'}, StdModule.say, {npcHandler = npcHandler, text = 'I can take you to {Yalahar} or {Fenrock}!'})
 keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'I can take you to {Yalahar} or {Fenrock}!'})

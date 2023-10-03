@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -15,7 +14,7 @@ local voices = {
 	{ text = 'The premium side of Rookgaard lies beyond.' },
 	{ text = 'Want to know what monsters are good for you at your level? Just ask me!' }
 }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Greeting and Farewell
 keywordHandler:addGreetKeyword({'hi'}, {npcHandler = npcHandler, text = 'Greetings, |PLAYERNAME|! You\'re looking really bad. Let me heal your wounds.'},

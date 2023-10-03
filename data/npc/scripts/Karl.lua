@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,22 +12,22 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, "barrel") then
-		if getPlayerStorageValue(cid, Storage.secretService.AVINMission03) == 1 then
-			selfSay("Do you bring me a barrel of beer??", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.secretService.AVINMission03) == 2 then
+			npcHandler:say("Do you bring me a barrel of beer??", cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			if doPlayerRemoveItem(cid, 7706, 1) then
-				setPlayerStorageValue(cid, Storage.secretService.AVINMission03, 3)
-				selfSay("Three cheers for the noble |PLAYERNAME|.", cid)
+		if npcHandler.topic[cid] == 1 then
+			if player:removeItem(7706, 1) then
+				player:setStorageValue(Storage.secretService.AVINMission03, 3)
+				npcHandler:say("Three cheers for the noble |PLAYERNAME|.", cid)
 			else
-				selfSay("You don't have any barrel of beer!", cid)
+				npcHandler:say("You don't have any barrel of beer!", cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

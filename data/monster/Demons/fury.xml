@@ -70,7 +70,7 @@
 		<item id="2152" countmax="3" chance="2000"/><!-- platinum coin -->
 		<item id="5911" chance="3650"/><!-- red piece of cloth -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 		<item id="9813" chance="11000"/><!-- rusty legs -->
 		<item id="2120" countmax="3" chance="6000"/><!-- small amethyst -->
 		<item id="5944" chance="21500"/><!-- soul orb -->
@@ -81,7 +81,7 @@
 		<item id="5944" chance="7368"/><!-- assassin star -->
 		<item id="2124" chance="750"/><!-- crystal ring-->	
 		<item id="2156" chance="900"/><!-- red gem -->	
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

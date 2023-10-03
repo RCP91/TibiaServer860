@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Rotten Golem" nameDescription="a rotten golem" race="venom" experience="31200" speed="340">
+	<health now="28000" max="28000" />
+	<look type="1312" corpse="39063" />
+	<targetchange interval="4000" chance="50" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+		<flag canwalkonfire="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="700" max="-950" />
+		<attack name="earth" interval="2000" chance="15" range="7" min="-600" max="-1100">
+			<attribute key="shootEffect" value="poison" />
+			<attribute key="areaEffect" value="greenbubble" />
+		</attack>
+		<attack name="earth" interval="2000" chance="15" radius="4" target="0" min="480" max="-980">
+			<attribute key="areaEffect" value="smallplants" />
+		</attack>
+	</attacks>
+	
+	<defenses armor="80" defense="50">
+		<defense name="healing" interval="2000" chance="20" min="480" max="800">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>	
+	</defenses>
+	<elements>
+		<element physicalPercent="20" />
+		<element deathPercent="-20" />
+		<element energyPercent="15" />
+		<element earthPercent="40" />
+		<element holyPercent="50" />
+		<element firePercent="-25" />
+	</elements>
+	<immunities>		
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>	
+	<loot>		
+		<item name="crystal coin" countmax="3" chance="15000" />
+		<item name="platinum coin" countmax="20" chance="25000" />
+		<item name="great spirit potion" countmax="3" chance="18510" />
+		<item name="sacred tree amulet" chance="4700" />
+		<item name="giant sword" chance="2500" />
+		<item name="war axe" chance="4200" />
+		<item name="mercenary sword" chance="2100" />
+		<item name="titan axe" chance="2700" />
+		<item name="underworld rod" chance="3200" />	
+		<item name="fur armor" chance="2900" />	
+		<item name="terra mantle" chance="1400" />
+		<item name="wood cape" chance="2500" />	
+		<item name="rubber cap" chance="1900" />	
+	</loot>
+</monster>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Brachiodemon" nameDescription="a brachiodemon" race="fire" experience="28600" speed="280">
+	<health now="25000" max="25000" />
+	<look type="1299" corpse="38983" />
+	<targetchange interval="4000" chance="20" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="600" max="-900" />
+		<attack name="manadrain" interval="2000" chance="10" range="7" min="620" max="-980" />
+		<attack name="strength" interval="2000" chance="20" range="7" radius="7" target="1" min="-811" max="-1200">
+			<attribute key="areaEffect" value="redshimmer" />
+		</attack>
+		<attack name="firefield" interval="2000" chance="10" range="7" radius="1" target="1">
+			<attribute key="shootEffect" value="fire" />
+		</attack>
+		<attack name="lifedrain" interval="2000" chance="10" length="8" spread="0" min="-800" max="-890">
+			<attribute key="areaEffect" value="purpleenergy" />
+		</attack>
+		<attack name="energy" interval="2000" chance="10" range="1" min="-700" max="-1100">
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+		<attack name="speed" interval="2000" chance="15" radius="1" target="1" speedchange="-700" duration="30000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</attack>
+	</attacks>
+	<defenses armor="30" defense="30">
+		<defense name="healing" interval="2000" chance="15" min="180" max="250">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+		<defense name="speed" interval="2000" chance="15" speedchange="320" duration="5000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</defense>
+	</defenses>
+	<elements>
+		<element physicalPercent="10" />
+		<element deathPercent="10" />
+		<element energyPercent="10" />
+		<element earthPercent="10" />
+		<element icePercent="-10" />
+		<element holyPercent="-10" />
+	</elements>
+	<immunities>
+		<immunity fire="1" />
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<summons maxSummons="0">
+		<summon name="fire elemental" interval="2000" chance="10" />
+	</summons>
+	<voices interval="5000" chance="10">
+		<voice sentence="Your soul will be mine!" />
+		<voice sentence="MUHAHAHAHA!" />
+		<voice sentence="CHAMEK ATH UTHUL ARAK!" />
+		<voice sentence="I SMELL FEEEEAAAAAR!" />
+		<voice sentence="Your resistance is futile!" />
+	</voices>
+	<loot>
+		<item name="Epee" chance="2180"	/>
+		<item name="Crystal Mace" chance="1000" />		
+		<item name="noble axe" chance="3000" />
+		<item name="platinum coin" countmax="50" chance="90540" />
+		<item id="38772" chance="1000" /><!-- head -->
+		<item name="ultimate health potion" countmax="3" chance="19540" />
+		<item name="royal helmet" chance="2170" />
+		<item name="skull staff" chance="1500" />
+		<item name="Spellbook of Mind Control" chance="2854" />
+		<item name="Alloy Legs" chance="3000" />
+		<item name="Assassin Dagger" chance="2300" />
+		<item name="Butcher's Axe" chance="750" />
+		<item name="Crystalline Sword" chance="1000" />
+		<item name="Jade Hammer" chance="2000" />
+		<item name="Metal Bat" chance="5000" />
+		<item name="fire axe" chance="6000" />
+		<item name="Ring of Green Plasma" chance="500" />
+		<item name="mastermind shield" chance="600" />
+	</loot>
+</monster>

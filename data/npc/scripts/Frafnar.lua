@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,26 +12,26 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, "mission") then
-		if getPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.SweetAsChocolateCake) < 1 then
-			selfSay("There is indeed something you could do for me. You must know, I'm in love with Bolfana. I'm sure she'd have a beer with me if I got her a chocolate cake. Problem is that I can't leave this door as I'm on duty. Would you be so kind and help me?", cid)
-			talkState[talkUser] = 1
-		elseif getPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.SweetAsChocolateCake) == 2 then
-			selfSay("So did you tell her that the cake came from me?", cid)
-			talkState[talkUser] = 2
+		if player:getStorageValue(Storage.hiddenCityOfBeregar.SweetAsChocolateCake) < 1 then
+			npcHandler:say("There is indeed something you could do for me. You must know, I'm in love with Bolfana. I'm sure she'd have a beer with me if I got her a chocolate cake. Problem is that I can't leave this door as I'm on duty. Would you be so kind and help me?", cid)
+			npcHandler.topic[cid] = 1
+		elseif player:getStorageValue(Storage.hiddenCityOfBeregar.SweetAsChocolateCake) == 2 then
+			npcHandler:say("So did you tell her that the cake came from me?", cid)
+			npcHandler.topic[cid] = 2
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.SweetAsChocolateCake, 1)
-			setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.DefaultStart, 1)
-			selfSay("Great! She works in the tavern of Beregar. It's situated in the western part of the city. Bring her a chocolate cake and tell her that it was me who sent it.", cid)
-			talkState[talkUser] = 0
-		elseif talkState[talkUser] == 2 then
-			setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.SweetAsChocolateCake, 3)
-			setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.DoorWestMine, 1)
-		selfSay("Great! That's my breakthrough. Now she can't refuse to go out with me. I grant you access to the western part of the mine.", cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			player:setStorageValue(Storage.hiddenCityOfBeregar.SweetAsChocolateCake, 1)
+			player:setStorageValue(Storage.hiddenCityOfBeregar.DefaultStart, 1)
+			npcHandler:say("Great! She works in the tavern of Beregar. It's situated in the western part of the city. Bring her a chocolate cake and tell her that it was me who sent it.", cid)
+			npcHandler.topic[cid] = 0
+		elseif npcHandler.topic[cid] == 2 then
+			player:setStorageValue(Storage.hiddenCityOfBeregar.SweetAsChocolateCake, 3)
+			player:setStorageValue(Storage.hiddenCityOfBeregar.DoorWestMine, 1)
+		npcHandler:say("Great! That's my breakthrough. Now she can't refuse to go out with me. I grant you access to the western part of the mine.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

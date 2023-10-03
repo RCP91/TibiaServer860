@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,40 +11,40 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if msgcontains(msg, "addon") or msgcontains(msg, "outfit") then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon) < 1 then
-			selfSay("Oh, my winged tiara? Those are traditionally awarded after having completed a difficult {task} for our guild, only to female aspirants though. Male warriors will receive a hooded cloak.", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) < 1 then
+			npcHandler:say("Oh, my winged tiara? Those are traditionally awarded after having completed a difficult {task} for our guild, only to female aspirants though. Male warriors will receive a hooded cloak.", cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, "task") then
-		if talkState[talkUser] == 1 then
-			selfSay("So you are saying that you would like to prove that you deserve to wear such a hooded cloak?", cid)
-			talkState[talkUser] = 2
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say("So you are saying that you would like to prove that you deserve to wear such a hooded cloak?", cid)
+			npcHandler.topic[cid] = 2
 		end
 	elseif msgcontains(msg, "crossbow") then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon) == 1 then
-			selfSay("I'm so excited! Have you really found my crossbow?", cid)
-			talkState[talkUser] = 4
+		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 1 then
+			npcHandler:say("I'm so excited! Have you really found my crossbow?", cid)
+			npcHandler.topic[cid] = 4
 		end
 	elseif msgcontains(msg, "leather") then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon) == 2 then
-			selfSay("Did you bring me 100 pieces of lizard leather and 100 pieces of red dragon leather?", cid)
-			talkState[talkUser] = 5
+		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 2 then
+			npcHandler:say("Did you bring me 100 pieces of lizard leather and 100 pieces of red dragon leather?", cid)
+			npcHandler.topic[cid] = 5
 		end
 	elseif msgcontains(msg, "chicken wing") then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon) == 3 then
-			selfSay("Were you able to get hold of 5 enchanted chicken wings?", cid)
-			talkState[talkUser] = 6
+		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 3 then
+			npcHandler:say("Were you able to get hold of 5 enchanted chicken wings?", cid)
+			npcHandler.topic[cid] = 6
 		end
 	elseif msgcontains(msg, "steel") then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon) == 4 then
-			selfSay("Ah, have you brought one piece of royal steel, draconian steel and hell steel each?", cid)
-			talkState[talkUser] = 7
+		if player:getStorageValue(Storage.OutfitQuest.HunterHatAddon) == 4 then
+			npcHandler:say("Ah, have you brought one piece of royal steel, draconian steel and hell steel each?", cid)
+			npcHandler.topic[cid] = 7
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 2 then
-			selfSay({
+		if npcHandler.topic[cid] == 2 then
+			npcHandler:say({
 				"Alright, I will give you a chance. Pay close attention to what I'm going to tell you now. ...",
 				"Recently, one of our members moved to Liberty Bay out of nowhere, talking about some strange cult. That is not the problem, but he took my favourite crossbow with him. ...",
 				"Please find my crossbow. It has my name engraved on it and is very special to me. ...",
@@ -54,68 +53,68 @@ local function creatureSayCallback(cid, type, msg)
 				"Lastly, for our arrow heads we need a lot of steel. Best would be one piece of royal steel, one piece of draconian steel and one piece of hell steel. ...",
 				"Did you understand everything I told you and are willing to handle this task?"
 			}, cid)
-			talkState[talkUser] = 3
-		elseif talkState[talkUser] == 3 then
-			selfSay("That's the spirit! I hope you will find my crossbow, |PLAYERNAME|!", cid)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon, 1)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
-			talkState[talkUser] = 0
-		elseif talkState[talkUser] == 4 then
-			if doPlayerRemoveItem(cid, 5947, 1) then
-				selfSay("Yeah! I could kiss you right here and there! Besides, you're a handsome one. <giggles> Please bring me 100 pieces of lizard leather and 100 pieces of red dragon leather now!", cid)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon, 2)
-				talkState[talkUser] = 0
+			npcHandler.topic[cid] = 3
+		elseif npcHandler.topic[cid] == 3 then
+			npcHandler:say("That's the spirit! I hope you will find my crossbow, |PLAYERNAME|!", cid)
+			player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 1)
+			player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1) --this for default start of Outfit and Addon Quests
+			npcHandler.topic[cid] = 0
+		elseif npcHandler.topic[cid] == 4 then
+			if player:removeItem(5947, 1) then
+				npcHandler:say("Yeah! I could kiss you right here and there! Besides, you're a handsome one. <giggles> Please bring me 100 pieces of lizard leather and 100 pieces of red dragon leather now!", cid)
+				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 2)
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("You don't have it...", cid)
+				npcHandler:say("You don't have it...", cid)
 			end
-		elseif talkState[talkUser] == 5 then
-			if getPlayerItemCount(cid, 5876) >= 100 and getPlayerItemCount(cid, 5948) >= 100  then
-				selfSay("Good work, |PLAYERNAME|! That is enough leather for a lot of sturdy quivers. Now, please bring me 5 enchanted chicken wings.", cid)
-				doPlayerRemoveItem(cid, 5876, 100)
-				doPlayerRemoveItem(cid, 5948, 100)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon, 3)
-				talkState[talkUser] = 0
+		elseif npcHandler.topic[cid] == 5 then
+			if player:getItemCount(5876) >= 100 and player:getItemCount(5948) >= 100  then
+				npcHandler:say("Good work, |PLAYERNAME|! That is enough leather for a lot of sturdy quivers. Now, please bring me 5 enchanted chicken wings.", cid)
+				player:removeItem(5876, 100)
+				player:removeItem(5948, 100)
+				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 3)
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("You don't have it...", cid)
+				npcHandler:say("You don't have it...", cid)
 			end
-		elseif talkState[talkUser] == 6 then
-			if doPlayerRemoveItem(cid, 5891, 5) then
-				selfSay("Great! Now we can create a few more Tiaras. If only they weren't that expensive... Well anyway, please obtain one piece of royal steel, draconian steel and hell steel each.", cid)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon, 4)
-				talkState[talkUser] = 0
+		elseif npcHandler.topic[cid] == 6 then
+			if player:removeItem(5891, 5) then
+				npcHandler:say("Great! Now we can create a few more Tiaras. If only they weren't that expensive... Well anyway, please obtain one piece of royal steel, draconian steel and hell steel each.", cid)
+				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 4)
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("You don't have it...", cid)
+				npcHandler:say("You don't have it...", cid)
 			end
-		elseif talkState[talkUser] == 7 then
-			if getPlayerItemCount(cid, 5887) >= 1 and getPlayerItemCount(cid, 5888) >= 1 and getPlayerItemCount(cid, 5889) >= 1  then
-				selfSay("Wow, I'm impressed, |PLAYERNAME|. Your really are a valuable member of our paladin guild. I shall grant you your reward now. Wear it proudly!", cid)
-				doPlayerRemoveItem(cid, 5887, 1)
-				doPlayerRemoveItem(cid, 5888, 1)
-				doPlayerRemoveItem(cid, 5889, 1)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.HunterHatAddon, 5)
-				doPlayerAddOutfit(cid, 129, 1)
-				doPlayerAddOutfit(cid, 137, 2)
+		elseif npcHandler.topic[cid] == 7 then
+			if player:getItemCount(5887) >= 1 and player:getItemCount(5888) >= 1 and player:getItemCount(5889) >= 1  then
+				npcHandler:say("Wow, I'm impressed, |PLAYERNAME|. Your really are a valuable member of our paladin guild. I shall grant you your reward now. Wear it proudly!", cid)
+				player:removeItem(5887, 1)
+				player:removeItem(5888, 1)
+				player:removeItem(5889, 1)
+				player:setStorageValue(Storage.OutfitQuest.HunterHatAddon, 5)
+				player:addOutfitAddon(129, 1)
+				player:addOutfitAddon(137, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				talkState[talkUser] = 0
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("You don't have it...", cid)
+				npcHandler:say("You don't have it...", cid)
 			end
 		end
 	elseif msgcontains(msg, "no") then
-		if talkState[talkUser] > 1 then
-			selfSay("Then no.", cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] > 1 then
+			npcHandler:say("Then no.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	return true
 	end
 end
 
 -- Sniper Gloves
-keywordHandler:addKeyword({'sniper gloves'}, StdModule.say, {npcHandler = npcHandler, text = 'We are always looking for sniper gloves. They are supposed to raise accuracy. If you find a pair, bring them here. Maybe I can offer you a nice trade.'}, function(player) return getPlayerItemCount(cid, 5875) == 0 end)
+keywordHandler:addKeyword({'sniper gloves'}, StdModule.say, {npcHandler = npcHandler, text = 'We are always looking for sniper gloves. They are supposed to raise accuracy. If you find a pair, bring them here. Maybe I can offer you a nice trade.'}, function(player) return player:getItemCount(5875) == 0 end)
 
 local function addGloveKeyword(text, condition, action)
 	local gloveKeyword = keywordHandler:addKeyword({'sniper gloves'}, StdModule.say, {npcHandler = npcHandler, text = text[1]}, condition)
-		gloveKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[2], reset = true}, function(player) return getPlayerItemCount(cid, 5875) == 0 end)
+		gloveKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[2], reset = true}, function(player) return player:getItemCount(5875) == 0 end)
 		gloveKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[3], reset = true}, nil, action)
 		gloveKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = text[2], reset = true})
 end
@@ -125,7 +124,7 @@ addGloveKeyword({
 		'You found sniper gloves?! Incredible! I would love to grant you the sniper gloves accessory, but I can only do that for premium warriors. However, I would pay you 2000 gold pieces for them. How about it?',
 		'Maybe another time.',
 		'Alright! Here is your money, thank you very much.'
-	}, function(player) return not player:isPremium() end, function(player) doPlayerRemoveItem(cid, 5875, 1) player:addMoney(2000) end
+	}, function(player) return not player:isPremium() end, function(player) player:removeItem(5875, 1) player:addMoney(2000) end
 )
 
 -- Premium account with addon
@@ -133,7 +132,7 @@ addGloveKeyword({
 		'Did you find sniper gloves AGAIN?! Incredible! I cannot grant you other accessories, but would you like to sell them to me for 2000 gold pieces?',
 		'Maybe another time.',
 		'Alright! Here is your money, thank you very much.'
-	}, function(player) return getPlayerStorageValue(cid, Storage.OutfitQuest.Hunter.AddonGlove) == 1 end, function(player) doPlayerRemoveItem(cid, 5875, 1) player:addMoney(2000) end
+	}, function(player) return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == 1 end, function(player) player:removeItem(5875, 1) player:addMoney(2000) end
 )
 
 -- If you don't have the addon
@@ -141,7 +140,7 @@ addGloveKeyword({
 		'You found sniper gloves?! Incredible! Listen, if you give them to me, I will grant you the right to wear the sniper gloves accessory. How about it?',
 		'No problem, maybe another time.',
 		'Great! I hereby grant you the right to wear the sniper gloves as an accessory. Congratulations!'
-	}, function(player) return getPlayerStorageValue(cid, Storage.OutfitQuest.Hunter.AddonGlove) == -1 end, function(player) doPlayerRemoveItem(cid, 5875, 1) setPlayerStorageValue(cid, Storage.OutfitQuest.Hunter.AddonGlove, 1) doPlayerAddOutfit(cid, 129, 2) doPlayerAddOutfit(cid, 137, 1) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end
+	}, function(player) return player:getStorageValue(Storage.OutfitQuest.Hunter.AddonGlove) == -1 end, function(player) player:removeItem(5875, 1) player:setStorageValue(Storage.OutfitQuest.Hunter.AddonGlove, 1) player:addOutfitAddon(129, 2) player:addOutfitAddon(137, 1) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end
 )
 
 -- Basic
@@ -181,24 +180,3 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Bye, |PLAYERNAME|.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())
-
-
-	keywordHandler:addSpellKeyword({'conjure','arrow'}, {npcHandler = npcHandler, spellName = 'Conjure Arrow', price = 450, level = 13, vocation ={3}})
-	keywordHandler:addSpellKeyword({'conjure','bolt'}, {npcHandler = npcHandler, spellName = 'Conjure Bolt', price = 750, level = 17, vocation ={3}})
-	keywordHandler:addSpellKeyword({'conjure','explosive','arrow'}, {npcHandler = npcHandler, spellName = 'Conjure Explosive Arrow', price = 1000, level = 25, vocation ={3}})
-	keywordHandler:addSpellKeyword({'conjure','piercing','bolt'}, {npcHandler = npcHandler, spellName = 'Conjure Piercing Bolt', price = 850, level = 33, vocation ={3}})
-	keywordHandler:addSpellKeyword({'conjure','poisoned','arrow'}, {npcHandler = npcHandler, spellName = 'Conjure Poisoned Arrow', price = 700, level = 16, vocation ={3}})
-	keywordHandler:addSpellKeyword({'conjure','sniper','arrow'}, {npcHandler = npcHandler, spellName = 'Conjure Sniper Arrow', price = 800, level = 24, vocation ={3}})
-	keywordHandler:addSpellKeyword({'cure','poison'}, {npcHandler = npcHandler, spellName = 'Cure Poison', price = 150, level = 10, vocation ={3}})
-	keywordHandler:addSpellKeyword({'destroy','field'}, {npcHandler = npcHandler, spellName = 'Destroy Field', price = 700, level = 17, vocation ={3}})
-	keywordHandler:addSpellKeyword({'divine','healing'}, {npcHandler = npcHandler, spellName = 'Divine Healing', price = 3000, level = 35, vocation ={3}})
-	keywordHandler:addSpellKeyword({'find','person'}, {npcHandler = npcHandler, spellName = 'Find Person', price = 80, level = 8, vocation ={3}})
-	keywordHandler:addSpellKeyword({'great','light'}, {npcHandler = npcHandler, spellName = 'Great Light', price = 500, level = 13, vocation ={3}})
-	keywordHandler:addSpellKeyword({'intense','healing'}, {npcHandler = npcHandler, spellName = 'Intense Healing', price = 350, level = 20, vocation ={3}})
-	keywordHandler:addSpellKeyword({'light'}, {npcHandler = npcHandler, spellName = 'Light', price = 0, level = 8, vocation ={3}})
-	keywordHandler:addSpellKeyword({'light','healing'}, {npcHandler = npcHandler, spellName = 'Light Healing', price = 0, level = 8, vocation ={3}})
-	keywordHandler:addKeyword({'healing', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Cure Poison}', '{Divine Healing}', '{Intense Healing}' and '{Light Healing}'."})
-	keywordHandler:addKeyword({'support', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Conjure Arrow}', '{Conjure Bolt}', '{Conjure Explosive Arrow}', '{Conjure Piercing Bolt}', '{Conjure Poisoned Arrow}', '{Conjure Sniper Arrow}', '{Destroy Field}', '{Find Person}', '{Great Light}' and '{Light}'."})
-	keywordHandler:addKeyword({'spells'}, StdModule.say, {npcHandler = npcHandler, text = 'I can teach you {Healing spells} and {Support spells}.'})
-	
-	

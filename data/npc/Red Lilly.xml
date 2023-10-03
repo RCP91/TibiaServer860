@@ -17,8 +17,10 @@
 		<parameter key="shop_buyable" value="
 			beach backpack, 5949, 20;
 			beach bag, 5950, 5;
-			fishing rod, 2580, 150;			
+			fishing rod, 2580, 150;
+			hand auger, 36169, 25;
 			machete, 2420, 40;
+			net, 36324, 50;
 			pick, 2553, 50;
 			present, 1990, 10;
 			rope, 2120, 50;

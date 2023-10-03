@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,29 +13,29 @@ local voices = {
 	{ text = 'I need help! Please help me!' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 function BeggarFirst(cid, message, keywords, parameters, node)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if player:isPremium() then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.BeggarFirstAddon) == -1 then
-			if getPlayerItemCount(cid, 5883) >= 100 and getPlayerBalance(cid) + getPlayerBalance(cid) >= 20000 then
-				if doPlayerRemoveItem(cid, 5883, 100) and doPlayerRemoveMoney(cid, 20000) then
-					selfSay("Ah, right! The beggar beard or beggar dress! Here you go.", cid)
+		if player:getStorageValue(Storage.OutfitQuest.BeggarFirstAddon) == -1 then
+			if player:getItemCount(5883) >= 100 and player:getMoney() + player:getBankBalance() >= 20000 then
+				if player:removeItem(5883, 100) and player:removeMoneyNpc(20000) then
+					npcHandler:say("Ah, right! The beggar beard or beggar dress! Here you go.", cid)
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-					setPlayerStorageValue(cid, Storage.OutfitQuest.BeggarFirstAddon, 1)
-					doPlayerAddOutfit(cid, 153, 1)
-					doPlayerAddOutfit(cid, 157, 1)
+					player:setStorageValue(Storage.OutfitQuest.BeggarFirstAddon, 1)
+					player:addOutfitAddon(153, 1)
+					player:addOutfitAddon(157, 1)
 				end
 			else
-				selfSay("You do not have all the required items.", cid)
+				npcHandler:say("You do not have all the required items.", cid)
 			end
 		else
-			selfSay("It seems you already have this addon, don't you try to mock me son!", cid)
+			npcHandler:say("It seems you already have this addon, don't you try to mock me son!", cid)
 		end
 	end
 end
@@ -46,22 +45,22 @@ function BeggarSecond(cid, message, keywords, parameters, node)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if player:isPremium() then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.BeggarSecondAddon) == -1 then
-			if getPlayerItemCount(cid, 6107) >= 1 then
-				if doPlayerRemoveItem(cid, 6107, 1) then
-					selfSay("Ah, right! The beggar staff! Here you go.", cid)
+		if player:getStorageValue(Storage.OutfitQuest.BeggarSecondAddon) == -1 then
+			if player:getItemCount(6107) >= 1 then
+				if player:removeItem(6107, 1) then
+					npcHandler:say("Ah, right! The beggar staff! Here you go.", cid)
 					player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-					setPlayerStorageValue(cid, Storage.OutfitQuest.BeggarSecondAddon, 1)
-					doPlayerAddOutfit(cid, 153, 2)
-					doPlayerAddOutfit(cid, 157, 2)
+					player:setStorageValue(Storage.OutfitQuest.BeggarSecondAddon, 1)
+					player:addOutfitAddon(153, 2)
+					player:addOutfitAddon(157, 2)
 				end
 			else
-				selfSay("You do not have all the required items.", cid)
+				npcHandler:say("You do not have all the required items.", cid)
 			end
 		else
-			selfSay("It seems you already have this addon, don't you try to mock me son!", cid)
+			npcHandler:say("It seems you already have this addon, don't you try to mock me son!", cid)
 		end
 	end
 end
@@ -71,77 +70,77 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'cookie') then
-		if getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.Questline) == 31
-				and getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.CookieDelivery.SimonTheBeggar) ~= 1 then
-			selfSay('Have you brought a cookie for the poor?', cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.WhatAFoolishQuest.Questline) == 31
+				and player:getStorageValue(Storage.WhatAFoolishQuest.CookieDelivery.SimonTheBeggar) ~= 1 then
+			npcHandler:say('Have you brought a cookie for the poor?', cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, 'help') then
-		selfSay('I need gold. Can you spare 100 gold pieces for me?', cid)
-		talkState[talkUser] = 2
+		npcHandler:say('I need gold. Can you spare 100 gold pieces for me?', cid)
+		npcHandler.topic[cid] = 2
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			if not doPlayerRemoveItem(cid, 8111, 1) then
-				selfSay('You have no cookie that I\'d like.', cid)
-				talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			if not player:removeItem(8111, 1) then
+				npcHandler:say('You have no cookie that I\'d like.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.WhatAFoolishQuest.CookieDelivery.SimonTheBeggar, 1)
+			player:setStorageValue(Storage.WhatAFoolishQuest.CookieDelivery.SimonTheBeggar, 1)
 			if player:getCookiesDelivered() == 10 then
-				--player:addAchievement('Allow Cookies?')
+				player:addAchievement('Allow Cookies?')
 			end
 
 			Npc():getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			selfSay('Well, it\'s the least you can do for those who live in dire poverty. A single cookie is a bit less than I\'d expected, but better than ... WHA ... WHAT?? MY BEARD! MY PRECIOUS BEARD! IT WILL TAKE AGES TO CLEAR IT OF THIS CONFETTI!', cid)
+			npcHandler:say('Well, it\'s the least you can do for those who live in dire poverty. A single cookie is a bit less than I\'d expected, but better than ... WHA ... WHAT?? MY BEARD! MY PRECIOUS BEARD! IT WILL TAKE AGES TO CLEAR IT OF THIS CONFETTI!', cid)
 			npcHandler:releaseFocus(cid)
 			npcHandler:resetNpc(cid)
-		elseif talkState[talkUser] == 2 then
-			if not doPlayerRemoveMoney(cid, 100) then
-				selfSay('You haven\'t got enough money for me.', cid)
-				talkState[talkUser] = 0
+		elseif npcHandler.topic[cid] == 2 then
+			if not player:removeMoneyNpc(100) then
+				npcHandler:say('You haven\'t got enough money for me.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			selfSay('Thank you very much. Can you spare 500 more gold pieces for me? I will give you a nice hint.', cid)
-			talkState[talkUser] = 3
-		elseif talkState[talkUser] == 3 then
-			if not doPlayerRemoveMoney(cid, 500) then
-				selfSay('Sorry, that\'s not enough.', cid)
-				talkState[talkUser] = 0
+			npcHandler:say('Thank you very much. Can you spare 500 more gold pieces for me? I will give you a nice hint.', cid)
+			npcHandler.topic[cid] = 3
+		elseif npcHandler.topic[cid] == 3 then
+			if not player:removeMoneyNpc(500) then
+				npcHandler:say('Sorry, that\'s not enough.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			selfSay('That\'s great! I have stolen something from Dermot. You can buy it for 200 gold. Do you want to buy it?', cid)
-			talkState[talkUser] = 4
-		elseif talkState[talkUser] == 4 then
-			if not doPlayerRemoveMoney(cid, 200) then
-				selfSay('Pah! I said 200 gold. You don\'t have that much.', cid)
-				talkState[talkUser] = 0
+			npcHandler:say('That\'s great! I have stolen something from Dermot. You can buy it for 200 gold. Do you want to buy it?', cid)
+			npcHandler.topic[cid] = 4
+		elseif npcHandler.topic[cid] == 4 then
+			if not player:removeMoneyNpc(200) then
+				npcHandler:say('Pah! I said 200 gold. You don\'t have that much.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			local key = doPlayerAddItem(cid, 2087, 1)
+			local key = player:addItem(2087, 1)
 			if key then
 				key:setActionId(3940)
 			end
-			selfSay('Now you own the hot key.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('Now you own the hot key.', cid)
+			npcHandler.topic[cid] = 0
 		end
-	elseif msgcontains(msg, 'no') and talkState[talkUser] ~= 0 then
-		if talkState[talkUser] == 1 then
-			selfSay('I see.', cid)
-		elseif talkState[talkUser] == 2 then
-			selfSay('Hmm, maybe next time.', cid)
-		elseif talkState[talkUser] == 3 then
-			selfSay('It was your decision.', cid)
-		elseif talkState[talkUser] == 4 then
-			selfSay('Ok. No problem. I\'ll find another buyer.', cid)
+	elseif msgcontains(msg, 'no') and npcHandler.topic[cid] ~= 0 then
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say('I see.', cid)
+		elseif npcHandler.topic[cid] == 2 then
+			npcHandler:say('Hmm, maybe next time.', cid)
+		elseif npcHandler.topic[cid] == 3 then
+			npcHandler:say('It was your decision.', cid)
+		elseif npcHandler.topic[cid] == 4 then
+			npcHandler:say('Ok. No problem. I\'ll find another buyer.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

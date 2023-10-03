@@ -7,7 +7,9 @@
 		<parameter key="shop_buyable" value="
 			arrow, 2544, 3;
 			bolt, 2543, 4;
-			fishing rod, 2580, 170;			
+			fishing rod, 2580, 170;
+			hand auger, 36169, 25;
+			net, 36324, 50;
 			rope, 2120, 65;
 			viking helmet, 2473, 265;
 			worm, 3976, 1;" />

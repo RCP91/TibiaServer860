@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -31,7 +30,7 @@ local voices = {
 	{ text = 'Through Rookgaard\'s sewer there swarmed no fewer than a hundred screeching rats. Wading through mud, and covered in blood, two young men fought back-to-back. To Trimera\'s end; a knight, and a friend.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 keywordHandler:addKeyword({'tibia'}, StdModule.say, {npcHandler = npcHandler, text = "Our world, our home, our very own plane of existence. We have to protect it, mind you. Underneath all the battles, challenges and monsters there still resides a majestic, yet vulnerable being. A mother to us all."})
 keywordHandler:addKeyword({'king'}, StdModule.say, {npcHandler = npcHandler, text = "A king and a beggar know more than a king alone... ahem, except for King Tibianus. He most certainly would. All hail King Tibianus etc. etc."})

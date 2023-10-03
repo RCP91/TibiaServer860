@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Basilisco" nameDescription="a basilisco" race="blood" experience="14100" speed="600" script="rewardboss.lua">
+	<health now="80100" max="80100" />
+	<look type="1293"  corpse="38952"/>
+	<targetchange interval="4000" chance="60" />
+	<flags>
+		<flag rewardboss="1" />
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-1120" max="-1221" />
+		<attack name="manadrain" interval="2000" chance="10" range="7" min="-1120" max="-1352" />
+		<attack name="death" interval="1400" chance="20" range="7" radius="7" target="1" min="-1352" max="-1600">
+			<attribute key="shootEffect" value="mortarea" />
+			<attribute key="areaEffect" value="mortarea" />
+		</attack>
+		<attack name="firefield" interval="1000" chance="10" range="7" radius="-1130" target="-1500">
+			<attribute key="shootEffect" value="fire" />
+		</attack>
+		<attack name="lifedrain" interval="2000" chance="10" length="8" spread="0" min="-1001" max="-1520">
+			<attribute key="areaEffect" value="purpleenergy" />
+		</attack>
+		<attack name="energy" interval="1200" chance="10" range="1" min="-980" max="-1635">
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+		<attack name="speed" interval="1300" chance="15" radius="1" target="1" speedchange="-700" duration="30000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</attack>
+	<defenses armor="30" defense="30">
+		<defense name="healing" interval="2000" chance="15" min="180" max="250">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+		<defense name="speed" interval="2000" chance="15" speedchange="500" duration="5000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</defense>
+	</defenses>
+	<elements>
+		<element physicalPercent="50" />
+		<element deathPercent="100" />
+		<element energyPercent="20" />
+		<element earthPercent="10" />
+		<element icePercent="-10" />
+		<element holyPercent="-10" />
+	</elements>
+	<immunities>
+		<immunity fire="1" />
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<summons maxSummons="0">
+		<summon name="fire elemental" interval="2000" chance="10" />
+	</summons>
+	<voices interval="5000" chance="10">
+		<voice sentence="HELL!" />
+		<voice sentence="MUHAHAHAHA!" />
+		<voice sentence="CHAMEK ATH UTHUL ARAK!" />
+		<voice sentence="I SMELL FEEEEAAAAAR!" />
+		<voice sentence="Your resistance is futile!" />
+	</voices>
+	<loot>
+		<item name="platinum coin" countmax="6" chance="25000" />
+		<item name="broken helmet"  chance="4000" />
+		<item name="bug meat"  chance="5000" />
+		<item name="Combat Knife"  chance="8000" />
+		<item name="Dark Armor"  chance="4000" />
+		<item name="Dark Shield"  chance="3500" />
+		<item name="Dirty Cape"  chance="3200" />
+		<item name="Dirty Fur"  chance="3100" />
+		<item name="Dwarven Shield"  chance="5000" />
+		<item name="Fishbone"  chance="8000" />
+		<item name="Ham"  chance="10000" />
+		<item name="Knife"  chance="7000" />
+		<item name="Life Preserver"  chance="4000" />
+		<item name="Plate Armor"  chance="3900" />
+		<item name="Studded Shield"  chance="9500" />
+		<item name="Twigs"  chance="7000" />
+		<item name="Lion Axe"  chance="60" />
+		<item name="Lion Hammer"  chance="60" />
+		<item name="Lion Longbow"  chance="60" />
+		<item name="Lion Plate"  chance="60" />
+		<item name="Lion Rod"  chance="60" />
+		<item name="Lion Spangenhelm"  chance="60" />
+		<item name="Lion Spellbook"  chance="60" />
+	</loot>
+</monster>

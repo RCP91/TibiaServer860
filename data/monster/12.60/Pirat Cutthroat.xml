@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Pirate Cutthroat" nameDescription="Pirate Cutthroat" race="blood" experience="1800" speed="340">
+	<health now="2600" max="2600" />
+	<look type="1346" head="18" body="78" legs="18" feet="18" corpse="40538" />
+	<targetchange interval="5000" chance="8" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="90" />
+		<flag runonhealth="0" />
+		<flag canwalkonfire="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="100" max="-335"/>
+		<attack name="physical" interval="2000" chance="60" target="1" range="7" radius="3" min="200" max="-500">
+			<attribute key="shootEffect" value="explosion"/>
+			<attribute key="areaEffect" value="explosion"/>
+		</attack>
+	</attacks>
+	<defenses armor="17" defense="21">
+		<defense name="healing" interval="100" chance="17" min="225" max="275">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+	</defenses>
+	<immunities>
+		<immunity fire="1" />
+		<immunity poison="1" />
+		<immunity lifedrain="1" />
+		<immunity invisible="1" />
+	</immunities>
+		<loot>
+		<item id="2148" countmax="99" chance="100000" /><!-- gold coin -->
+		<item id="2152" countmax="10" chance="100000" /><!-- platinum coin -->
+		<item name="Great Health Potion" countmax="3" chance="33000" />
+		<item name="Knight Axe" chance="3000" />
+		<item name="Crystal Sword" chance="8200" />
+		<item name="Knight Armor" chance="1980" />
+		<item name="Focus Cape" chance="8250" />
+		<item name="Ice rapier" chance="1230" />
+		<item name="Crowbar" chance="990" />
+	</loot>
+</monster>

@@ -51,7 +51,7 @@
 		<item id="2800" chance="7400"/><!-- obsidian lance -->
 		<item id="2800" chance="7950"/><!-- rusty armor -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2800" chance="9900"/><!-- short sword -->
 				<item id="2800" chance="5000"/><!-- rusty armor -->
 				<item id="2150" countmax="2" chance="500"/><!-- small amethyst -->
@@ -59,7 +59,7 @@
 				<item id="7386" chance="100"/><!-- mercenary sword -->		
 				<item id="10016" chance="100"/><!-- batwing hat -->
 
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

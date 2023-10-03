@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -47,26 +46,26 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, 'key') then
-		selfSay('If you are that curious, do you want to buy a key for 5000 gold? Don\'t blame me if you get sucked in.', cid)
-		talkState[talkUser] = 1
+		npcHandler:say('If you are that curious, do you want to buy a key for 5000 gold? Don\'t blame me if you get sucked in.', cid)
+		npcHandler.topic[cid] = 1
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			
-			if doPlayerRemoveMoney(cid, 5000) then
-				selfSay('Here it is.', cid)
-				local key = doPlayerAddItem(cid, 2089, 1)
+		if npcHandler.topic[cid] == 1 then
+			local player = Player(cid)
+			if player:removeMoneyNpc(5000) then
+				npcHandler:say('Here it is.', cid)
+				local key = player:addItem(2089, 1)
 				if key then
 					key:setActionId(3012)
 				end
 			else
-				selfSay('Come back when you have enough money.', cid)
+				npcHandler:say('Come back when you have enough money.', cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'no') then
-		if talkState[talkUser] == 1 then
-			selfSay('Believe me, it\'s better for you that way.', cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say('Believe me, it\'s better for you that way.', cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true
@@ -81,18 +80,3 @@ local focusModule = FocusModule:new()
 focusModule:addGreetMessage({'hi', 'hello', 'ashari'})
 focusModule:addFarewellMessage({'bye', 'farewell', 'asgha thrazi'})
 npcHandler:addModule(focusModule)
-
-
-	keywordHandler:addSpellKeyword({'avalanche'}, {npcHandler = npcHandler, spellName = 'Avalanche', price = 1200, level = 30, vocation ={2}})
-	keywordHandler:addSpellKeyword({'explosion'}, {npcHandler = npcHandler, spellName = 'Explosion', price = 1800, level = 31, vocation ={2}})
-	keywordHandler:addSpellKeyword({'heavy','magic','missile'}, {npcHandler = npcHandler, spellName = 'Heavy Magic Missile', price = 1500, level = 25, vocation ={2}})
-	keywordHandler:addSpellKeyword({'ice','wave'}, {npcHandler = npcHandler, spellName = 'Ice Wave', price = 850, level = 18, vocation ={2}})
-	keywordHandler:addSpellKeyword({'light','magic','missile'}, {npcHandler = npcHandler, spellName = 'Light Magic Missile', price = 500, level = 15, vocation ={2}})
-	keywordHandler:addSpellKeyword({'stalagmite'}, {npcHandler = npcHandler, spellName = 'Stalagmite', price = 1400, level = 24, vocation ={2}})
-	keywordHandler:addSpellKeyword({'terra','wave'}, {npcHandler = npcHandler, spellName = 'Terra Wave', price = 2500, level = 38, vocation ={2}})
-	keywordHandler:addKeyword({'attack', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Ice Wave}' and '{Terra Wave}'."})
-	keywordHandler:addKeyword({'support', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Avalanche}', '{Explosion}', '{Heavy Magic Missile}', '{Light Magic Missile}' and '{Stalagmite}'."})
-	keywordHandler:addKeyword({'spells'}, StdModule.say, {npcHandler = npcHandler, text = 'I can teach you {Attack spells} and {Support spells}.'})
-	
-	
-	

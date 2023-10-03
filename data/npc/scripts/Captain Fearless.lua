@@ -2,15 +2,14 @@ local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
 function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)		end
 function onThink()		npcHandler:onThink()		end
 
-local voices = { {text = 'Passages to Thais, Carlin, Ab\'Dendriel, Port Hope, Edron, Darashia, Liberty Bay, Svargrond, Yalahar and Ankrahmun.'} }
---npcHandler:addModule(VoiceModule:new(voices))
+local voices = { {text = 'Passages to Thais, Carlin, Ab\'Dendriel, Krailos, Port Hope, Edron, Darashia, Liberty Bay, Svargrond, Gray Island, Yalahar and Ankrahmun.'} }
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Travel
 local function addTravelKeyword(keyword, cost, destination, condition)
@@ -30,9 +29,24 @@ addTravelKeyword('edron', 40, Position(33173, 31764, 6))
 addTravelKeyword('port hope', 160, Position(32527, 32784, 6))
 addTravelKeyword('svargrond', 150, Position(32341, 31108, 6))
 addTravelKeyword('liberty bay', 180, Position(32285, 32892, 6))
-addTravelKeyword('yalahar', 185, Position(32816, 31272, 6), function(player) return getPlayerStorageValue(cid, Storage.SearoutesAroundYalahar.Venore) ~= 1 and getPlayerStorageValue(cid, Storage.SearoutesAroundYalahar.TownsCounter) < 5 end)
+addTravelKeyword('yalahar', 185, Position(32816, 31272, 6), function(player) return player:getStorageValue(Storage.SearoutesAroundYalahar.Venore) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5 end)
 addTravelKeyword('ankrahmun', 150, Position(33092, 32883, 6))
 
+local function addTravelKeyword(keyword, cost, destination, condition)
+	if condition then
+		keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m sorry but I don\'t sail there.'}, condition)
+	end
+
+	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a passage to ' .. keyword:titleCase() .. ' for |TRAVELCOST|?', cost = cost, discount = 'postman'})
+		travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = true, cost = cost, discount = 'postman', destination = destination})
+		travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true})
+end
+addTravelKeyword('gray island', 150, Position(33196, 31984, 7))
+addTravelKeyword('krailos', 185, Position(33493, 31712, 6)) -- {x = 33493, y = 31712, z = 6}
+addTravelKeyword('travora', 1000, Position(32055, 32368, 6))
+addTravelKeyword('issavi', 130, Position(33901, 31462, 6))
+addTravelKeyword('roshamuul', 210, Position(33494, 32567, 7))
+addTravelKeyword('oramond', 150, Position(33479, 31985, 7))
 
 -- Darashia
 local travelNode = keywordHandler:addKeyword({'darashia'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a passage to Darashia for |TRAVELCOST|?', cost = 60, discount = 'postman'})
@@ -42,11 +56,12 @@ local travelNode = keywordHandler:addKeyword({'darashia'}, StdModule.say, {npcHa
 	travelNode:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, reset = true, text = 'We would like to serve you some time.'})
 
 -- Kick
---keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = {Position(32952, 32031, 6), Position(32955, 32031, 6), Position(32957, 32032, 6)}})
+keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = {Position(32952, 32031, 6), Position(32955, 32031, 6), Position(32957, 32032, 6)}})
 
 -- Basic
-keywordHandler:addKeyword({'sail'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar} or {Ankrahmun}?'})
-keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar} or {Ankrahmun}?'})
+keywordHandler:addKeyword({'sail'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar}, or {Ankrahmun}, citys premium account {Gray Island}, {Issavi}, {krailos}, {Roshamuul}, {Oramond}?'})
+keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar}, or {Ankrahmun}, citys premium account {Gray Island}, {Issavi}, {krailos}, {Roshamuul}, {Oramond}?'})
+keywordHandler:addKeyword({'travel'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar}, or {Ankrahmun}, citys premium account {Gray Island}, {Issavi}, {krailos}, {Roshamuul}, {Oramond}?'})
 keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
 keywordHandler:addKeyword({'captain'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
 keywordHandler:addKeyword({'venore'}, StdModule.say, {npcHandler = npcHandler, text = 'This is Venore. Where do you want to go?'})

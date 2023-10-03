@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,19 +12,19 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, 'stampor') or msgcontains(msg, 'mount') then
 		if not player:hasMount(11) then
-				selfSay('You did bring all the items I requqested, cuild. Good. Shall I travel to the spirit realm and try finding a stampor compasion for you?', cid)
-				talkState[talkUser] = 1
+				npcHandler:say('You did bring all the items I requqested, cuild. Good. Shall I travel to the spirit realm and try finding a stampor compasion for you?', cid)
+				npcHandler.topic[cid] = 1
 		else
-			selfSay('You already have stampor mount.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('You already have stampor mount.', cid)
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			if doPlayerRemoveItem(cid, 13299, 50) and doPlayerRemoveItem(cid, 13301, 30) and doPlayerRemoveItem(cid, 13300, 100) then
-				selfSay({
+		if npcHandler.topic[cid] == 1 then
+			if player:removeItem(13299, 50) and player:removeItem(13301, 30) and player:removeItem(13300, 100) then
+				npcHandler:say({
 					'Ohhhhh Mmmmmmmmmmmm Ammmmmgggggggaaaaaaa ...',
 					'Aaaaaaaaaahhmmmm Mmmaaaaaaaaaa Kaaaaaamaaaa ...',
 					'Brrt! I think it worked! It\'s a male stampor. I linked this spirit to yours. You can probably already summon him to you ...',
@@ -34,13 +33,13 @@ local function creatureSayCallback(cid, type, msg)
 				player:addMount(11)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_RED)
 			else
-				selfSay('Sorry you don\'t have the necessary items.', cid)
+				npcHandler:say('Sorry you don\'t have the necessary items.', cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
-	elseif msgcontains(msg, 'no') and talkState[talkUser] > 2 then
-		selfSay('Maybe next time.', cid)
-		talkState[talkUser] = 0
+	elseif msgcontains(msg, 'no') and npcHandler.topic[cid] > 2 then
+		npcHandler:say('Maybe next time.', cid)
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end
@@ -57,14 +56,14 @@ notReadyKeyword('task', 'The time hasn\'t come yet, my child. Believe and learn.
 
 -- Start task
 local function addTaskKeyword(text, value, missionStorage)
-	local taskKeyword = keywordHandler:addKeyword({'task'}, StdModule.say, {npcHandler = npcHandler, text = text[1]}, function(player) return getPlayerStorageValue(cid, Storage.OutfitQuest.Shaman.AddonStaffMask) == value end)
+	local taskKeyword = keywordHandler:addKeyword({'task'}, StdModule.say, {npcHandler = npcHandler, text = text[1]}, function(player) return player:getStorageValue(Storage.OutfitQuest.Shaman.AddonStaffMask) == value end)
 		local yesKeyword = taskKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[2]})
 
 			yesKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[3], reset = true}, nil,
 				function(player)
-					setPlayerStorageValue(cid, Storage.OutfitQuest.Shaman.AddonStaffMask, math.max(0, getPlayerStorageValue(cid, Storage.OutfitQuest.Shaman.AddonStaffMask)) + 1)
-					setPlayerStorageValue(cid, missionStorage, 1)
-					setPlayerStorageValue(cid, Storage.OutfitQuest.Ref, math.max(0, getPlayerStorageValue(cid, Storage.OutfitQuest.Ref)) + 1) end
+					player:setStorageValue(Storage.OutfitQuest.Shaman.AddonStaffMask, math.max(0, player:getStorageValue(Storage.OutfitQuest.Shaman.AddonStaffMask)) + 1)
+					player:setStorageValue(missionStorage, 1)
+					player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1) end
 				)
 			yesKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'Would you like me to repeat the task requirements then?', moveup = 2})
 
@@ -99,21 +98,21 @@ addTaskKeyword({
 
 -- Hand in task items
 local function addItemKeyword(keyword, aliasKeyword, text, value, item, addonId, missionStorage, achievement)
-	local itemKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = text[1]}, function(player) return getPlayerStorageValue(cid, Storage.OutfitQuest.Shaman.AddonStaffMask) == value end)
-		itemKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[2], reset = true}, function(player) return getPlayerItemCount(cid, item[1].itemId) < item[1].count or getPlayerItemCount(cid, item[2].itemId) < item[2].count end)
+	local itemKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = text[1]}, function(player) return player:getStorageValue(Storage.OutfitQuest.Shaman.AddonStaffMask) == value end)
+		itemKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[2], reset = true}, function(player) return player:getItemCount(item[1].itemId) < item[1].count or player:getItemCount(item[2].itemId) < item[2].count end)
 
 		itemKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[3], reset = true},
-			function(player) return getPlayerItemCount(cid, item[1].itemId) >= item[1].count and getPlayerItemCount(cid, item[2].itemId) >= item[2].count end,
+			function(player) return player:getItemCount(item[1].itemId) >= item[1].count and player:getItemCount(item[2].itemId) >= item[2].count end,
 			function(player)
-				doPlayerRemoveItem(cid, item[1].itemId, item[1].count)
-				doPlayerRemoveItem(cid, item[2].itemId, item[2].count)
-				doPlayerAddOutfit(cid, 158, addonId)
-				doPlayerAddOutfit(cid, 154, addonId)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Shaman.AddonStaffMask, getPlayerStorageValue(cid, Storage.OutfitQuest.Shaman.AddonStaffMask) + 1)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Ref, math.min(0, getPlayerStorageValue(cid, Storage.OutfitQuest.Ref) - 1))
-				setPlayerStorageValue(cid, missionStorage, 0)
+				player:removeItem(item[1].itemId, item[1].count)
+				player:removeItem(item[2].itemId, item[2].count)
+				player:addOutfitAddon(158, addonId)
+				player:addOutfitAddon(154, addonId)
+				player:setStorageValue(Storage.OutfitQuest.Shaman.AddonStaffMask, player:getStorageValue(Storage.OutfitQuest.Shaman.AddonStaffMask) + 1)
+				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
+				player:setStorageValue(missionStorage, 0)
 				if achievement then
-					--player:addAchievement('Way of the Shaman')
+					player:addAchievement('Way of the Shaman')
 				end
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			end
@@ -145,7 +144,7 @@ addItemKeyword('tribal mask', 'banana staff',
 
 -- Task status
 local function addTaskStatusKeyword(keyword, text, value)
-	keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = text}, function(player) return getPlayerStorageValue(cid, Storage.OutfitQuest.Shaman.AddonStaffMask) == value end)
+	keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = text}, function(player) return player:getStorageValue(Storage.OutfitQuest.Shaman.AddonStaffMask) == value end)
 	if keyword == 'addon' then
 		keywordHandler:addAliasKeyword({'outfit'})
 	end
@@ -162,37 +161,37 @@ addTaskStatusKeyword('addon', 'You have successfully passed all of my tasks. The
 
 -- Wooden Stake
 keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'Ten prayers for a blessed stake? Don\'t tell me they made you travel whole Tibia for it! Listen, child, if you bring me a wooden stake, I\'ll bless it for you. <chuckles>'},
-	function(player) return getPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake) == 11 end,
-	function(player) setPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake, 12) --player:addAchievement('Blessed!') player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end
+	function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 11 end,
+	function(player) player:setStorageValue(Storage.FriendsandTraders.TheBlessedStake, 12) player:addAchievement('Blessed!') player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end
 )
 
 local stakeKeyword = keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'Would you like to receive a spiritual prayer to bless your stake?'},
-		function(player) return getPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake) == 12 end
+		function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 12 end
 	)
 
-	stakeKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You don\'t have a wooden stake.', reset = true}, function(player) return getPlayerItemCount(cid, 5941) == 0 end)
+	stakeKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'You don\'t have a wooden stake.', reset = true}, function(player) return player:getItemCount(5941) == 0 end)
 
 	stakeKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, but I\'m still exhausted from the last ritual. Please come back later.', reset = true},
-		function(player) return getPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStakeWaitTime) >= os.time() end)
+		function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStakeWaitTime) >= os.time() end)
 
 	stakeKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = '<mumblemumble> Sha Kesh Mar!', reset = true},
-		function(player) return getPlayerItemCount(cid, 5941) > 0 end,
-		function(player) setPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStakeWaitTime, os.time() + 7 * 86400) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) doPlayerRemoveItem(cid, 5941, 1) doPlayerAddItem(cid, 5942, 1) end
+		function(player) return player:getItemCount(5941) > 0 end,
+		function(player) player:setStorageValue(Storage.FriendsandTraders.TheBlessedStakeWaitTime, os.time() + 7 * 86400) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) player:removeItem(5941, 1) player:addItem(5942, 1) end
 	)
 	stakeKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'Maybe another time.', reset = true})
 
 -- Counterspell
-keywordHandler:addKeyword({'counterspell'}, StdModule.say, {npcHandler = npcHandler, text = 'You should not talk about things you don\'t know anything about.'}, function(player) return getPlayerStorageValue(cid, Storage.TheShatteredIsles.DragahsSpellbook) == -1 end)
+keywordHandler:addKeyword({'counterspell'}, StdModule.say, {npcHandler = npcHandler, text = 'You should not talk about things you don\'t know anything about.'}, function(player) return player:getStorageValue(Storage.TheShatteredIsles.DragahsSpellbook) == -1 end)
 keywordHandler:addAliasKeyword({'energy field'})
 
 -- Start mission
-local counterspellKeyword = keywordHandler:addKeyword({'counterspell'}, StdModule.say, {npcHandler = npcHandler, text = 'You mean, you are interested in a counterspell to cross the energy barrier on Goroma?'}, function(player) return getPlayerStorageValue(cid, Storage.TheShatteredIsles.TheCounterspell) == -1 end)
+local counterspellKeyword = keywordHandler:addKeyword({'counterspell'}, StdModule.say, {npcHandler = npcHandler, text = 'You mean, you are interested in a counterspell to cross the energy barrier on Goroma?'}, function(player) return player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) == -1 end)
 	local acceptKeyword = counterspellKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'This is really not advisable. Behind this barrier, strong forces are raging violently. Are you sure that you want to go there?'})
 		acceptKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler,
 			text = {
 				'I guess I cannot stop you then. Since you told me about my apprentice, it\'s my turn to help you. I\'ll perform a ritual for you, but I need a few ingredients. ...',
 				'Bring me one fresh dead chicken, one fresh dead rat and one fresh dead black sheep, in that order.'
-			}, reset = true}, nil, function(player) setPlayerStorageValue(cid, Storage.TheShatteredIsles.TheCounterspell, 1) end
+			}, reset = true}, nil, function(player) player:setStorageValue(Storage.TheShatteredIsles.TheCounterspell, 1) end
 		)
 		acceptKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'It\'s much safer for you to stay here anyway, trust me.', reset = true})
 
@@ -200,8 +199,8 @@ local counterspellKeyword = keywordHandler:addKeyword({'counterspell'}, StdModul
 
 -- Deliver in corpses
 local function addCounterspellKeyword(text, value, itemId)
-	local counterspellKeyword = keywordHandler:addKeyword({'counterspell'}, StdModule.say, {npcHandler = npcHandler, text = text[1]}, function(player) return getPlayerStorageValue(cid, Storage.TheShatteredIsles.TheCounterspell) == value end)
-		counterspellKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[2], reset = true}, function(player) return getPlayerItemCount(cid, itemId) > 0 end, function(player) doPlayerRemoveItem(cid, itemId, 1) setPlayerStorageValue(cid, Storage.TheShatteredIsles.TheCounterspell, value + 1) end)
+	local counterspellKeyword = keywordHandler:addKeyword({'counterspell'}, StdModule.say, {npcHandler = npcHandler, text = text[1]}, function(player) return player:getStorageValue(Storage.TheShatteredIsles.TheCounterspell) == value end)
+		counterspellKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = text[2], reset = true}, function(player) return player:getItemCount(itemId) > 0 end, function(player) player:removeItem(itemId, 1) player:setStorageValue(Storage.TheShatteredIsles.TheCounterspell, value + 1) end)
 end
 
 addCounterspellKeyword({'Did you bring the fresh dead chicken?', 'Very good! <mumblemumble> \'Your soul shall be protected!\' Now, I need a fresh dead rat.'}, 1, 4265)
@@ -212,7 +211,7 @@ addCounterspellKeyword({'Did you bring the fresh dead black sheep?', 'Very good!
 keywordHandler:addKeyword({'counterspell'}, StdModule.say, {npcHandler = npcHandler, text = 'Hm. I don\'t think you need another one of my counterspells to cross the barrier on Goroma.'})
 
 -- Spellbook
-keywordHandler:addKeyword({'spellbook'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, thank you very much! I\'ll honour his memory.'}, function(player) return getPlayerItemCount(cid, 6120) > 0 end, function(player) doPlayerRemoveItem(cid, 6120, 1) setPlayerStorageValue(cid, Storage.TheShatteredIsles.DragahsSpellbook, 1) end)
+keywordHandler:addKeyword({'spellbook'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, thank you very much! I\'ll honour his memory.'}, function(player) return player:getItemCount(6120) > 0 end, function(player) player:removeItem(6120, 1) player:setStorageValue(Storage.TheShatteredIsles.DragahsSpellbook, 1) end)
 
 -- Energy Field
 keywordHandler:addKeyword({'energy field'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, the energy barrier set up by the cult is maintained by lousy magic, but it\'s still effective. Without a proper counterspell, you won\'t be able to pass it.'})

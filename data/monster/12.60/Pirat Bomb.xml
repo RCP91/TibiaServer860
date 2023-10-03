@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Pirat Bomb" nameDescription="Pirat Bomb" race="blood" experience="1400" speed="340">
+	<health now="1900" max="1900" />
+	<look type="1346" head="93" body="93" legs="79" feet="79" addons="3" />
+	<targetchange interval="5000" chance="8" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="90" />
+		<flag runonhealth="0" />
+		<flag canwalkonfire="0" />
+	</flags>
+	<attacks>
+		<attack name="outburst explode" interval="2000" chance="80" range="7" min="-450" max="-700" />	
+		<attack name="energy" interval="2000" chance="0" range="7" radius="4" target="1" min="-270" max="-780">
+			<attribute key="shootEffect" value="energy" />
+			<attribute key="areaEffect" value="energyarea" />
+		</attack>		
+		<attack name="energy" interval="2000" chance="0" range="1" min="-300" max="-600">
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+	</attacks>
+	<defenses armor="17" defense="21">
+		<defense name="healing" interval="1000" chance="17" min="225" max="275">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+	</defenses>
+	<immunities>
+		<immunity fire="1" />
+		<immunity poison="1" />
+		<immunity lifedrain="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<loot>
+		<item id="2148" countmax="99" chance="100000" /><!-- gold coin -->
+		<item id="2152" countmax="10" chance="100000" /><!-- platinum coin -->
+		<item id="40407" chance="2000" /><!-- pirate coins -->
+		<item id="7886" chance="4000" /><!-- crystal sword -->
+		<item id="8472" countmax="4" chance="100000" /><!-- great health potion -->
+		<item id="7891" chance="5000" /><!-- knight axe -->
+		<item id="7893" chance="3333" /><!-- stealth ring -->
+		<item id="2396" chance="3333" /><!-- ice rapier -->
+		<item id="2476" chance="3333" /><!-- knight armor -->
+		<item id="2416" chance="3333" /><!-- crowbar -->
+		<item id="8871" chance="5000" /><!-- focus cape-->
+		<item id="40409" chance="8000" /><!-- Shark Fins -->
+		<item id="40408" chance="5000" /><!-- pirat tail -->
+	</loot>
+</monster>

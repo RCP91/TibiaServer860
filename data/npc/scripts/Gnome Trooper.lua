@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 local response = {
 	[0] = "It's a pipe! What can be more relaxing for a gnome than to smoke his pipe after a day of duty at the front. At least it's a chance to do something really dangerous after all!",
 	[1] = "Ah, a letter from home! Oh - I had no idea she felt that way! This is most interesting!",
@@ -19,8 +18,8 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()							npcHandler:onThink()						end
 
 function greetCallback(cid)
-	
-	if isInArray({-1, 4}, getPlayerStorageValue(cid, SPIKE_LOWER_PARCEL_MAIN)) then
+	local player = Player(cid)
+	if isInArray({-1, 4}, player:getStorageValue(SPIKE_LOWER_PARCEL_MAIN)) then
 		return false
 	end
 	if isInArray(DELIVERED_PARCELS[player:getGuid()], Creature(getNpcCid()):getId()) then
@@ -34,8 +33,8 @@ function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	local status = getPlayerStorageValue(cid, SPIKE_LOWER_PARCEL_MAIN)
+	local player = Player(cid)
+	local status = player:getStorageValue(SPIKE_LOWER_PARCEL_MAIN)
 
 	if not DELIVERED_PARCELS[player:getGuid()] then
 		DELIVERED_PARCELS[player:getGuid()] = {}
@@ -46,13 +45,13 @@ function creatureSayCallback(cid, type, msg)
 			return true
 		end
 
-		if not doPlayerRemoveItem(cid, 21569, 1) then
-			selfSay("But you don't have it...", cid)
+		if not player:removeItem(21569, 1) then
+			npcHandler:say("But you don't have it...", cid)
 			return npcHandler:releaseFocus(cid)
 		end
 
-		selfSay(response[getPlayerStorageValue(cid, SPIKE_LOWER_PARCEL_MAIN)], cid)
-		setPlayerStorageValue(cid, SPIKE_LOWER_PARCEL_MAIN, status + 1)
+		npcHandler:say(response[player:getStorageValue(SPIKE_LOWER_PARCEL_MAIN)], cid)
+		player:setStorageValue(SPIKE_LOWER_PARCEL_MAIN, status + 1)
 		table.insert(DELIVERED_PARCELS[player:getGuid()], Creature(getNpcCid()):getId())
 		npcHandler:releaseFocus(cid)
 	end

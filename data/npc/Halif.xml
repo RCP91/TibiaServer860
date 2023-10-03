@@ -6,7 +6,9 @@
 		<parameter key="module_shop" value="1" />
 		<parameter key="shop_buyable" value="
 			crowbar, 2416, 260;
-			fishing rod, 2580, 150;			
+			fishing rod, 2580, 150;
+			hand auger, 36169, 25;
+			net, 36324, 50;
 			pick, 2553, 50;
 			rope, 2120, 50;
 			scythe, 2550, 50;

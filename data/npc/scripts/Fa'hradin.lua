@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,14 +12,14 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	local missionProgress = getPlayerStorageValue(cid, Storage.DjinnWar.MaridFaction.Mission02)
+	local player = Player(cid)
+	local missionProgress = player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission02)
 	if msgcontains(msg, 'spy report') or msgcontains(msg, 'mission') then
-		if getPlayerStorageValue(cid, Storage.DjinnWar.MaridFaction.Mission01) ~= 2 then
-			selfSay('Looking for work, are you? Well, it\'s very tempting, you know, but I\'m afraid we do not really employ beginners. Perhaps our cook could need a helping hand in the kitchen.', cid)
+		if player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission01) ~= 2 then
+			npcHandler:say('Looking for work, are you? Well, it\'s very tempting, you know, but I\'m afraid we do not really employ beginners. Perhaps our cook could need a helping hand in the kitchen.', cid)
 
 		elseif missionProgress < 1 then
-			selfSay({
+			npcHandler:say({
 				'I have heard some good things about you from Bo\'ques. But I don\'t know. ...',
 				'Well, all right. I do have a job for you. ...',
 				'In order to stay informed about our enemy\'s doings, we have managed to plant a spy in Mal\'ouquah. ...',
@@ -30,33 +29,33 @@ local function creatureSayCallback(cid, type, msg)
 				'I need you to infiltrate Mal\'ouqhah, contact our man there and get his latest spyreport. The password is {PIEDPIPER}. Remember it well! ...',
 				'I do not have to add that this is a dangerous mission, do I? If you are discovered expect to be attacked! So goodluck, human!'
 			}, cid)
-			setPlayerStorageValue(cid, Storage.DjinnWar.MaridFaction.Mission02, 1)
+			player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission02, 1)
 
 		elseif missionProgress == 1 then
-			selfSay('Did you already retrieve the spyreport?', cid)
-			talkState[talkUser] = 1
+			npcHandler:say('Did you already retrieve the spyreport?', cid)
+			npcHandler.topic[cid] = 1
 		else
-			selfSay('Did you already talk to Gabel about the report? I think he will have further instructions for you.', cid)
+			npcHandler:say('Did you already talk to Gabel about the report? I think he will have further instructions for you.', cid)
 		end
 
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
-			if getPlayerStorageValue(cid, Storage.DjinnWar.MaridFaction.RataMari) ~= 2 or not doPlayerRemoveItem(cid, 2345, 1) then
-				selfSay({
+			if player:getStorageValue(Storage.DjinnWar.MaridFaction.RataMari) ~= 2 or not player:removeItem(2345, 1) then
+				npcHandler:say({
 					'Don\'t waste any more time. We need the spyreport of our man in Mal\'ouquah as soon as possible! ...',
 					'Also don\'t forget the password to contact our man: PIEDPIPER!'
 				}, cid)
 			else
-				selfSay({
+				npcHandler:say({
 					'You really have made it? You have the report? How come you did not get slaughtered? I must say I\'m impressed. Your race will never cease to surprise me. ...',
 					'Well, let\'s see. ...',
 					'I think I need to talk to Gabel about this. I am sure he will know what to do. Perhaps you should have a word with him, too.'
 				}, cid)
-				setPlayerStorageValue(cid, Storage.DjinnWar.MaridFaction.Mission02, 2)
+				player:setStorageValue(Storage.DjinnWar.MaridFaction.Mission02, 2)
 			end
 
 		elseif msgcontains(msg, 'no') then
-			selfSay({
+			npcHandler:say({
 				'Don\'t waste any more time. We need the spyreport of our man in Mal\'ouquah as soon as possible! ...',
 				'Also don\'t forget the password to contact our man: PIEDPIPER!'
 			}, cid)

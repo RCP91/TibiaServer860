@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,22 +12,22 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 	if msgcontains(msg, "key") then
-		selfSay("Do you want to buy a key for 50 gold?", cid)
-		talkState[talkUser] = 1
+		npcHandler:say("Do you want to buy a key for 50 gold?", cid)
+		npcHandler.topic[cid] = 1
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			
-			if getPlayerBalance(cid) + getPlayerBalance(cid) >= 50 then
-				selfSay("Here it is.", cid)
-				local key = doPlayerAddItem(cid, 2088, 1)
+		if npcHandler.topic[cid] == 1 then
+			local player = Player(cid)
+			if player:getMoney() + player:getBankBalance() >= 50 then
+				npcHandler:say("Here it is.", cid)
+				local key = player:addItem(2088, 1)
 				if key then
 					key:setActionId(3033)
 				end
-				doPlayerRemoveMoney(cid, 50)
+				player:removeMoneyNpc(50)
 			else
-				selfSay("You don't have enough money.", cid)
+				npcHandler:say("You don't have enough money.", cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

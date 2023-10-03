@@ -1,35 +1,26 @@
--- Advanced NPC System (Created by Jiddo),
--- Modified by TheForgottenServer Team.
+-- Advanced NPC System by Jiddo
 
-if(KeywordHandler == nil) then
-	BEHAVIOR_SIMPLE = 1 -- Does not support nested keywords. If you choose this setting you must use a variable such as 'talkState' to keep track of how to handle keywords.
-	BEHAVIOR_NORMAL = 2 -- Default behvaior. If a sub-keyword is not found, then the root is searched, not the parent hierarchy,
-	BEHAVIOR_NORMAL_EXTENDED = 3 -- Same as BEHAVIOR_NORMAL but it also searches through the last node's parent.
-	BEHAVIOR_COMPLEX = 4 -- Extended behavior. It a sub-keyword is not found, then the entire keyword hierarchy is searched upwards until root is reached.
-
-	-- BEHAVIOR_NORMAL_EXTENDED is recommended as it (probably) mimics the behavior of real Tibia's NPCs the most.
-	--		However, you are strongly recommended to test some (or all) other settings as well as it might suit you better.
-	--		Also note that not much difference can be seen with the different settings unless you have a npc with a quite heavy
-	--		nestled keyword hierarchy.
-	-- Note: BEHAVIOR_SIMPLE should not be used unless you have any special reason to do so as it forces you to keep track of talkStates etc.
-	--		This was pretty much the method used in the 2.0x versions of this system. It is here mainly for compability issues.
-	KEYWORD_BEHAVIOR = BEHAVIOR_NORMAL_EXTENDED
+if KeywordHandler == nil then
 
 	KeywordNode = {
 		keywords = nil,
 		callback = nil,
 		parameters = nil,
 		children = nil,
-		parent = nil
+		parent = nil,
+		condition = nil,
+		action = nil
 	}
 
 	-- Created a new keywordnode with the given keywords, callback function and parameters and without any childNodes.
-	function KeywordNode:new(keys, func, param)
+	function KeywordNode:new(keys, func, param, condition, action)
 		local obj = {}
 		obj.keywords = keys
 		obj.callback = func
 		obj.parameters = param
 		obj.children = {}
+		obj.condition = condition
+		obj.action = action
 		setmetatable(obj, self)
 		self.__index = self
 		return obj
@@ -40,22 +31,52 @@ if(KeywordHandler == nil) then
 		return (self.callback == nil or self.callback(cid, message, self.keywords, self.parameters, self))
 	end
 
-	-- Returns true if message contains all patterns/strings found in keywords.
-	function KeywordNode:checkMessage(message)
-		local ret = true
-		if(self.keywords.callback ~= nil) then
-			return self.keywords.callback(self.keywords, message)
+	function KeywordNode:processAction(cid)
+		if not self.action then
+			return
 		end
-		for i,v in ipairs(self.keywords) do
-			if(type(v) == 'string') then
-				local a, b = string.find(message, v)
-				if(a == nil or b == nil) then
-					ret = false
-					break
+
+		local player = Player(cid)
+		if not player then
+			return
+		end
+
+		self.action(player, self.parameters.npcHandler)
+	end
+
+	-- Returns true if message contains all patterns/strings found in keywords.
+	function KeywordNode:checkMessage(cid, message)
+		if self.keywords.callback ~= nil then
+			local ret, data = self.keywords.callback(self.keywords, message)
+			if not ret then
+				return false
+			end
+
+			if self.condition and not self.condition(Player(cid), data) then
+				return false
+			end
+			return true
+		end
+
+		local data = {}
+		local last = 0
+		for _, keyword in ipairs(self.keywords) do
+			if type(keyword) == 'string' then
+				local a, b = string.find(message, keyword)
+				if a == nil or b == nil or a < last then
+					return false
 				end
+				if keyword:sub(1, 1) == '%' then
+					data[#data + 1] = tonumber(message:sub(a, b)) or nil
+				end
+				last = a
 			end
 		end
-		return ret
+
+		if self.condition and not self.condition(Player(cid), data) then
+			return false
+		end
+		return true
 	end
 
 	-- Returns the parent of this node or nil if no such node exists.
@@ -74,14 +95,28 @@ if(KeywordHandler == nil) then
 	end
 
 	-- Adds a childNode to this node. Creates the childNode based on the parameters (k = keywords, c = callback, p = parameters)
-	function KeywordNode:addChildKeyword(keywords, callback, parameters)
-		local new = KeywordNode:new(keywords, callback, parameters)
+	function KeywordNode:addChildKeyword(keywords, callback, parameters, condition, action)
+		local new = KeywordNode:new(keywords, callback, parameters, condition, action)
+		return self:addChildKeywordNode(new)
+	end
+
+	function KeywordNode:addAliasKeyword(keywords)
+		if #self.children == 0 then
+			print('KeywordNode:addAliasKeyword no previous node found')
+			return false
+		end
+
+		local prevNode = self.children[#self.children]
+		local new = KeywordNode:new(keywords, prevNode.callback, prevNode.parameters, prevNode.condition, prevNode.action)
+		for i = 1, #prevNode.children do
+			new:addChildKeywordNode(prevNode.children[i])
+		end
 		return self:addChildKeywordNode(new)
 	end
 
 	-- Adds a pre-created childNode to this node. Should be used for example if several nodes should have a common child.
 	function KeywordNode:addChildKeywordNode(childNode)
-		table.insert(self.children, childNode)
+		self.children[#self.children + 1] = childNode
 		childNode.parent = self
 		return childNode
 	end
@@ -95,63 +130,46 @@ if(KeywordHandler == nil) then
 	function KeywordHandler:new()
 		local obj = {}
 		obj.root = KeywordNode:new(nil, nil, nil)
+		obj.lastNode = {}
 		setmetatable(obj, self)
 		self.__index = self
 		return obj
 	end
 
 	-- Resets the lastNode field, and this resetting the current position in the node hierarchy to root.
-	function KeywordHandler:reset()
-		self.lastNode = nil
+	function KeywordHandler:reset(cid)
+		if self.lastNode[cid] then
+			self.lastNode[cid] = nil
+		end
 	end
 
 	-- Makes sure the correct childNode of lastNode gets a chance to process the message.
-	--	The behavior of this function depends much on the KEYWORD_BEHAVIOR.
 	function KeywordHandler:processMessage(cid, message)
-		local node = self:getLastNode()
-		if(node == nil) then
+		local node = self:getLastNode(cid)
+		if node == nil then
 			error('No root node found.')
 			return false
 		end
-		if(KEYWORD_BEHAVIOR == BEHAVIOR_SIMPLE) then
-			local ret = self:processNodeMessage(node, cid, message)
-			if(ret) then
-				return true
-			end
-		elseif(KEYWORD_BEHAVIOR == BEHAVIOR_NORMAL or KEYWORD_BEHAVIOR == BEHAVIOR_NORMAL_EXTENDED) then
-			local ret = self:processNodeMessage(node, cid, message)
-			if(ret) then
-				return true
-			end
-			if(KEYWORD_BEHAVIOR == BEHAVIOR_NORMAL_EXTENDED and node:getParent()) then
-				node = node:getParent() -- Search through the parent.
-				local ret = self:processNodeMessage(node, cid, message)
-				if(ret) then
-					return true
-				end
-			end
-			if(node ~= self:getRoot()) then
-				node = self:getRoot() -- Search through the root.
-				local ret = self:processNodeMessage(node, cid, message)
-				if(ret) then
-					return true
-				end
-			end
-		elseif(KEYWORD_BEHAVIOR == BEHAVIOR_COMPLEX) then
-			while true do
-				local ret = self:processNodeMessage(node, cid, message)
-				if(ret) then
-					return true
-				end
 
-				if(node:getParent() ~= nil) then
-					node = node:getParent() -- Move one step upwards in the hierarchy.
-				else
-					break
-				end
+		local ret = self:processNodeMessage(node, cid, message)
+		if ret then
+			return true
+		end
+
+		if node:getParent() then
+			node = node:getParent() -- Search through the parent.
+			local ret = self:processNodeMessage(node, cid, message)
+			if ret then
+				return true
 			end
-		else
-			error('Unknown keyword behavior.')
+		end
+
+		if node ~= self:getRoot() then
+			node = self:getRoot() -- Search through the root.
+			local ret = self:processNodeMessage(node, cid, message)
+			if ret then
+				return true
+			end
 		end
 		return false
 	end
@@ -159,17 +177,17 @@ if(KeywordHandler == nil) then
 	-- Tries to process the given message using the node parameter's children and calls the node's callback function if found.
 	--	Returns the childNode which processed the message or nil if no such node was found.
 	function KeywordHandler:processNodeMessage(node, cid, message)
-		local messageLower = string.lower(message)
-		for i, childNode in pairs(node.children) do
-			if(childNode:checkMessage(messageLower)) then
-				local oldLast = self.lastNode
-				self.lastNode = childNode
+		local messageLower = message:lower()
+		for _, childNode in pairs(node.children) do
+			if childNode:checkMessage(cid, messageLower) then
+				local oldLast = self.lastNode[cid]
+				self.lastNode[cid] = childNode
 				childNode.parent = node -- Make sure node is the parent of childNode (as one node can be parent to several nodes).
-				if(childNode:processMessage(cid, message)) then
+				if childNode:processMessage(cid, message) then
+					childNode:processAction(cid)
 					return true
-				else
-					self.lastNode = oldLast
 				end
+				self.lastNode[cid] = oldLast
 			end
 		end
 		return false
@@ -181,33 +199,32 @@ if(KeywordHandler == nil) then
 	end
 
 	-- Returns the last processed keywordnode or root if no last node is found.
-	function KeywordHandler:getLastNode()
-		if(KEYWORD_BEHAVIOR == BEHAVIOR_SIMPLE) then
-			return self:getRoot()
-		else
-			return self.lastNode or self:getRoot()
-		end
+	function KeywordHandler:getLastNode(cid)
+		return self.lastNode[cid] or self:getRoot()
 	end
 
 	-- Adds a new keyword to the root keywordnode. Returns the new node.
-	function KeywordHandler:addKeyword(keys, callback, parameters)
-		return self:getRoot():addChildKeyword(keys, callback, parameters)
+	function KeywordHandler:addKeyword(keys, callback, parameters, condition, action)
+		return self:getRoot():addChildKeyword(keys, callback, parameters, condition, action)
+	end
+
+	-- Adds an alias keyword for the previous node.
+	function KeywordHandler:addAliasKeyword(keys)
+		return self:getRoot():addAliasKeyword(keys)
 	end
 
 	-- Moves the current position in the keyword hierarchy count steps upwards. Count defalut value = 1.
 	--	This function MIGHT not work properly yet. Use at your own risk.
-	function KeywordHandler:moveUp(count)
-		local steps = count
-		if(steps == nil) then
+	function KeywordHandler:moveUp(cid, steps)
+		if steps == nil or type(steps) ~= "number" then
 			steps = 1
 		end
-		for i = 1, steps,1 do
-			if(self.lastNode == nil) then
-				break
-			else
-				self.lastNode = self.lastNode:getParent() or self:getRoot()
+		for i = 1, steps do
+			if self.lastNode[cid] == nil then
+				return nil
 			end
+			self.lastNode[cid] = self.lastNode[cid]:getParent() or self:getRoot()
 		end
-		return self.lastNode
+		return self.lastNode[cid]
 	end
 end

@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,7 +12,7 @@ local voices = { {text = 'abc'} }
 local quantidade = {}
 
 local function greetCallback(cid)
-	
+	local player = Player(cid)
 	if player then
 		npcHandler:setMessage(MESSAGE_GREET, {"Greetings. A warning straight ahead: I don't like loiterin'. If you're not here to {help} us, you're here to waste my time. Which I consider loiterin'. Now, try and prove your {worth} to our alliance. ... ",
 											  "I have sealed some of the areas far too dangerous for anyone to enter. If you can prove you're capable, you'll get an opportunity to help destroy the weird machines, pumping lava into the caves leading to the most dangerous enemies."})
@@ -39,170 +38,170 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	talkState[talkUser] = playerTopic[cid]
-	
+	npcHandler.topic[cid] = playerTopic[cid]
+	local player = Player(cid)
 	npc = Npc(cid)
 
 	local tempo = 20*60*60
 
 	-- missão subterraneans
-	if msgcontains(msg, "subterraneans") and talkState[talkUser] == 1 then
-		if getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Subterranean) == 2 and getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.timeTaskSubterranean) > 0 then
-			selfSay({"I don't need your help for now. Come back later."}, cid)
+	if msgcontains(msg, "subterraneans") and npcHandler.topic[cid] == 1 then
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) == 2 and player:getStorageValue(Storage.DangerousDepths.Dwarves.timeTaskSubterranean) > 0 then
+			npcHandler:say({"I don't need your help for now. Come back later."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
-		if getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Subterranean) == 2 and getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.timeTaskSubterranean) <= 0 then
-			selfSay({"Vermin. Everywhere. We get a lot of strange four-legged crawlers and worms down here lately. It's getting out of hand and... well, I need a real killer for this. ",
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) == 2 and player:getStorageValue(Storage.DangerousDepths.Dwarves.timeTaskSubterranean) <= 0 then
+			npcHandler:say({"Vermin. Everywhere. We get a lot of strange four-legged crawlers and worms down here lately. It's getting out of hand and... well, I need a real killer for this. ",
 							"Prepared to get rid of some seriously foul creepers for us?"}, cid)
 			playerTopic[cid] = 2
-			talkState[talkUser] = 2
+			npcHandler.topic[cid] = 2
 		end
-		if getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Subterranean) < 1 then -- Não possuía a missão, agora possui!
-			selfSay({"Vermin. Everywhere. We get a lot of strange four-legged crawlers and worms down here lately. It's getting out of hand and... well, I need a real killer for this. ",
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) < 1 then -- Não possuía a missão, agora possui!
+			npcHandler:say({"Vermin. Everywhere. We get a lot of strange four-legged crawlers and worms down here lately. It's getting out of hand and... well, I need a real killer for this. ",
 							"Prepared to get rid of some seriously foul creepers for us?"}, cid)
 			playerTopic[cid] = 2
-			talkState[talkUser] = 2
-		elseif (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Subterranean) == 1) and (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Organisms) < 50) then -- Está na missão porém não terminou a task!
-			selfSay({"Come back when you have finished your job."}, cid)
+			npcHandler.topic[cid] = 2
+		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms) < 50) then -- Está na missão porém não terminou a task!
+			npcHandler:say({"Come back when you have finished your job."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
-		elseif (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Subterranean) == 1) and (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Organisms) >= 50) then
-			selfSay({"I'l say I'm blown away but a Klom Stonecutter is not that easily impressed. Still, your got your hands dirt for us and I appreciate that."}, cid)
+			npcHandler.topic[cid] = 1
+		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Subterranean) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.Organisms) >= 50) then
+			npcHandler:say({"I'l say I'm blown away but a Klom Stonecutter is not that easily impressed. Still, your got your hands dirt for us and I appreciate that."}, cid)
 			-- Entregando surprise jar + 1 ponto de missão!
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.timeTaskSubterranean, os.time() + tempo)
-			doPlayerAddItem(cid, 32014, 1)
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status, getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status) + 1)
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Subterranean, 2)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.timeTaskSubterranean, os.time() + tempo)
+			player:addItem(32014, 1)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Status, player:getStorageValue(Storage.DangerousDepths.Dwarves.Status) + 1)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Subterranean, 2)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
-	elseif talkState[talkUser] == 2 and msgcontains(msg, "yes") then
-		selfSay({"Alright, good. Those things are strolling about and I ain't gonna have that. If it moves more than two legs, destroy it. If it moves legs and tentacles, destroy it again."}, cid)
-		if getPlayerStorageValue(cid, Storage.DangerousDepths.Questline) < 1 then
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Questline, 1)
+	elseif npcHandler.topic[cid] == 2 and msgcontains(msg, "yes") then
+		npcHandler:say({"Alright, good. Those things are strolling about and I ain't gonna have that. If it moves more than two legs, destroy it. If it moves legs and tentacles, destroy it again."}, cid)
+		if player:getStorageValue(Storage.DangerousDepths.Questline) < 1 then
+			player:setStorageValue(Storage.DangerousDepths.Questline, 1)
 		end
-		setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Subterranean, 1)
-		setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Organisms, 0) -- Garantindo que a task não inicie com -1
+		player:setStorageValue(Storage.DangerousDepths.Dwarves.Subterranean, 1)
+		player:setStorageValue(Storage.DangerousDepths.Dwarves.Organisms, 0) -- Garantindo que a task não inicie com -1
 		playerTopic[cid] = 1
-		talkState[talkUser] = 1
+		npcHandler.topic[cid] = 1
 	end
 
 	-- missão home
-	if msgcontains(msg, "home") and talkState[talkUser] == 1 then
-		if getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home) == 2 and getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.timeTaskHome) > 0 then
-			selfSay({"I don't need your help for now. Come back later."}, cid)
+	if msgcontains(msg, "home") and npcHandler.topic[cid] == 1 then
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 2 and player:getStorageValue(Storage.DangerousDepths.Dwarves.timeTaskHome) > 0 then
+			npcHandler:say({"I don't need your help for now. Come back later."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
-		if getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home) == 2 and getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.timeTaskHome) <= 0 then
-			selfSay({"We need to find a way to drive off the exiles from these caves. Countless makeshift homes are popping up at every corner. Destroy them and get the Lost out of hiding to eliminate them. ... ",
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 2 and player:getStorageValue(Storage.DangerousDepths.Dwarves.timeTaskHome) <= 0 then
+			npcHandler:say({"We need to find a way to drive off the exiles from these caves. Countless makeshift homes are popping up at every corner. Destroy them and get the Lost out of hiding to eliminate them. ... ",
 							"If you can capture a few of them, you'll receive a bonus. Just bring 'em to the border of our outpost and we will take care of the rest. ... ",
 							"Are you ready for that? "}, cid)
 			playerTopic[cid] = 22
-			talkState[talkUser] = 22
+			npcHandler.topic[cid] = 22
 		end
-		if getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home) < 1 then -- Não possuía a missão, agora possui!
-			selfSay({"We need to find a way to drive off the exiles from these caves. Countless makeshift homes are popping up at every corner. Destroy them and get the Lost out of hiding to eliminate them. ... ",
+		if player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) < 1 then -- Não possuía a missão, agora possui!
+			npcHandler:say({"We need to find a way to drive off the exiles from these caves. Countless makeshift homes are popping up at every corner. Destroy them and get the Lost out of hiding to eliminate them. ... ",
 							"If you can capture a few of them, you'll receive a bonus. Just bring 'em to the border of our outpost and we will take care of the rest. ... ",
 							"Are you ready for that? "}, cid)
 			playerTopic[cid] = 22
-			talkState[talkUser] = 22
-		elseif (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home) == 1) and (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.LostExiles) < 20 and getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Prisoners) < 3) then -- Está na missão porém não terminou nenhuma das tasks!
-			selfSay({"Come back when you have finished your job."}, cid)
+			npcHandler.topic[cid] = 22
+		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles) < 20 and player:getStorageValue(Storage.DangerousDepths.Dwarves.Prisoners) < 3) then -- Está na missão porém não terminou nenhuma das tasks!
+			npcHandler:say({"Come back when you have finished your job."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
-		elseif (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home) == 1) and (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.LostExiles) >= 20 and getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Prisoners) < 3) then
-			selfSay({"So you did it. Well, that won't be the last of 'em but this sure helps our situation down here. Return to me later if you want to help me again!"}, cid) -- Caso não tenha feito o task bônus
+			npcHandler.topic[cid] = 1
+		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles) >= 20 and player:getStorageValue(Storage.DangerousDepths.Dwarves.Prisoners) < 3) then
+			npcHandler:say({"So you did it. Well, that won't be the last of 'em but this sure helps our situation down here. Return to me later if you want to help me again!"}, cid) -- Caso não tenha feito o task bônus
 			-- Entregando surprise jar + 1 ponto de missão!
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.timeTaskHome, os.time() + tempo)
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home, 2)
-			doPlayerAddItem(cid, 32014, 1)
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status, getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status) + 1)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.timeTaskHome, os.time() + tempo)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Home, 2)
+			player:addItem(32014, 1)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Status, player:getStorageValue(Storage.DangerousDepths.Dwarves.Status) + 1)
 			playerTopic[cid] = 1
-		talkState[talkUser] = 1
-		elseif (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home) == 1) and (getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.LostExiles) >= 20 and getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Prisoners) >= 3) then
-			selfSay({"So you did it. And you even made prisoners, the bonus is yours! Well, that won't be the last of 'em but this sure helps our situation down here. Return to me later if you want to help me again!"}, cid) -- Se tiver feito ambas
+		npcHandler.topic[cid] = 1
+		elseif (player:getStorageValue(Storage.DangerousDepths.Dwarves.Home) == 1) and (player:getStorageValue(Storage.DangerousDepths.Dwarves.LostExiles) >= 20 and player:getStorageValue(Storage.DangerousDepths.Dwarves.Prisoners) >= 3) then
+			npcHandler:say({"So you did it. And you even made prisoners, the bonus is yours! Well, that won't be the last of 'em but this sure helps our situation down here. Return to me later if you want to help me again!"}, cid) -- Se tiver feito ambas
 			-- Entregando 2 surprise jars + 2 pontos de missão!
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.timeTaskHome, os.time() + tempo)
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home, 2)
-			doPlayerAddItem(cid, 32014, 2) -- +1 item pela task bônus!
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status, getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status) + 2) -- +1 ponto pela task bônus!
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.timeTaskHome, os.time() + tempo)
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Home, 2)
+			player:addItem(32014, 2) -- +1 item pela task bônus!
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Status, player:getStorageValue(Storage.DangerousDepths.Dwarves.Status) + 2) -- +1 ponto pela task bônus!
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
-	elseif talkState[talkUser] == 22 and msgcontains(msg, "yes") then
-		selfSay({"Very well, now try to find some of their makeshift homes and tear'em down. There's bound to be some stragglers you can 'persuade' to surrender, eliminate any resistance. Get back here when you're done."}, cid)
-			if getPlayerStorageValue(cid, Storage.DangerousDepths.Questline) < 1 then
-				setPlayerStorageValue(cid, Storage.DangerousDepths.Questline, 1)
+	elseif npcHandler.topic[cid] == 22 and msgcontains(msg, "yes") then
+		npcHandler:say({"Very well, now try to find some of their makeshift homes and tear'em down. There's bound to be some stragglers you can 'persuade' to surrender, eliminate any resistance. Get back here when you're done."}, cid)
+			if player:getStorageValue(Storage.DangerousDepths.Questline) < 1 then
+				player:setStorageValue(Storage.DangerousDepths.Questline, 1)
 			end
-		setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Home, 1)
-		setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.LostExiles, 0) -- Garantindo que a task não inicie com -1
-		setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Prisoners, 0) -- Garantindo que a task não inicie com -1
+		player:setStorageValue(Storage.DangerousDepths.Dwarves.Home, 1)
+		player:setStorageValue(Storage.DangerousDepths.Dwarves.LostExiles, 0) -- Garantindo que a task não inicie com -1
+		player:setStorageValue(Storage.DangerousDepths.Dwarves.Prisoners, 0) -- Garantindo que a task não inicie com -1
 		playerTopic[cid] = 1
-		talkState[talkUser] = 1
+		npcHandler.topic[cid] = 1
 	end
 
 	local plural = ""
 	if msgcontains(msg, "suspicious devices") or msgcontains(msg, "suspicious device") then
-		selfSay({"If you bring me any suspicious devices on creatures you slay down here, I'll make it worth your while by telling the others of your generosity. How many do you want to offer? "}, cid)
+		npcHandler:say({"If you bring me any suspicious devices on creatures you slay down here, I'll make it worth your while by telling the others of your generosity. How many do you want to offer? "}, cid)
 		playerTopic[cid] = 55
-		talkState[talkUser] = 55
-	elseif talkState[talkUser] == 55 then
+		npcHandler.topic[cid] = 55
+	elseif npcHandler.topic[cid] == 55 then
 		quantidade[cid] = tonumber(msg)
 		if quantidade[cid] then
 			if quantidade[cid] > 1 then
 				plural = plural .. "s"
 			end
-			selfSay({"You want to offer " .. quantidade[cid] .. " suspicious device" ..plural.. ". Which leader shall have it, (Gnomus) of the {gnomes}, (Klom Stonecutter) of the {dwarves} or the {scouts} (Lardoc Bashsmite)?"}, cid)
+			npcHandler:say({"You want to offer " .. quantidade[cid] .. " suspicious device" ..plural.. ". Which leader shall have it, (Gnomus) of the {gnomes}, (Klom Stonecutter) of the {dwarves} or the {scouts} (Lardoc Bashsmite)?"}, cid)
 			playerTopic[cid] = 56
-			talkState[talkUser] = 56
+			npcHandler.topic[cid] = 56
 		else
-			selfSay({"Don't waste my time."}, cid)
+			npcHandler:say({"Don't waste my time."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
-	elseif msgcontains(msg, "gnomes") and talkState[talkUser] == 56 then
-		if getPlayerItemCount(cid, 30888) >= quantidade[cid] then
-			selfSay({"Done."}, cid)
+	elseif msgcontains(msg, "gnomes") and npcHandler.topic[cid] == 56 then
+		if player:getItemCount(30888) >= quantidade[cid] then
+			npcHandler:say({"Done."}, cid)
 			if quantidade[cid] > 1 then
 				plural = plural .. "s"
 			end
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You earned ".. quantidade[cid] .." point"..plural.." on the gnomes mission.")
-			doPlayerRemoveItem(cid, 30888, quantidade[cid])
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Gnomes.Status, getPlayerStorageValue(cid, Storage.DangerousDepths.Gnomes.Status) + quantidade[cid])
+			player:removeItem(30888, quantidade[cid])
+			player:setStorageValue(Storage.DangerousDepths.Gnomes.Status, player:getStorageValue(Storage.DangerousDepths.Gnomes.Status) + quantidade[cid])
 		else
-			selfSay({"You don't have enough suspicious devices."}, cid)
+			npcHandler:say({"You don't have enough suspicious devices."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
-	elseif msgcontains(msg, "dwarves") and talkState[talkUser] == 56 then
-		if getPlayerItemCount(cid, 30888) >= quantidade[cid] then
-			selfSay({"Done."}, cid)
+	elseif msgcontains(msg, "dwarves") and npcHandler.topic[cid] == 56 then
+		if player:getItemCount(30888) >= quantidade[cid] then
+			npcHandler:say({"Done."}, cid)
 			if quantidade[cid] > 1 then
 				plural = plural .. "s"
 			end
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You earned ".. quantidade[cid] .." point"..plural.." on the dwarves mission.")
-			doPlayerRemoveItem(cid, 30888, quantidade[cid])
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status, getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status) + quantidade[cid])
+			player:removeItem(30888, quantidade[cid])
+			player:setStorageValue(Storage.DangerousDepths.Dwarves.Status, player:getStorageValue(Storage.DangerousDepths.Dwarves.Status) + quantidade[cid])
 		else
-			selfSay({"You don't have enough suspicious devices."}, cid)
+			npcHandler:say({"You don't have enough suspicious devices."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
-	elseif msgcontains(msg, "scouts") and talkState[talkUser] == 56 then
-		if getPlayerItemCount(cid, 30888) >= quantidade[cid] then
-			selfSay({"Done."}, cid)
+	elseif msgcontains(msg, "scouts") and npcHandler.topic[cid] == 56 then
+		if player:getItemCount(30888) >= quantidade[cid] then
+			npcHandler:say({"Done."}, cid)
 			if quantidade[cid] > 1 then
 				plural = plural .. "s"
 			end
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You earned ".. quantidade[cid] .." point"..plural.." on the scouts mission.")
-			doPlayerRemoveItem(cid, 30888, quantidade[cid])
-			setPlayerStorageValue(cid, Storage.DangerousDepths.Scouts.Status, getPlayerStorageValue(cid, Storage.DangerousDepths.Scouts.Status) + quantidade[cid])
+			player:removeItem(30888, quantidade[cid])
+			player:setStorageValue(Storage.DangerousDepths.Scouts.Status, player:getStorageValue(Storage.DangerousDepths.Scouts.Status) + quantidade[cid])
 		else
-			selfSay({"You don't have enough suspicious devices."}, cid)
+			npcHandler:say({"You don't have enough suspicious devices."}, cid)
 			playerTopic[cid] = 1
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		end
 	end
 
@@ -210,15 +209,15 @@ local function creatureSayCallback(cid, type, msg)
 
  	-- Início checagem de pontos de tasks!!
 	if msgcontains(msg, "status") then
-		selfSay({"So you want to know what we all think about your deeds? What leader\'s opinion are you interested in, the {gnomes} (Gnomus), the {dwarves} (Klom Stonecutter) or the {scouts} (Lardoc Bashsmite)?"}, cid)
+		npcHandler:say({"So you want to know what we all think about your deeds? What leader\'s opinion are you interested in, the {gnomes} (Gnomus), the {dwarves} (Klom Stonecutter) or the {scouts} (Lardoc Bashsmite)?"}, cid)
 		playerTopic[cid] = 5
-		talkState[talkUser] = 5
-	elseif msgcontains(msg, "gnomes") and talkState[talkUser] == 5 then
-		selfSay({'The gnomes are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(getPlayerStorageValue(cid, Storage.DangerousDepths.Gnomes.Status), 0) .. '/10)'}, cid)
-	elseif msgcontains(msg, "dwarves") and talkState[talkUser] == 5 then
-		selfSay({'The dwarves are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(getPlayerStorageValue(cid, Storage.DangerousDepths.Dwarves.Status), 0) .. '/10)'}, cid)
-	elseif msgcontains(msg, "scouts") and talkState[talkUser] == 5 then
-		selfSay({'The scouts are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(getPlayerStorageValue(cid, Storage.DangerousDepths.Scouts.Status), 0) .. '/10)'}, cid)
+		npcHandler.topic[cid] = 5
+	elseif msgcontains(msg, "gnomes") and npcHandler.topic[cid] == 5 then
+		npcHandler:say({'The gnomes are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(player:getStorageValue(Storage.DangerousDepths.Gnomes.Status), 0) .. '/10)'}, cid)
+	elseif msgcontains(msg, "dwarves") and npcHandler.topic[cid] == 5 then
+		npcHandler:say({'The dwarves are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(player:getStorageValue(Storage.DangerousDepths.Dwarves.Status), 0) .. '/10)'}, cid)
+	elseif msgcontains(msg, "scouts") and npcHandler.topic[cid] == 5 then
+		npcHandler:say({'The scouts are still in need of your help, member of Bigfoot\'s Brigade. Prove your worth by answering their calls! (' .. math.max(player:getStorageValue(Storage.DangerousDepths.Scouts.Status), 0) .. '/10)'}, cid)
 	end
 	return true
 end

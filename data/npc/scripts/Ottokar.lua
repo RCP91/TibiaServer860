@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)				npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)			npcHandler:onCreatureDisappear(cid)			end
@@ -12,24 +11,24 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if msgcontains(msg, 'belongings of deceasead') or msgcontains(msg, 'medicine') then
-		if getPlayerItemCount(cid, 13506) > 0 then
-			selfSay('Did you bring me the medicine pouch?', cid)
-			talkState[talkUser] = 1
+		if player:getItemCount(13506) > 0 then
+			npcHandler:say('Did you bring me the medicine pouch?', cid)
+			npcHandler.topic[cid] = 1
 		else
-			selfSay('I need a {medicine pouch}, to give you the {belongings of deceased}. Come back when you have them.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('I need a {medicine pouch}, to give you the {belongings of deceased}. Come back when you have them.', cid)
+			npcHandler.topic[cid] = 0
 		end
-	elseif msgcontains(msg, 'yes') and talkState[talkUser] == 1 then
-		if doPlayerRemoveItem(cid, 13506, 1) then
-			doPlayerAddItem(cid, 13670, 1)
-			--player:addAchievementProgress('Doctor! Doctor!', 100)
-			selfSay('Here you are', cid)
+	elseif msgcontains(msg, 'yes') and npcHandler.topic[cid] == 1 then
+		if player:removeItem(13506, 1) then
+			player:addItem(13670, 1)
+			player:addAchievementProgress('Doctor! Doctor!', 100)
+			npcHandler:say('Here you are', cid)
 		else
-			selfSay('You do not have the required items.', cid)
+			npcHandler:say('You do not have the required items.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

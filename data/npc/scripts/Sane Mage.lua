@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,7 +13,7 @@ local voices = {
 	{ text = 'Slime! Everywhere! SLIME TIME! Or... not?' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = "I AM THE... I mean... I am - what is a mage, if he is not {mad}? If he isn't... raging? I am... I am just sane. A sane mage."})
 keywordHandler:addKeyword({'mad'}, StdModule.say, {npcHandler = npcHandler, text = "I am not mad... I- YES, that's the whole problem, isn't it? What's going on, what's happening to me? I don't even know anymore."})
@@ -28,7 +27,7 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 	if msgcontains(msg, "job") then
-		selfSay({
+		npcHandler:say({
 			'Well I conduct experiments. Viscosity, consistency and overall elegance of {SLIME}. Fungus, I am currently working on a formula for the perfect {slime fungus}.',
 			'Not... right now, though. I am currently... on {vacation}. {Vacation}, yes. All my experiments went wrong. WRONG. Everything. I tried everything but still.',
 			'It\'s always the same, the {fungus} grows, I am EXCITED and... well... WHAAAAAM! It just EXPLODES! It spreads, covers everything.',
@@ -37,7 +36,7 @@ local function creatureSayCallback(cid, type, msg)
 			'All they do is ruining my experiments, my perfect testing conditions. It makes me just FURIOUS! And boy do I get FURIOUS, I tell you.'
 		}, cid)
 	elseif isInArray({"slime", "fungus"}, msg) then
-		selfSay({
+		npcHandler:say({
 			'My experiments, my work - not at the moment, however. I\'m on vacation. Trying to get away from it... it\'s all not right. Why... why am I doing this anyway.',
 			'NO! I should not talk like that, I just... I shouldn\'t. That\'s not even ME. I... I used to be MAD. A MAD SCIENTIST! THE BEST! THE... the... WORST! A SUPERLATIVE! Ah, nevermind.'
 		}, cid)

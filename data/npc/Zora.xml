@@ -7,7 +7,9 @@
 		<parameter key="shop_buyable" value="
 			fishing rod, 2580, 150;
 			green backpack, 1998, 20;
-			green bag, 1991, 4;			
+			green bag, 1991, 4;
+			hand auger, 36169, 25;
+			net, 36324, 50;
 			pick, 2553, 50;
 			rope, 2120, 50;
 			scythe, 2550, 50;

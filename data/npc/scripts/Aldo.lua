@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,28 +11,28 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if isInArray({"soft boots", "repair", "soft", "boots"}, msg) then
-		selfSay("Do you want to repair your worn soft boots for 10000 gold coins?", cid)
-		talkState[talkUser] = 1
-	elseif msgcontains(msg, 'yes') and talkState[talkUser] == 1 then
-		talkState[talkUser] = 0
-		if getPlayerItemCount(cid, 10021) == 0 then
-			selfSay("Sorry, you don't have the item.", cid)
+		npcHandler:say("Do you want to repair your worn soft boots for 10000 gold coins?", cid)
+		npcHandler.topic[cid] = 1
+	elseif msgcontains(msg, 'yes') and npcHandler.topic[cid] == 1 then
+		npcHandler.topic[cid] = 0
+		if player:getItemCount(10021) == 0 then
+			npcHandler:say("Sorry, you don't have the item.", cid)
 			return true
 		end
 
-		if not doPlayerRemoveMoney(cid, 10000) then
-			selfSay("Sorry, you don't have enough gold.", cid)
+		if not player:removeMoneyNpc(10000) then
+			npcHandler:say("Sorry, you don't have enough gold.", cid)
 			return true
 		end
 
-		doPlayerRemoveItem(cid, 10021, 1)
-		doPlayerAddItem(cid, 6132, 1)
-		selfSay("Here you are.", cid)
-	elseif msgcontains(msg, 'no') and talkState[talkUser] == 1 then
-		talkState[talkUser] = 0
-		selfSay("Ok then.", cid)
+		player:removeItem(10021, 1)
+		player:addItem(6132, 1)
+		npcHandler:say("Here you are.", cid)
+	elseif msgcontains(msg, 'no') and npcHandler.topic[cid] == 1 then
+		npcHandler.topic[cid] = 0
+		npcHandler:say("Ok then.", cid)
 
 
 	end

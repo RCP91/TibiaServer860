@@ -1,34 +1,22 @@
-local config = {
-	idleWarning = getConfigValue('idleWarningTime'),
-	idleKick = getConfigValue('idleKickTime')
+local room = {
+	x1 = 31514,
+	x2 = 31795,
+	y1 = 31900,
+	y2 = 32530,
+	z1 = 7,
+	z2 = 7
 }
 
-function onThink(cid, interval)
-	if(getTileInfo(getCreaturePosition(cid)).nologout or getCreatureNoMove(cid) or
-		getPlayerCustomFlagValue(cid, PLAYERCUSTOMFLAG_ALLOWIDLE)) then
+function onThink(player, interval)
+	local target = player:getTarget()
+	
+	if (player:getIp() > 0) then
 		return true
-	end
-
-	local idleTime = getPlayerIdleTime(cid) + interval
-	doPlayerSetIdleTime(cid, idleTime)
-	if(config.idleKick > 0 and idleTime > config.idleKick) then
-		doRemoveCreature(cid)
-	elseif(config.idleWarning > 0 and idleTime == config.idleWarning) then
-		local message = "You have been idle for " .. math.ceil(config.idleWarning / 60000) .. " minutes"
-		if(config.idleKick > 0) then
-			message = message .. ", you will be disconnected in "
-			local diff = math.ceil((config.idleWarning - config.idleKick) / 60000)
-			if(diff > 1) then
-				message = message .. diff .. " minutes"
-			else
-				message = message .. "one minute"
-			end
-
-			message = message .. " if you are still idle"
+	else
+		local pos = player:getPosition()
+		if ((pos.x >= room.x1 and pos.x <= room.x2) and (pos.y >= room.y1 and pos.y <= room.y2) and (pos.z >= room.z1 and pos.z <= room.z2)) then
+			doRemoveCreature(player)
 		end
-
-		doPlayerSendTextMessage(cid, MESSAGE_STATUS_WARNING, message .. ".")
 	end
-
 	return true
 end

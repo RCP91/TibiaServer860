@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,7 +13,7 @@ local voices = {
 	{ text = 'Make sure you know what you want before you bug me.' },
 	{ text = 'You, over there! Stop sniffing around my farm! Either trade with me or leave!' }
 }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Basic keywords
 keywordHandler:addKeyword({'offer'}, StdModule.say, {npcHandler = npcHandler, text = 'Haven\'t they taught you anything at school? Ask for a {trade} if you want to trade.'})
@@ -71,10 +70,10 @@ keywordHandler:addKeyword({'zirella'}, StdModule.say, {npcHandler = npcHandler, 
 -- Studded Shield Quest
 local bananaKeyword = keywordHandler:addKeyword({'banana'}, StdModule.say, {npcHandler = npcHandler, text = 'Have you found a banana for me?'})
 	bananaKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'A banana! Great. Here, take this shield, I don\'t need it anyway.', reset = true},
-			function(player) return getPlayerItemCount(cid, 2676) > 0 end,
+			function(player) return player:getItemCount(2676) > 0 end,
 			function(player)
-				doPlayerRemoveItem(cid, 2676, 1)
-				doPlayerAddItem(cid, 2526, 1)
+				player:removeItem(2676, 1)
+				player:addItem(2526, 1)
 			end
 	)
 	bananaKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Are you trying to mess with me?!', reset = true})

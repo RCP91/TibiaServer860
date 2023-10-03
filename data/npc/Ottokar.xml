@@ -9,6 +9,6 @@
 <voice text="All these troubles." interval2="100" margin="1" yell="no" />
 </voices>
 <parameters>
-		<parameter key="message_greet" value="Oh, an adventurer! i need some {medicine}." />
+		<parameter key="message_greet" value="Oh, an adventurer! Do you have {medicine}?." />
 </parameters>
 </npc>

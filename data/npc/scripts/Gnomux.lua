@@ -2,7 +2,6 @@ local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
 local talkState = {}
-local talkState = {}
 
 local spike_items = {
 	[21564] = {250, 4, SPIKE_MIDDLE_MUSHROOM_MAIN},
@@ -38,7 +37,7 @@ function creatureSayCallback(cid, type, msg)
 	local player, canBuy, shopWindow = Player(cid), false, {}
 
 	for itemid, data in pairs(spike_items) do
-		if not isInArray({-1, data[2]}, getPlayerStorageValue(cid, data[3])) then
+		if not isInArray({-1, data[2]}, player:getStorageValue(data[3])) then
 			canBuy = true
 			table.insert(shopWindow, {id = itemid, subType = 0, buy = data[1], sell = 0, name = ItemType(itemid):getName()})
 		end
@@ -47,23 +46,23 @@ function creatureSayCallback(cid, type, msg)
 	if msgcontains(msg, 'trade') then
 		if canBuy then
 			openShopWindow(cid, shopWindow, onBuy, onSell)
-			return selfSay("Here you are.", cid)
+			return npcHandler:say("Here you are.", cid)
 		else
-			return selfSay("Sorry, there's nothing for you right now.", cid)
+			return npcHandler:say("Sorry, there's nothing for you right now.", cid)
 		end
 		return true
 	end
 
 	if msgcontains(msg, 'job') then
-		selfSay("I'm responsible for resupplying foolish adventurers with equipment that they may have lost. If you're one of them, just ask me about a {trade}. ", cid)
+		npcHandler:say("I'm responsible for resupplying foolish adventurers with equipment that they may have lost. If you're one of them, just ask me about a {trade}. ", cid)
 	end
 
 	if msgcontains(msg, 'gnome') then
-		selfSay("What could I say about gnomes that anyone would not know? I mean, we're interesting if not fascinating, after all.", cid)
+		npcHandler:say("What could I say about gnomes that anyone would not know? I mean, we're interesting if not fascinating, after all.", cid)
 	end
 
 	if msgcontains(msg, 'spike') then
-		selfSay({"I came here as a crystal farmer and know the Spike all the way back to when it was a little baby crystal. I admit I feel a little fatherly pride in how big and healthy it has become.","When most other crystal experts left for new assignments, I decided to stay and help here a bit."}, cid)
+		npcHandler:say({"I came here as a crystal farmer and know the Spike all the way back to when it was a little baby crystal. I admit I feel a little fatherly pride in how big and healthy it has become.","When most other crystal experts left for new assignments, I decided to stay and help here a bit."}, cid)
 	end
 	return true
 end

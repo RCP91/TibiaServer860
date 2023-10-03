@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -15,7 +14,7 @@ local voices = {
 	{ text = 'If you want to know something about the status of this world, talk to me.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local configMarks = {
 	{mark = "depot", position = Position(32681, 31686, 7), markId = MAPMARK_LOCK, description = "Depot and Shops"},
@@ -26,21 +25,21 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if isInArray({"map", "marks"}, msg) then
-		selfSay("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", cid)
-		talkState[talkUser] = 1
-	elseif msgcontains(msg, "yes") and talkState[talkUser] == 1 then
-		selfSay("Here you go.", cid)
+		npcHandler:say("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", cid)
+		npcHandler.topic[cid] = 1
+	elseif msgcontains(msg, "yes") and npcHandler.topic[cid] == 1 then
+		npcHandler:say("Here you go.", cid)
 		local mark
 		for i = 1, #configMarks do
 			mark = configMarks[i]
 			player:addMapMark(mark.position, mark.markId, mark.description)
 		end
-		talkState[talkUser] = 0
-	elseif msgcontains(msg, "no") and talkState[talkUser] >= 1 then
-		selfSay("Well, nothing wrong about exploring the town on your own. Let me know if you need something!", cid)
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
+	elseif msgcontains(msg, "no") and npcHandler.topic[cid] >= 1 then
+		npcHandler:say("Well, nothing wrong about exploring the town on your own. Let me know if you need something!", cid)
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end
@@ -52,7 +51,7 @@ keywordHandler:addKeyword({'shops'}, StdModule.say, {npcHandler = npcHandler, te
 keywordHandler:addKeyword({'depot'}, StdModule.say, {npcHandler = npcHandler, text = 'The depot is a place where you can safely store your belongings. You are also protected against attacks there. I escort newcomers there.'})
 keywordHandler:addKeyword({'town'}, StdModule.say, {npcHandler = npcHandler, text = 'The elves have constructed Ab\'Dendriel mainly in and on trees. There is also a large underground cave system with shops, a prison and troll caves.'})
 
-npcHandler:setMessage(MESSAGE_GREET, "Hello there, |PLAYERNAME| and welcome to Ab'Dendriel! Would you like some information and a {map} guide?")
+npcHandler:setMessage(MESSAGE_GREET, "Hello there, |PLAYERNAME| and welcome to Ab'Dendriel! Would you like some information and a map guide?")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and enjoy your stay in Ab'Dendriel, |PLAYERNAME|")
 

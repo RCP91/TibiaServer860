@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,7 +12,7 @@ local voices = {
 	{ text = '78572611857643646724.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 keywordHandler:addKeyword({'death'}, StdModule.say, {npcHandler = npcHandler, text = "Yes, yes, I will kill you soon enough, now let me continue my investigation on you."})
 keywordHandler:addKeyword({'god'}, StdModule.say, {npcHandler = npcHandler, text = "They will mourn the day they abandoned us."})

@@ -2,7 +2,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,18 +13,18 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if(msgcontains(msg, "farmine")) then
-		if(getPlayerStorageValue(cid, Storage.TheNewFrontier.Questline) == 15) then
-			selfSay("I have heard only little about this mine. I am a bit absorbed in my studies. But what does this mine have to do with me?", cid)
-			talkState[talkUser] = 1
+		if(player:getStorageValue(Storage.TheNewFrontier.Questline) == 15) then
+			npcHandler:say("I have heard only little about this mine. I am a bit absorbed in my studies. But what does this mine have to do with me?", cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif(msgcontains(msg, "reason")) then
-		if(talkState[talkUser] == 1) then
-			if(getPlayerStorageValue(cid, Storage.TheNewFrontier.BribeTelas) < 1) then
-				selfSay("Well it sounds like a good idea to test my golems in some real environment. I think it is acceptable to send some of them to Farmine.", cid)
-				setPlayerStorageValue(cid, Storage.TheNewFrontier.BribeTelas, 1)
-				setPlayerStorageValue(cid, Storage.TheNewFrontier.Mission05, getPlayerStorageValue(cid, Storage.TheNewFrontier.Mission05) + 1) --Questlog, The New Frontier Quest "Mission 05: Getting Things Busy"
+		if(npcHandler.topic[cid] == 1) then
+			if(player:getStorageValue(Storage.TheNewFrontier.BribeTelas) < 1) then
+				npcHandler:say("Well it sounds like a good idea to test my golems in some real environment. I think it is acceptable to send some of them to Farmine.", cid)
+				player:setStorageValue(Storage.TheNewFrontier.BribeTelas, 1)
+				player:setStorageValue(Storage.TheNewFrontier.Mission05, player:getStorageValue(Storage.TheNewFrontier.Mission05) + 1) --Questlog, The New Frontier Quest "Mission 05: Getting Things Busy"
 			end
 		end
 	end

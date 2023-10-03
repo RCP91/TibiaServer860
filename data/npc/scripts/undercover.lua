@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 if not UNDERCOVER_CONTACTED then
 	UNDERCOVER_CONTACTED = {}
@@ -13,8 +12,8 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()							npcHandler:onThink()						end
 
 function greetCallback(cid)
-	
-	local status = getPlayerStorageValue(cid, SPIKE_LOWER_UNDERCOVER_MAIN)
+	local player = Player(cid)
+	local status = player:getStorageValue(SPIKE_LOWER_UNDERCOVER_MAIN)
 
 	if isInArray({-1, 3}, status) then
 		return false
@@ -28,10 +27,10 @@ function greetCallback(cid)
 		return false
 	end
 
-	setPlayerStorageValue(cid, SPIKE_LOWER_UNDERCOVER_MAIN, status + 1)
+	player:setStorageValue(SPIKE_LOWER_UNDERCOVER_MAIN, status + 1)
 	table.insert(UNDERCOVER_CONTACTED[player:getGuid()], Creature(getNpcCid()):getId())
 	npcHandler:releaseFocus(cid)
-	return selfSay("Pssst! Keep it down! <gives you an elaborate report on monster activity>", cid)
+	return npcHandler:say("Pssst! Keep it down! <gives you an elaborate report on monster activity>", cid)
 end
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)

@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,21 +13,21 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, 'transport') then
-		selfSay('We can bring you to Thais with one of our coaches for 125 gold. Are you interested?', cid)
-		talkState[talkUser] = 1
+		npcHandler:say('We can bring you to Thais with one of our coaches for 125 gold. Are you interested?', cid)
+		npcHandler.topic[cid] = 1
 	elseif isInArray({'rent', 'horses'}, msg) then
-		selfSay('Do you want to rent a horse for one day at a price of 500 gold?', cid)
-		talkState[talkUser] = 2
+		npcHandler:say('Do you want to rent a horse for one day at a price of 500 gold?', cid)
+		npcHandler.topic[cid] = 2
 	elseif msgcontains(msg, 'yes') then
-		
-		if talkState[talkUser] == 1 then
+		local player = Player(cid)
+		if npcHandler.topic[cid] == 1 then
 			if player:isPzLocked() then
-				selfSay('First get rid of those blood stains!', cid)
+				npcHandler:say('First get rid of those blood stains!', cid)
 				return true
 			end
 
-			if not doPlayerRemoveMoney(cid, 125) then
-				selfSay('You don\'t have enough money.', cid)
+			if not player:removeMoneyNpc(125) then
+				npcHandler:say('You don\'t have enough money.', cid)
 				return true
 			end
 
@@ -36,28 +35,28 @@ local function creatureSayCallback(cid, type, msg)
 			local destination = Position(32449, 32226, 7)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
-			selfSay('Have a nice trip!', cid)
-		elseif talkState[talkUser] == 2 then
-			if getPlayerStorageValue(cid, Storage.RentedHorseTimer) >= os.time() then
-				selfSay('You already have a horse.', cid)
+			npcHandler:say('Have a nice trip!', cid)
+		elseif npcHandler.topic[cid] == 2 then
+			if player:getStorageValue(Storage.RentedHorseTimer) >= os.time() then
+				npcHandler:say('You already have a horse.', cid)
 				return true
 			end
 
-			if not doPlayerRemoveMoney(cid, 500) then
-				selfSay('You do not have enough money to rent a horse!', cid)
+			if not player:removeMoneyNpc(500) then
+				npcHandler:say('You do not have enough money to rent a horse!', cid)
 				return true
 			end
 
 			local mountId = {22, 25, 26}
 			player:addMount(mountId[math.random(#mountId)])
-			setPlayerStorageValue(cid, Storage.RentedHorseTimer, os.time() + 86400)
-			--player:addAchievement('Natural Born Cowboy')
-			selfSay('I\'ll give you one of our experienced ones. Take care! Look out for low hanging branches.', cid)
+			player:setStorageValue(Storage.RentedHorseTimer, os.time() + 86400)
+			player:addAchievement('Natural Born Cowboy')
+			npcHandler:say('I\'ll give you one of our experienced ones. Take care! Look out for low hanging branches.', cid)
 		end
-		talkState[talkUser] = 0
-	elseif msgcontains(msg, 'no') and talkState[talkUser] > 0 then
-		selfSay('Then not.', cid)
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
+	elseif msgcontains(msg, 'no') and npcHandler.topic[cid] > 0 then
+		npcHandler:say('Then not.', cid)
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,7 +12,7 @@ local voices = {
 	{ text = 'Hail Pumin. Yes, hail.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local config = {
 	[1] = "wand",
@@ -32,50 +31,50 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	local vocationId = player:getVocation():getBase():getId()
 
 	if msgcontains(msg, "pumin") then
-		if talkState[talkUser] == 0 and getPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin) < 1 then
-			selfSay("Sure, where else. Everyone likes to meet my master, he is a great demon, isn't he? Your name is ...?", cid)
-			talkState[talkUser] = 1
-		elseif talkState[talkUser] == 3 then
-			setPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin, 1)
-			selfSay("How very interesting. I need to tell that to my master immediately. Please go to my colleagues and ask for Form 356. You will need it in order to proceed.", cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 0 and player:getStorageValue(Storage.PitsOfInferno.ThronePumin) < 1 then
+			npcHandler:say("Sure, where else. Everyone likes to meet my master, he is a great demon, isn't he? Your name is ...?", cid)
+			npcHandler.topic[cid] = 1
+		elseif npcHandler.topic[cid] == 3 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 1)
+			npcHandler:say("How very interesting. I need to tell that to my master immediately. Please go to my colleagues and ask for Form 356. You will need it in order to proceed.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, player:getName()) then
-		if talkState[talkUser] == 1 then
-			selfSay("Alright |PLAYERNAME|. Vocation?", cid)
-			talkState[talkUser] = 2
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say("Alright |PLAYERNAME|. Vocation?", cid)
+			npcHandler.topic[cid] = 2
 		end
 	elseif msgcontains(msg, Vocation(vocationId):getName()) then
-		if talkState[talkUser] == 2 then
-			selfSay("Huhu, please don't hurt me with your " .. config[vocationId] .. "! Reason of your visit?", cid)
-			talkState[talkUser] = 3
+		if npcHandler.topic[cid] == 2 then
+			npcHandler:say("Huhu, please don't hurt me with your " .. config[vocationId] .. "! Reason of your visit?", cid)
+			npcHandler.topic[cid] = 3
 		end
 	elseif msgcontains(msg, "411") then
-		if getPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin) == 3 then
-			selfSay("Form 411? You need Form 287 to get that! Do you have it?", cid)
-			talkState[talkUser] = 4
-		elseif getPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin) == 5 then
-			selfSay("Form 411? You need Form 287 to get that! Do you have it?", cid)
-			talkState[talkUser] = 5
+		if player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 3 then
+			npcHandler:say("Form 411? You need Form 287 to get that! Do you have it?", cid)
+			npcHandler.topic[cid] = 4
+		elseif player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 5 then
+			npcHandler:say("Form 411? You need Form 287 to get that! Do you have it?", cid)
+			npcHandler.topic[cid] = 5
 		end
 	elseif msgcontains(msg, "no") then
-		if talkState[talkUser] == 4 then
-			setPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin, 4)
-			selfSay("Oh, what a pity. Go see one of my colleagues. I give you the permission to get Form 287. Bye!", cid)
+		if npcHandler.topic[cid] == 4 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 4)
+			npcHandler:say("Oh, what a pity. Go see one of my colleagues. I give you the permission to get Form 287. Bye!", cid)
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 5 then
-			setPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin, 6)
-			selfSay("Great. Here you are. Form 411. Come back anytime you want to talk. Bye.", cid)
+		if npcHandler.topic[cid] == 5 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 6)
+			npcHandler:say("Great. Here you are. Form 411. Come back anytime you want to talk. Bye.", cid)
 		end
 	elseif msgcontains(msg, "356") then
-		if getPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin) == 8 then
-			setPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin, 9)
-			selfSay("INCREDIBLE, you did it!! Have fun at Pumin's Domain!", cid)
+		if player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 8 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 9)
+			npcHandler:say("INCREDIBLE, you did it!! Have fun at Pumin's Domain!", cid)
 		end
 	end
 	return true

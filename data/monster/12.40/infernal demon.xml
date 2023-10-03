@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Infernal Demon" nameDescription="a infernal demon" race="fire" experience="32500" speed="400">
+	<health now="32000" max="32000" />
+	<look type="1313" corpse="39067" />
+	<targetchange interval="4000" chance="20" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-1120" max="-1221" />
+		<attack name="manadrain" interval="2000" chance="10" range="7" min="-1120" max="-1352" />
+		<attack name="death" interval="1400" chance="20" range="7" radius="7" target="1" min="-1352" max="-1600">
+			<attribute key="shootEffect" value="largerock" />
+			<attribute key="areaEffect" value="energyarea" />
+		</attack>
+		<attack name="firefield" interval="1000" chance="10" range="7" radius="-1130" target="-1500">
+			<attribute key="shootEffect" value="fire" />
+		</attack>
+		<attack name="lifedrain" interval="2000" chance="10" length="8" spread="0" min="-1001" max="-1520">
+			<attribute key="areaEffect" value="purpleenergy" />
+		</attack>
+		<attack name="energy" interval="1200" chance="10" range="1" min="-980" max="-1635">
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+		<attack name="speed" interval="1300" chance="15" radius="1" target="1" speedchange="-700" duration="30000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</attack>
+	</attacks>
+	<defenses armor="30" defense="30">
+		<defense name="healing" interval="2000" chance="15" min="180" max="250">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+		<defense name="speed" interval="2000" chance="15" speedchange="500" duration="5000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</defense>
+	</defenses>
+	<elements>
+		<element physicalPercent="50" />
+		<element deathPercent="100" />
+		<element energyPercent="20" />
+		<element earthPercent="10" />
+		<element icePercent="-10" />
+		<element holyPercent="-10" />
+	</elements>
+	<immunities>
+		<immunity fire="1" />
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<summons maxSummons="0">
+		<summon name="fire elemental" interval="2000" chance="10" />
+	</summons>
+	<voices interval="5000" chance="10">
+		<voice sentence="Your soul will be mine!" />
+		<voice sentence="MUHAHAHAHA!" />
+		<voice sentence="CHAMEK ATH UTHUL ARAK!" />
+		<voice sentence="I SMELL FEEEEAAAAAR!" />
+		<voice sentence="Your resistance is futile!" />
+	</voices>
+	<loot>
+		<item name="Onyx Chip" chance="1180" />
+		<item name="Crystal Coin" countmax="5" chance="60000" />
+		<item name="gold coin" countmax="100" chance="60000" />
+		<item name="Small Diamond" countmax="10" chance="9690" />
+		<item name="Blue Crystal Shard" countmax="8" chance="7250" />		
+		<item name="Cyan Crystal Fragment" countmax="8" chance="7430" />		
+		<item name="small topaz" countmax="10" chance="7470" />		
+		<item name="Blue Gem" chance="5000" />
+		<item name="Magma Amulet" chance="7000" />		
+		<item name="Giant Sword" chance="5000" />
+		<item name="Green Crystal Fragment" countmax="8" chance="90540" />
+		<item name="Magma Boots" chance="7500" />
+		<item name="Mercenary Sword" chance="2170" />
+		<item name="platinum amulet" chance="1500" />
+		<item name="War Axe" chance="2854" />
+		<item name="Stone Skin Amulet" chance="2000" />
+	</loot>
+</monster>

@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,66 +12,66 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'firebird') then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.PirateSabreAddon) == 4 then
-			setPlayerStorageValue(cid, Storage.OutfitQuest.PirateSabreAddon, 5)
-			doPlayerAddOutfit(cid, 151, 1)
-			doPlayerAddOutfit(cid, 155, 1)
+		if player:getStorageValue(Storage.OutfitQuest.PirateSabreAddon) == 4 then
+			player:setStorageValue(Storage.OutfitQuest.PirateSabreAddon, 5)
+			player:addOutfitAddon(151, 1)
+			player:addOutfitAddon(155, 1)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-			selfSay('Ahh. So Duncan sent you, eh? You must have done something really impressive. Okay, take this fine sabre from me, mate.', cid)
+			npcHandler:say('Ahh. So Duncan sent you, eh? You must have done something really impressive. Okay, take this fine sabre from me, mate.', cid)
 		end
 	elseif msgcontains(msg, 'warrior\'s sword') then
 		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 142 or 134, 2) then
-			selfSay('You already have this outfit!', cid)
+			npcHandler:say('You already have this outfit!', cid)
 			return true
 		end
 
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.WarriorSwordAddon) < 1 then
-			setPlayerStorageValue(cid, Storage.OutfitQuest.WarriorSwordAddon, 1)
-			selfSay('Great! Simply bring me 100 iron ore and one royal steel and I will happily {forge} it for you.', cid)
-		elseif getPlayerStorageValue(cid, Storage.OutfitQuest.WarriorSwordAddon) == 1 and talkState[talkUser] == 1 then
-			if getPlayerItemCount(cid, 5887) > 0 and getPlayerItemCount(cid, 5880) > 99 then
-				doPlayerRemoveItem(cid, 5887, 1)
-				doPlayerRemoveItem(cid, 5880, 100)
-				doPlayerAddOutfit(cid, 134, 2)
-				doPlayerAddOutfit(cid, 142, 2)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.WarriorSwordAddon, 2)
+		if player:getStorageValue(Storage.OutfitQuest.WarriorSwordAddon) < 1 then
+			player:setStorageValue(Storage.OutfitQuest.WarriorSwordAddon, 1)
+			npcHandler:say('Great! Simply bring me 100 iron ore and one royal steel and I will happily {forge} it for you.', cid)
+		elseif player:getStorageValue(Storage.OutfitQuest.WarriorSwordAddon) == 1 and npcHandler.topic[cid] == 1 then
+			if player:getItemCount(5887) > 0 and player:getItemCount(5880) > 99 then
+				player:removeItem(5887, 1)
+				player:removeItem(5880, 100)
+				player:addOutfitAddon(134, 2)
+				player:addOutfitAddon(142, 2)
+				player:setStorageValue(Storage.OutfitQuest.WarriorSwordAddon, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				--player:addAchievementProgress('Wild Warrior', 2)
-				selfSay('Alright! As a matter of fact, I have one in store. Here you go!', cid)
+				player:addAchievementProgress('Wild Warrior', 2)
+				npcHandler:say('Alright! As a matter of fact, I have one in store. Here you go!', cid)
 			else
-				selfSay('You do not have all the required items.', cid)
+				npcHandler:say('You do not have all the required items.', cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'knight\'s sword') then
 		if player:hasOutfit(player:getSex() == PLAYERSEX_FEMALE and 139 or 131, 1) then
-			selfSay('You already have this outfit!', cid)
+			npcHandler:say('You already have this outfit!', cid)
 			return true
 		end
 
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonSword) < 1 then
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonSword, 1)
-			selfSay('Great! Simply bring me 100 Iron Ore and one Crude Iron and I will happily {forge} it for you.', cid)
-		elseif getPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonSword) == 1 and talkState[talkUser] == 1 then
-			if getPlayerItemCount(cid, 5892) > 0 and getPlayerItemCount(cid, 5880) > 99 then
-				doPlayerRemoveItem(cid, 5892, 1)
-				doPlayerRemoveItem(cid, 5880, 100)
-				doPlayerAddOutfit(cid, 131, 1)
-				doPlayerAddOutfit(cid, 139, 1)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonSword, 2)
+		if player:getStorageValue(Storage.OutfitQuest.Knight.AddonSword) < 1 then
+			player:setStorageValue(Storage.OutfitQuest.Knight.AddonSword, 1)
+			npcHandler:say('Great! Simply bring me 100 Iron Ore and one Crude Iron and I will happily {forge} it for you.', cid)
+		elseif player:getStorageValue(Storage.OutfitQuest.Knight.AddonSword) == 1 and npcHandler.topic[cid] == 1 then
+			if player:getItemCount(5892) > 0 and player:getItemCount(5880) > 99 then
+				player:removeItem(5892, 1)
+				player:removeItem(5880, 100)
+				player:addOutfitAddon(131, 1)
+				player:addOutfitAddon(139, 1)
+				player:setStorageValue(Storage.OutfitQuest.Knight.AddonSword, 2)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				selfSay('Alright! As a matter of fact, I have one in store. Here you go!', cid)
+				npcHandler:say('Alright! As a matter of fact, I have one in store. Here you go!', cid)
 			else
-				selfSay('You do not have all the required items.', cid)
+				npcHandler:say('You do not have all the required items.', cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'forge') then
-		selfSay('What would you like me to forge for you? A {knight\'s sword} or a {warrior\'s sword}?', cid)
-		talkState[talkUser] = 1
+		npcHandler:say('What would you like me to forge for you? A {knight\'s sword} or a {warrior\'s sword}?', cid)
+		npcHandler.topic[cid] = 1
 	end
 	return true
 end

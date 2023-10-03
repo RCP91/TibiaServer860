@@ -67,6 +67,7 @@
 			round blue pillow,1690,25;
 			round purple pillow,1692,25;
 			round red pillow,1691,25;
+			round table kit,14328,25;
 			round turquoise pillow,1693,25;
 			small blue pillow,1681,20;
 			small green pillow,1679,20;
@@ -77,6 +78,7 @@
 			small turquoise pillow,1683,20;
 			small white pillow,1684,20;
 			sofa chair kit,3905,55;
+			square table kit,14329,25;
 			table lamp kit,3924,35;
 			telescope kit,3925,70;
 			treasure chest,1746,1000;
@@ -84,6 +86,9 @@
 			trough kit,3918,7;
 			trunk kit,3920,10;
 			vase,2008,3,0;
+			venorean cabinet kit,20254,90;
+			venorean drawer kit,20257,40;
+			venorean wardrobe kit,20255,50;
 			wall mirror,1851,40;
 			wall mirror,1848,40;
 			wall mirror,1845,40;

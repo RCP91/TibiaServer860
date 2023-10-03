@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -73,13 +72,3 @@ npcHandler:setMessage(MESSAGE_FAREWELL, 'It was a pleasure to help you, |PLAYERN
 npcHandler:setMessage(MESSAGE_WALKAWAY, 'It was a pleasure to help you, |PLAYERNAME|.')
 
 npcHandler:addModule(FocusModule:new())
-
-
-	keywordHandler:addSpellKeyword({'challenge'}, {npcHandler = npcHandler, spellName = 'Challenge', price = 2000, level = 20, vocation ={4}})
-	keywordHandler:addSpellKeyword({'conjure','power','bolt'}, {npcHandler = npcHandler, spellName = 'Conjure Power Bolt', price = 2000, level = 59, vocation ={3}})
-	keywordHandler:addSpellKeyword({'enchant','staff'}, {npcHandler = npcHandler, spellName = 'Enchant Staff', price = 2000, level = 41, vocation ={1}})
-	keywordHandler:addSpellKeyword({'wild','growth'}, {npcHandler = npcHandler, spellName = 'Wild Growth', price = 2000, level = 27, vocation ={2}})
-	keywordHandler:addKeyword({'support', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Challenge}', '{Conjure Power Bolt}', '{Enchant Staff}' and '{Wild Growth}'."})
-	keywordHandler:addKeyword({'spells'}, StdModule.say, {npcHandler = npcHandler, text = 'I can teach you {Support spells}.'})
-	
-	

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Count Vlarkorth" nameDescription="a count vlarkorth" race="undead" experience="30000" speed="350" script="rewardboss.lua">
+	<health now="50000" max="50000"/>
+	<look type="1221"  head="0" body="0" legs="85" feet="1" addons="1" corpse="36434"/>
+	<targetchange interval="5000" chance="8"/>
+	<flags>
+		<flag rewardboss="1"/>
+		<flag summonable="0"/>
+		<flag attackable="1"/>
+		<flag passive="0"/>
+		<flag hostile="1"/>
+		<flag illusionable="0"/>
+		<flag convinceable="0"/>
+		<flag pushable="0"/>
+		<flag canpushitems="1"/>
+		<flag canpushcreatures="1"/>
+		<flag targetdistance="1"/>
+		<flag staticattack="90"/>
+		<flag runonhealth="0"/>
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="0" max="-200"/>
+		<attack name="physical" interval="1000" chance="15" range="7" min="0" max="-180">
+			<attribute key="shootEffect" value="snowball"/>
+			<attribute key="areaEffect" value="poff"/>
+		</attack>
+		<attack name="energy" interval="1000" chance="12" length="3" spread="3" min="0" max="-175">
+			<attribute key="areaEffect" value="poff"/>
+		</attack>
+	</attacks>
+	<defenses armor="28" defense="33"/>
+	<immunities>
+		<immunity invisible="1"/>
+	</immunities>
+	<loot>
+		<item name="crystal coin" countmax="3" chance="50000"/>
+		<item name="platinum coin" countmax="10" chance="90000"/>
+		<item name="supreme health potion" countmax="20" chance="10000"/>
+		<item name="ultimate spirit potion" countmax="20" chance="10000"/>
+		<item name="ultimate mana potion" countmax="20" chance="10000"/>
+		<item name="bullseye potion" countmax="10" chance="10000"/>
+		<item name="mastermind potion" countmax="10" chance="10000"/>
+		<item name="silver token" countmax="3" chance="20000"/>
+		<item name="skull staff" chance="20000"/>
+		<item id="26189" chance="20000"/>
+		<item id="26187" chance="20000"/>
+		<item id="26185" chance="20000"/>
+		<item name="red gem" chance="20000"/>
+		<item name="magic sulphur" chance="20000"/>
+		<item name="green gem" chance="20000"/>
+		<item name="gold ingot" chance="20000"/>
+		<item id="26200" chance="10000"/>
+		<item id="26198" chance="10000"/>
+		<item id="26199" chance="10000"/>
+		<item name="blue gem" chance="20000"/>
+		<!-- rare -->
+		<item name="giant sapphire" chance="10000"/>
+		<item name="giant ruby" chance="10000"/>
+		<item name="medal of valiance" chance="9000"/>
+		<item name="ancient liche bone" chance="10000"/>
+		<!-- very rare -->
+		<item name="final judgement" chance="200"/>
+		<item name="terra helmet" chance="200"/>
+		<item name="embrace of nature" chance="200"/>
+		<item name="bear skin" chance="200"/>
+	</loot>
+</monster>

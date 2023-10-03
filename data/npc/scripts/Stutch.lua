@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -17,7 +16,7 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if isInArray({'fuck', 'idiot', 'asshole', 'ass', 'fag', 'stupid', 'tyrant', 'shit', 'lunatic'}, msg) then
-		
+		local player = Player(cid)
 		local conditions = { CONDITION_POISON, CONDITION_FIRE, CONDITION_ENERGY, CONDITION_BLEEDING, CONDITION_PARALYZE, CONDITION_DROWN, CONDITION_FREEZING, CONDITION_DAZZLED, CONDITION_CURSED }
 		for i = 1, #conditions do
 			if player:getCondition(conditions[i]) then
@@ -26,7 +25,7 @@ local function creatureSayCallback(cid, type, msg)
 		end
 		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)
 		player:addHealth(1 - player:getHealth())
-		selfSay('Take this!', cid)
+		npcHandler:say('Take this!', cid)
 		Npc():getPosition():sendMagicEffect(CONST_ME_YELLOW_RINGS)
 	end
 	return true

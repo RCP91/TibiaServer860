@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -10,13 +9,13 @@ function onThink()				npcHandler:onThink()					end
 
 local creatures = { 'Slime', 'Slime', 'Slime', 'Orc Warlord', 'Orc Warlord', 'Orc Leader', 'Orc Leader', 'Orc Leader' }
 local function greetCallback(cid)
-	
-	if getPlayerStorageValue(cid, Storage.OrcKingGreeting) ~= 1 then
-		setPlayerStorageValue(cid, Storage.OrcKingGreeting, 1)
+	local player = Player(cid)
+	if player:getStorageValue(Storage.OrcKingGreeting) ~= 1 then
+		player:setStorageValue(Storage.OrcKingGreeting, 1)
 		for i = 1, #creatures do
 			Game.createMonster(creatures[i], Npc():getPosition())
 		end
-		selfSay('Arrrrgh! A dirty paleskin! To me my children! Kill them my guards!', TALKTYPE_SAY)
+		npcHandler:say('Arrrrgh! A dirty paleskin! To me my children! Kill them my guards!', TALKTYPE_SAY)
 		return false
 	else
 		npcHandler:setMessage(MESSAGE_GREET, 'Harrrrk! You think you are strong now? You shall never escape my wrath! I am immortal!')
@@ -29,67 +28,67 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	local efreet, marid = getPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission03), getPlayerStorageValue(cid, Storage.DjinnWar.MaridFaction.Mission03)
+	local player = Player(cid)
+	local efreet, marid = player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission03), player:getStorageValue(Storage.DjinnWar.MaridFaction.Mission03)
 	-- Mission 3 - Orc Fortress
 	if msgcontains(msg, 'lamp') then
 		if efreet == 1 or marid == 1 then
-			if getPlayerStorageValue(cid, Storage.DjinnWar.ReceivedLamp) ~= 1 then
-				selfSay({
+			if player:getStorageValue(Storage.DjinnWar.ReceivedLamp) ~= 1 then
+				npcHandler:say({
 					'I can sense your evil intentions to imprison a djinn! You are longing for the lamp, which I still possess. ...',
 					'Who do you want to trap in this cursed lamp?'
 				}, cid)
-				talkState[talkUser] = 1
+				npcHandler.topic[cid] = 1
 			else
-				selfSay('For eons he was trapped in an enchanted lamp by some ancient race. Now he\'s free to roam the world again. Although he cheated me I appreciate what he and his brethren will do to this world, now it\'s the time of the Djinn again!', cid)
+				npcHandler:say('For eons he was trapped in an enchanted lamp by some ancient race. Now he\'s free to roam the world again. Although he cheated me I appreciate what he and his brethren will do to this world, now it\'s the time of the Djinn again!', cid)
 			end
 		end
 
 	elseif msgcontains(msg, 'cookie') then
-		if getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.Questline) == 31 and getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.CookieDelivery.OrcKing) ~= 1 then
-			selfSay('You bring me a stinking cookie???', cid)
-			talkState[talkUser] = 2
+		if player:getStorageValue(Storage.WhatAFoolishQuest.Questline) == 31 and player:getStorageValue(Storage.WhatAFoolishQuest.CookieDelivery.OrcKing) ~= 1 then
+			npcHandler:say('You bring me a stinking cookie???', cid)
+			npcHandler.topic[cid] = 2
 		end
 
 	-- Mission 3 - Orc Fortress
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'malor') then
 			if efreet == 1 then
-				setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.DoorToLamp, 1)
+				player:setStorageValue(Storage.DjinnWar.EfreetFaction.DoorToLamp, 1)
 
 			elseif marid == 1 then
-				setPlayerStorageValue(cid, Storage.DjinnWar.MaridFaction.DoorToLamp, 1)
+				player:setStorageValue(Storage.DjinnWar.MaridFaction.DoorToLamp, 1)
 			end
 
-			setPlayerStorageValue(cid, Storage.DjinnWar.ReceivedLamp, 1)
-			doPlayerAddItem(cid, 2344, 1)
-			selfSay('I was waiting for this day! Take the lamp and let Malor feel my wrath!', cid)
+			player:setStorageValue(Storage.DjinnWar.ReceivedLamp, 1)
+			player:addItem(2344, 1)
+			npcHandler:say('I was waiting for this day! Take the lamp and let Malor feel my wrath!', cid)
 		else
-			selfSay('I don\'t know your enemy, paleskin! Begone!', cid)
+			npcHandler:say('I don\'t know your enemy, paleskin! Begone!', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		if msgcontains(msg, 'yes') then
-			if not doPlayerRemoveItem(cid, 8111, 1) then
-				selfSay('You have no cookie that I\'d like.', cid)
-				talkState[talkUser] = 0
+			if not player:removeItem(8111, 1) then
+				npcHandler:say('You have no cookie that I\'d like.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.WhatAFoolishQuest.CookieDelivery.OrcKing, 1)
+			player:setStorageValue(Storage.WhatAFoolishQuest.CookieDelivery.OrcKing, 1)
 			if player:getCookiesDelivered() == 10 then
-				--player:addAchievement('Allow Cookies?')
+				player:addAchievement('Allow Cookies?')
 			end
 
 			Npc():getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			selfSay('Well, I hope it stinks a lot. I like stinking cookies best ... BY MY THOUSAND SONS! YOU ARE SO DEAD HUMAN! DEAD!', cid)
+			npcHandler:say('Well, I hope it stinks a lot. I like stinking cookies best ... BY MY THOUSAND SONS! YOU ARE SO DEAD HUMAN! DEAD!', cid)
 			npcHandler:releaseFocus(cid)
 			npcHandler:resetNpc(cid)
 
 		elseif msgcontains(msg, 'no') then
-			selfSay('I see.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('I see.', cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true
@@ -112,7 +111,7 @@ keywordHandler:addKeyword({'third'}, StdModule.say, {npcHandler = npcHandler, te
 keywordHandler:addKeyword({'deathwish'}, StdModule.say, {npcHandler = npcHandler, text = 'His ancient fortress on Darama was deserted as the evil Djinn fled this world after his imprisonment. Now the time has come for the evil Djinns to return to their master although this will certainly awaken the {good Djinn} too.'})
 keywordHandler:addKeyword({'good djinn'}, StdModule.say, {npcHandler = npcHandler, text = 'I will not share anything more about that topic with you {paleskins}.'})
 keywordHandler:addKeyword({'paleskins'}, StdModule.say, {npcHandler = npcHandler, text = 'You are as ugly as maggots, although not quite as as tasty.'})
-
+keywordHandler:addKeyword({'malor'}, StdModule.say, {npcHandler = npcHandler, text = 'This cursed djinn king! I set him free from an enchanted lamp, and he cheated me!'}, function(player) return player:getStorageValue(Storage.DjinnWar.ReceivedLamp) == 1 end)
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

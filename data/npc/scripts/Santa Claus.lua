@@ -2,7 +2,6 @@
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
 local talkState = {}
-local talkState = {}
 
 function onCreatureAppear(cid)    npcHandler:onCreatureAppear(cid)   end
 function onCreatureDisappear(cid)   npcHandler:onCreatureDisappear(cid)   end
@@ -71,13 +70,16 @@ function creatureSayCallback(cid, type, msg)
      local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
      if msgcontains(msg, 'present') then
-          
-          if (getPlayerStorageValue(cid, 840293) > os.time()) then
-               selfSay("You can't get other present.", cid)
+          local player = Player(cid)
+          if (player:getStorageValue(840293) == 1) then
+               npcHandler:say("You can't get other present.", cid)
                return false
           end
 
-
+ --         if (player:getLevel() < 150) then
+ --              npcHandler:say("You need level 150 to get a present.", cid)
+ --              return false
+ --         end
 
           local reward = getReward()
           local cont = Container(Player(cid):addItem(6511):getUniqueId())
@@ -92,8 +94,8 @@ function creatureSayCallback(cid, type, msg)
                cont:addItem(reward[i], count)
           end
 
-          setPlayerStorageValue(cid, 840293, os.time() + 86400)
-          selfSay("Merry Christmas!", cid)
+          player:setStorageValue(840293, 1)
+          npcHandler:say("Merry Christmas!", cid)
      end
 
      return true

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Yirkas Blue Scales" nameDescription="a yirkas blue scales" race="blood" experience="5100" speed="800">
+	<health now="16000" max="16000"/>
+	<look type="1196" corpse="39032"/>
+	<targetchange interval="4000" chance="10"/>
+	<flags>
+		<flag summonable="0"/>
+		<flag attackable="1"/>
+		<flag hostile="1"/>
+		<flag illusionable="0"/>
+		<flag convinceable="0"/>
+		<flag pushable="0"/>
+		<flag canpushitems="1"/>
+		<flag canpushcreatures="1"/>
+		<flag targetdistance="1"/>
+		<flag staticattack="90"/>
+		<flag runonhealth="10"/>
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-600" max="-1000"/>
+		<attack name="lifedrain" interval="2000" chance="12" length="4" spread="3" min="-680" max="-900">
+			<attribute key="areaEffect" value="poff"/>
+		</attack>
+		<attack name="manadrain" interval="2000" chance="12" length="9" spread="0" min="-1400" max="-1700">
+			<attribute key="areaEffect" value="carniphila"/>
+		</attack>
+		<attack name="death" interval="2000" chance="12" length="9" spread="0" min="-400" max="-700">
+			<attribute key="areaEffect" value="mortarea"/>
+		</attack>
+		<attack name="physical" interval="2000" chance="20" radius="10" min="-800" max="-950">
+			<attribute key="areaEffect" value="yellowspark"/>
+		</attack>
+	</attacks>
+	<defenses armor="45" defense="65">
+		<defense name="speed" interval="2000" chance="8" speedchange="790" duration="10000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</defense>
+		<defense name="healing" interval="2000" chance="25" min="600" max="1090">
+			<attribute key="areaEffect" value="fire" />
+		</defense>
+	</defenses>
+  	<elements>
+    		<element earthPercent="30" />
+    		<element icePercent="10" />
+    		<element deathPercent="-10" />
+    		<element energyPercent="-7" />
+    		<element holyPercent="-3" />
+  	</elements>
+	<immunities>
+		<immunity fire="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity outfit="1" />
+		<immunity drunk="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<voices interval="2000" chance="5">
+		<voice sentence="HATE! HATE! KILL! KILL!" yell="1" />
+		<voice sentence="GRRAAARRRHH!" yell="1" />
+		<voice sentence="GRRRR!" yell="1" />
+	</voices>
+	<loot>
+		<item name="platinum coin" countmax="9" chance="100000"/>
+		<item name="ultimate health potion" countmax="3" chance="68000"/>
+		<item name="green gem" chance="3900"/>
+		<item name="ring of green plasma" chance="2300"/>
+		<item name="demonrage sword" chance="1000"/>
+		<item name="spellbook of mind control" chance="2700"/> 
+		<item name="war axe" chance="4000"/>
+		<item name="ornate crossbow" chance="1800"/>
+		<item name="yirkas' egg" chance="3800"/>
+		<item name="demon shield" chance="1100"/>
+		<item name="lizard heart" chance="2100"/>
+		<item name="spellweaver's robe" chance="790"/>
+		<item name="Magma Legs" chance="3000"/>
+		<item name="Gemmed Figurine" chance="1000"/>
+		<item name="red silk flower" chance="855"/>
+	</loot>
+</monster>

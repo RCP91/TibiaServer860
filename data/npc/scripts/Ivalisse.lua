@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -23,16 +22,16 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, "temple") then
-		selfSay({
+		npcHandler:say({
 			"Well, I hope you like it here. We tried to rebuild in the {Shaper}'s will. I am a bit preoccupied at the moment because of the absence of my {father}. I may not be the best of help currently, sorry."
 		}, cid)
-		talkState[talkUser] = 1
+		npcHandler.topic[cid] = 1
 	end
 
 	if msgcontains(msg, "imbuing") or msgcontains(msg, "imbuements") then
-		selfSay({
+		npcHandler:say({
 			"The astral Shapers had many ways to shape and refine weapons and equipment. They built shrines dedicated to this world's energies, focussing it and utilising it like a tool to enhance objects. ...",
 			"They called this process imbuing and perfected it throughout time. Remains of these shrines are scattered all over Tibia. ...",
 			"If you truly want to master this art, you will need to visit the various ancient sites related to the original Shaper imbuements. There is one for each element and we know of at least one other besides these. ...",
@@ -43,29 +42,29 @@ local function creatureSayCallback(cid, type, msg)
 		}, cid)
 	end
 
-	if msgcontains(msg, "father") and talkState[talkUser] == 1 then
-		selfSay({
+	if msgcontains(msg, "father") and npcHandler.topic[cid] == 1 then
+		npcHandler:say({
 			"Papa- my father has recently started an adventure on his own. His name is Silus, he is a member of the Edron academy. ...",
 			"Ever since he has joined what he called a 'special research division', he went on and on about Zao and how venturing there would help him get ahead. ...",
 			"You must know he lives for science, especially concerning far-away lands and cultures. He talked about the importance of practical field studies but, frankly, he isn't particularly cut out for that. ...",
 			"I know he has to focus to get his research done right now and I simply cannot leave my duties in the temple. You seem like a person who travels a lot, would you be willing to help me?",
 		}, cid)
-		talkState[talkUser] = 2
-	elseif msgcontains(msg, "father") and talkState[talkUser] == 1 and getPlayerStorageValue(cid, Storage.ForgottenKnowledge.Ivalisse) == 1 or getPlayerStorageValue(cid, Storage.ForgottenKnowledge.Chalice) == 1 then
-		selfSay({
+		npcHandler.topic[cid] = 2
+	elseif msgcontains(msg, "father") and npcHandler.topic[cid] == 1 and player:getStorageValue(Storage.ForgottenKnowledge.Ivalisse) == 1 or player:getStorageValue(Storage.ForgottenKnowledge.Chalice) == 1 then
+		npcHandler:say({
 			"Well, I hope you like it here. We tried to rebuild in the Shaper's will. I am a bit preoccupied at the moment because of the absence of my father. I may not be the best of help currently, sorry.",
 		}, cid)
-	elseif msgcontains(msg, "father") and talkState[talkUser] == 1 and getPlayerStorageValue(cid, Storage.ForgottenKnowledge.DragonkingKilled) == 1 then
-		selfSay({
+	elseif msgcontains(msg, "father") and npcHandler.topic[cid] == 1 and player:getStorageValue(Storage.ForgottenKnowledge.DragonkingKilled) == 1 then
+		npcHandler:say({
 			"What? You're telling me you found father? How is he, what did papa say? A chalice? As a disguise? The whole time? ...",
 			"Well, I am not as much surprised as I am happy to hear that he's alright. You know, after the incident with the duck and the umbrella - it doesn't get to me that easily anymore. ...",
 			"Thank you very much for doing all this for me, I will be forever grateful. I have nothing to repay you with but you are already blessed to have been able to lay eyes on the sacred shaper ruins."
 		}, cid)
-		setPlayerStorageValue(cid, Storage.ForgottenKnowledge.Ivalisse, 1)
+		player:setStorageValue(Storage.ForgottenKnowledge.Ivalisse, 1)
 	end
 
-	if msgcontains(msg, "yes") and talkState[talkUser] == 2 then
-		selfSay({
+	if msgcontains(msg, "yes") and npcHandler.topic[cid] == 2 then
+		npcHandler:say({
 			"Thank you! He told me the other researchers in his team discovered a bridge leading to a cave with a dragon sculpture somewhere in a muggy, grassy area. ...",
 			"The cave is said to lead to a temple complex underground which is ued as a gathering place for a race called 'draken'. He left right away and tried to enter Zao on his own. ...",
 			"I was even more worried when he explained the route he chose. he wanted to head straight through a giant steppe and through a massive mountainous ridge to reach the grassy plains of lower Zao. ...",
@@ -73,21 +72,21 @@ local function creatureSayCallback(cid, type, msg)
 			"I may have been a bit stubborn and angry the day he left, I even refused to say farewell. And now I worry if he is safe. ...",
 			"I can not do much to help you but I can open a portal to get you quite close to his last known location in Zao. What do you say, will you help me find my father?",
 		}, cid)
-		talkState[talkUser] = 3
-	elseif msgcontains(msg, "no") and talkState[talkUser] == 2 then
-		selfSay({
+		npcHandler.topic[cid] = 3
+	elseif msgcontains(msg, "no") and npcHandler.topic[cid] == 2 then
+		npcHandler:say({
 			"Oh nevermind, I am sorry I asked you for this.",
 		}, cid)
 	end
 
-	if msgcontains(msg, "yes") and talkState[talkUser] == 3 then
-		selfSay({
+	if msgcontains(msg, "yes") and npcHandler.topic[cid] == 3 then
+		npcHandler:say({
 			"You would? That's great! Thank you! If you can find my father, tell him I understand and that I really miss him!",
 		}, cid)
-		setPlayerStorageValue(cid, Storage.ForgottenKnowledge.AccessFire, 1)
-		setPlayerStorageValue(cid, Storage.ForgottenKnowledge.Chalice, 1)
-	elseif msgcontains(msg, "no") and talkState[talkUser] == 3 then
-		selfSay({
+		player:setStorageValue(Storage.ForgottenKnowledge.AccessFire, 1)
+		player:setStorageValue(Storage.ForgottenKnowledge.Chalice, 1)
+	elseif msgcontains(msg, "no") and npcHandler.topic[cid] == 3 then
+		npcHandler:say({
 			"Oh nevermind, I am sorry I asked you for this.",
 		}, cid)
 	end

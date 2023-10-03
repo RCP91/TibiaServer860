@@ -59,14 +59,14 @@
 		<item id="2308" chance="7750"/><!-- powder herb -->
 		<item id="2177" chance="2700"/><!-- life crystal -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2162" chance="3000"/><!-- magic lightwand -->
 				<item id="7762" chance="700"/><!-- small enchanted amethyst -->		
 				<item id="6324" chance="350"/><!-- cream cake -->
 				<item id="2687" countmax="5" chance="500"/><!-- cookie -->
 				<item id="2190" chance="200"/><!-- wand of vortex -->
 				<item id="7440" chance="1500"/><!-- mastermind potion -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

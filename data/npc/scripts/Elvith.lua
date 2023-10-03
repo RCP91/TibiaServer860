@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -31,24 +30,24 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, 'songs of the forest') then
-		selfSay({
+		npcHandler:say({
 			'The last issue I had was bought by Randor Swiftfinger. He was banished through the hellgate and probably took the book with him ...',
 			'I would not recommend seeking him or the book there, but of course it is possible.'
 		}, cid)
 	elseif msgcontains(msg, 'love poem') then
-		selfSay('Do you want to buy a poem scroll for 200 gold?', cid)
-		talkState[talkUser] = 1
+		npcHandler:say('Do you want to buy a poem scroll for 200 gold?', cid)
+		npcHandler.topic[cid] = 1
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			talkState[talkUser] = 0
-			
-			if not doPlayerRemoveMoney(cid, 200) then
-				selfSay('You don\'t have enough money.', cid)
+		if npcHandler.topic[cid] == 1 then
+			npcHandler.topic[cid] = 0
+			local player = Player(cid)
+			if not player:removeMoneyNpc(200) then
+				npcHandler:say('You don\'t have enough money.', cid)
 				return true
 			end
 
-			doPlayerAddItem(cid, 8189, 1)
-			selfSay('Here it is.', cid)
+			player:addItem(8189, 1)
+			npcHandler:say('Here it is.', cid)
 		end
 	end
 	return true

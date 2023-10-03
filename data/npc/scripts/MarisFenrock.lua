@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -17,10 +16,9 @@ end
 
 addTravelKeyword('yalahar', 'back to Yalahar', 100, Position(32649, 31292, 6))
 addTravelKeyword('mistrock', 'to the Mistrock', 50, Position(32640, 31439, 7))
-addTravelKeyword('fenrock', 'to the Fenrock', 100, Position(32563, 31313, 7))
 
 -- Kick
---keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = Position(32561, 31312, 7)})
+keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = {Position(32561, 31312, 7)}})
 
 -- Basic
 keywordHandler:addKeyword({'offer'}, StdModule.say, {npcHandler = npcHandler, text = 'I can take you to {Yalahar} or {Mistrock}!'})

@@ -1,13 +1,17 @@
-local combat = createCombatObject()
-setCombatParam(combat, COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
-setCombatParam(combat, COMBAT_PARAM_BLOCKARMOR, true)
-setCombatParam(combat, COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ETHEREALSPEAR)
+local combat = Combat()
+combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
+combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITAREA)
+combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ETHEREALSPEAR)
+combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
 
-function onGetFormulaValues(cid, level, skill, attack, factor)
-	return -(((skill + 25) / 3) + (level / 5)), -((skill + 25) + (level / 5))
+function onGetFormulaValues(player, attack, factor)
+	local skillTotal = 2 * player:getEffectiveSkillLevel(SKILL_DISTANCE)
+	local levelTotal = player:getLevel() / 5
+	return -(((skillTotal + attack / 3500) * 0.35) + (levelTotal) + 0), -(((skillTotal + attack / 3125) * 0.5) + (levelTotal) + 5)
 end
 
-setCombatCallback(combat, CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
-function onCastSpell(cid, var)
-	return doCombat(cid, combat, var)
+combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
+
+function onCastSpell(creature, var)
+	return combat:execute(creature, var)
 end

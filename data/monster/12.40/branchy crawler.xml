@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Branchy Crawler" nameDescription="a branchy crawler" race="venom" experience="31200" speed="340">
+	<health now="27000" max="27000" />
+	<look type="1297" corpse="38975" />
+	<targetchange interval="4000" chance="50" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" skill="150" attack="250"/>
+		<attack name="lifedrain" interval="2000" chance="8" range="7" radius="5" target="1" min="-1900" max="-2800">
+			<attribute key="shootEffect" value="whirlwindaxe"/>
+			<attribute key="areaEffect" value="redspark"/>
+		</attack>
+		<attack name="death" interval="1000" chance="8" radius="9" target="0" min="-800" max="-1900">
+			<attribute key="areaEffect" value="mortarea"/>
+		</attack>
+		<attack name="poisoncondition" interval="5000" chance="18" length="0" spread="0" min="-1500" max="-2500">
+			<attribute key="areaEffect" value="greenspark"/>
+		</attack>
+		<attack name="poison" max="-255" chance="20" interval="1000" min="-1000" range="7" target="0" radius="6">
+			<attribute value="bluebubble" key="areaEffect"/>
+		</attack>
+		<attack name="physical" interval="2000" chance="8" range="7" target="1" min="-90" max="-200">
+			<attribute key="shootEffect" value="whirlwindaxe"/>
+			<attribute key="areaEffect" value="explosionarea"/>
+		</attack>
+	</attacks>
+	<defenses armor="100" defense="120">
+		<defense name="healing" interval="4000" chance="10" min="100" max="2500">
+			<attribute key="areaEffect" value="greenshimmer"/>
+		</defense>
+	</defenses>
+	<elements>
+		<element physicalPercent="1"/>
+		<element deathPercent="15"/>
+		<element energyPercent="10"/>
+		<element icePercent="10"/>
+		<element earthPercent="20"/>
+	</elements>
+	<immunities>
+		<immunity paralyze="1"/>
+		<immunity invisible="1"/>
+	</immunities>
+	<voices interval="5000" chance="10">
+		<voice sentence="Bones are just sticks. They break easily." />
+		<voice sentence="Decay!" />
+		<voice sentence="I'll make you crawl, too!" />
+	</voices>
+	<loot>
+		<item name="crystal coin" countmax="3" chance="15000" />
+		<item name="platinum coin" countmax="20" chance="25000" />
+		<item name="ultimate health potion" countmax="3" chance="19540" />
+		<item name="gold ingot" chance="3700" />
+		<item name="terra legs" chance="1900" />	
+		<item name="violet gem" chance="1700" />
+		<item name="green gem" chance="1700" />	
+		<item name="blue gem" chance="1700" />	
+		<item name="hammer of wrath" chance="1200" />
+		<item name="ruthless axe" chance="900" />
+		<item name="nightmare blade" chance="1200" />
+		<item name="twiceslicer" chance="1400" />	
+		<item name="crystalline sword" chance="790" />	
+		<item name="crystal crossbow" chance="790" />
+	</loot>
+</monster>

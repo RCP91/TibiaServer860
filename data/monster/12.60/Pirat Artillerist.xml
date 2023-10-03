@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Pirat Artillerist" nameDescription="Pirat Artillerist" race="blood" experience="1400" speed="340">
+	<health now="1900" max="1900" />
+	<look type="1346" head="86" body="94" legs="76" feet="79" addons="3" corpse="40538" />
+	<targetchange interval="5000" chance="8" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="90" />
+		<flag runonhealth="0" />
+		<flag canwalkonfire="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="250" max="-600"/>
+		<attack name="physical" interval="2000" chance="20" range="7" min="180" max="-630">
+			<attribute key="shootEffect" value="whirlwindsword"/>
+		</attack>
+	</attacks>
+	<defenses armor="17" defense="21">
+		<defense name="healing" interval="1000" chance="17" min="225" max="275">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+	</defenses>
+	<immunities>
+		<immunity fire="1" />
+		<immunity poison="1" />
+		<immunity lifedrain="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<summons maxSummons="2">
+		<summon name="giant spider" interval="1000" chance="13" max="2" />
+	</summons>
+	<loot>
+		<item id="2148" countmax="99" chance="100000" /><!-- gold coin -->
+		<item id="2152" countmax="10" chance="100000" /><!-- platinum coin -->
+		<item id="5879" chance="100000" /><!-- spider silk -->
+		<item id="2457" chance="100000" /><!-- steel helmet -->
+		<item id="7591" countmax="4" chance="100000" /><!-- great health potion -->
+		<item id="2476" chance="50000" /><!-- knight armor -->
+		<item id="2165" chance="33333" /><!-- stealth ring -->
+		<item id="2167" chance="33333" /><!-- energy ring -->
+		<item id="2169" chance="33333" /><!-- time ring -->
+		<item id="13307" chance="33333" /><!-- sweet smelling bait -->
+		<item id="2477" chance="25000" /><!-- knight legs -->
+		<item id="2171" chance="25000" /><!-- platinum amulet -->
+		<item id="5886" chance="25000" /><!-- spool of yarn -->
+		<item id="7416" chance="3225" /><!-- bloody edge -->
+		<item id="7419" chance="1639" /><!-- dreaded cleaver -->
+	</loot>
+</monster>

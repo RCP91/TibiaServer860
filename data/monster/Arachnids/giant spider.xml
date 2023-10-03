@@ -55,13 +55,13 @@
 		<item id="5879" chance="2000"/><!-- giant spider silk -->
 		<item id="2457" chance="5300"/><!-- steel helmet -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="7588" chance="1000"/><!-- strong health potion -->		
 				<item id="2169" chance="1375"/><!-- time ring -->		
 				<item id="2476" chance="500"/><!-- knight armor -->
 				<item id="7901" chance="250"/><!-- lightning headband -->		
 				<item id="2171" chance="400"/><!-- platinum amulet -->	
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

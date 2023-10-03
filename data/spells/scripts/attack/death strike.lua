@@ -1,9 +1,16 @@
-local combat = createCombatObject()
-setCombatParam(combat, COMBAT_PARAM_TYPE, COMBAT_DEATHDAMAGE)
-setCombatParam(combat, COMBAT_PARAM_EFFECT, CONST_ME_MORTAREA)
-setCombatParam(combat, COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_SUDDENDEATH)
-setCombatFormula(combat, COMBAT_FORMULA_LEVELMAGIC, -1, -10, -1, -20, 5, 5, 1.4, 2.1)
+local combat = Combat()
+combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_DEATHDAMAGE)
+combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MORTAREA)
+combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_DEATH)
 
-function onCastSpell(cid, var)
-	return doCombat(cid, combat, var)
+function onGetFormulaValues(player, level, maglevel)
+	local min = (level / 5) + (maglevel * 1.4) + 8
+	local max = (level / 5) + (maglevel * 2.2) + 14
+	return -min, -max
+end
+
+combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+
+function onCastSpell(creature, var)
+	return combat:execute(creature, var)
 end

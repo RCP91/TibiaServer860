@@ -1,11 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <globalevents>
-	<globalevent name="save" interval="900000" event="script" value="save.lua"/>
-	<globalevent name="clean" interval="7200000" event="script" value="clean.lua"/>
+	<!-- Bomberman Event -->
+	<globalevent interval="55000" name="BombermanTp" script="events/bomberman/bomberman.lua" />
+	
+    <!-- Snowball Event -->
+	<globalevent name="SnowBall_Event" time="20:00" script="events/snowball/SnowBall_Event.lua" />
+	
+	<!-- boss falcon -->
+	<globalevent name="Canon Dominus" interval="900000" script="bosses/Grand Canon Dominus.lua" />
+	<globalevent name="Chaplaingaunder" interval="900000" script="bosses/Grand Chaplain Gaunder.lua" />
+	<globalevent name="Preceptor Lazare" interval="900000" script="bosses/Preceptor Lazare.lua" />
+	<globalevent name="Grand Commander" interval="900000" script="bosses/Grand Commander Soeren.lua" />
+	<globalevent name="Thawing Dragon Lord" interval="900000" script="bosses/Thawing Dragon Lord.lua" />
+	
+	<!-- eventos -->
+	<globalevent type="startup" name="NoBugBattle" script="eventos/battlefieldstart.lua"/>
+    <globalevent interval="60000" name="BattleField" script="eventos/battlefieldthink.lua"/>
 
-	<globalevent name="init" type="startup" event="script" value="init.lua"/>
-	<globalevent name="globalsave" type="globalsave" event="script" value="init.lua"/>
-	<globalevent name="record" type="record" event="script" value="record.lua"/>
+	<!-- Loading Maps -->
+	<globalevent name="example" type="startup" script="others/map_loading.lua"/>
 
-	<!-- <globalevent name="timer_example" time="21:35:11" event="script" value="my_script.lua"/> -->
+	<!--Gray Island Bosses -->
+	<globalevent name="grayIslandBosses" type="startup" script="gray island/grayIslandBosses.lua"/>
+
+	<!--Mawhawk -->
+	<globalevent name="Mawhawk" interval="14399999" script="bosses/Mawhawk.lua"/>
+
+	<!-- Pits of Inferno -->
+	<globalevent name="bosspoi" interval="46800000" script="bosses/bosspoi.lua"/>
+
+	<!-- Mad Mage -->
+	<globalevent name="Mad" interval="14400000" script="bosses/Mad.lua"/>
+
+	<globalevent name="npcs" type="startup" script="others/npcspawn.lua"/>
+	
+	<globalevent name="shop" interval="1000" script="others/shop.lua" />
+
+	<!-- Grimvale -->
+	<globalevent name="Grimvale" interval="60000" script="others/grimvale.lua" />
+	<globalevent name="Respawn" type="startup" script="others/grimvaleRespawn.lua" />
+
+	<!-- Ferumbras Ascendant -->
+	<globalevent name="Effect" interval="3000" script="quests/ferumbras ascedant/effect.lua"/>
+	<globalevent name="Effcts" interval="4000" script="quests/ferumbras ascedant/effects.lua"/>
+
+	<!-- Blooming Griffinclaw -->
+	<globalevent name="GriffinclawFlower" type="startup" script="others/griffinclawFlower.lua" />
+
+	<!-- Demon Oak -->
+	<globalevent name="DemonOakVoices" interval="15000" script="quests/demon oak/voices.lua" />
+
+	<!-- Rent Horses -->
+	<globalevent name="RentedMounts" interval="15000" script="others/checkMount.lua" />
+
+	<!-- World Changes -->
+	<globalevent name="FuryGates" type="startup" script="worldchanges/furygates.lua" />
+	<globalevent name="TheirMastersVoice" type="startup" script="worldchanges/theirmastersvoice.lua" />
+
+	<!-- Raids -->
+	<globalevent name="SpawnRaid" interval="60000" script="spawn/raids.lua"/>
+
+	<!-- Others -->
+	<globalevent name="Spawn Damage" interval="9000" script="spawnDamage.lua" />
+	<globalevent type="startup" name="ServerStartup" script="startup.lua" />
+	<globalevent type="record" name="PlayerRecord" script="record.lua" />
+	<globalevent interval="3600000" name="AutoSave" script="autosave.lua"/>
+	<globalevent type="startup" name="rashid" script="rashid.lua"/>
+	<globalevent type="startup" name="yasir" script="worldchanges/yasir.lua"/>
+	
+	<globalevent name="checkInbox" interval="30000" script="others/checkInbox.lua"/>
+	<globalevent interval="100000" name="GuildWar" script="guildwar.lua"/>
+	<globalevent name="npcsSpawn" type="startup" script="server/npcsSpawn.lua"/>
 </globalevents>

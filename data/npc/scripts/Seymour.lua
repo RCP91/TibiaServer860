@@ -2,7 +2,6 @@ local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 npcHandler.rats = {}
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -15,7 +14,7 @@ local voices = {
 	{ text = 'Feeling lost? Ask me for help!' },
 	{ text = 'Gain some knowledge in the academy!' }
 }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Greeting and Farewell
 local hiKeyword = keywordHandler:addGreetKeyword({'hi'}, {npcHandler = npcHandler, text = 'Hello, |PLAYERNAME|. Welcome to the Academy of Rookgaard. May I sign you up as a {student}?'})
@@ -31,28 +30,28 @@ keywordHandler:addAliasKeyword({'farewell'})
 local ratsKeyword = keywordHandler:addKeyword({'%d+', 'dead', 'rat'}, StdModule.say, {npcHandler = npcHandler},
 	function(player, data) npcHandler.rats[player.uid] = data[1] return data[1] and data[1] > 0 and data[1] < 0xFFFFFFFF end,
 	function(player)
-		selfSay(string.format('Have you brought %d dead rats to me to pick up your reward?', npcHandler.rats[player.uid]), player.uid)
+		npcHandler:say(string.format('Have you brought %d dead rats to me to pick up your reward?', npcHandler.rats[player.uid]), player.uid)
 	end)
 	ratsKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Thank you! Here is your reward.', reset = true},
-		function(player) return getPlayerItemCount(cid, 2813) >= npcHandler.rats[player.uid] end,
-		function(player) doPlayerRemoveItem(cid, 2813, npcHandler.rats[player.uid]) player:addMoney(2 * npcHandler.rats[player.uid]) end
+		function(player) return player:getItemCount(2813) >= npcHandler.rats[player.uid] end,
+		function(player) player:removeItem(2813, npcHandler.rats[player.uid]) player:addMoney(2 * npcHandler.rats[player.uid]) end
 	)
 	ratsKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'HEY! You don\'t have so many!', reset = true})
 	ratsKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'Go and find some rats to kill!', reset = true})
 
 local ratKeyword = keywordHandler:addKeyword({'dead', 'rat'}, StdModule.say, {npcHandler = npcHandler, text = 'Have you brought a dead rat to me to pick up your reward?'})
 	ratKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Thank you! Here is your reward.', reset = true},
-		function(player) return getPlayerItemCount(cid, 2813) > 0 end,
-		function(player) doPlayerRemoveItem(cid, 2813, 1) player:addMoney(2) end
+		function(player) return player:getItemCount(2813) > 0 end,
+		function(player) player:removeItem(2813, 1) player:addMoney(2) end
 	)
 	ratKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'HEY! You don\'t have one! Stop playing tricks on me or I\'ll give you some extra work!', reset = true})
 	ratKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'Go and find some rats to kill!', reset = true})
 
 -- Quest
-local boxKeyword = keywordHandler:addKeyword({'present'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you have a suitable present box for me?'})
+local boxKeyword = keywordHandler:addKeyword({'box'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you have a suitable present box for me?'})
 	boxKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'THANK YOU! Here is a helmet that will serve you well.', reset = true},
-		function(player) return getPlayerItemCount(cid, 1990) > 0 end,
-		function(player) doPlayerRemoveItem(cid, 1990, 1) doPlayerAddItem(cid, 2480, 1) end
+		function(player) return player:getItemCount(1990) > 0 end,
+		function(player) player:removeItem(1990, 1) player:addItem(2480, 1) end
 	)
 	boxKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'HEY! You don\'t have one! Stop playing tricks on me or I\'ll give you some extra work!', reset = true})
 
@@ -134,27 +133,27 @@ keywordHandler:addKeyword({'trade'}, StdModule.say, {npcHandler = npcHandler, te
 keywordHandler:addKeyword({'help'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, I could give you valuable {lessons} or some general {hints} about the game, or a small {quest} if you\'re interested.'})
 keywordHandler:addAliasKeyword({'information'})
 
-local destinyKeyword = keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Shall I try and take a guess at your destiny?'}, function(player) return getPlayerStorageValue(cid, Storage.RookgaardDestiny) == -1 end)
+local destinyKeyword = keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Shall I try and take a guess at your destiny?'}, function(player) return player:getStorageValue(Storage.RookgaardDestiny) == -1 end)
 destinyKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, reset = true}, nil,
 	function(player)
 		local destiny = math.random(1, 4)
 		if destiny == 1 then
-			selfSay('Hmmm, let me look at you. You got that intelligent sparkle in your eyes and you\'d love to handle great power - that must be a future sorcerer!', player.uid)
+			npcHandler:say('Hmmm, let me look at you. You got that intelligent sparkle in your eyes and you\'d love to handle great power - that must be a future sorcerer!', player.uid)
 		elseif destiny == 2 then
-			selfSay('Hmmm, let me look at you. You have an aura of great wisdom and may have healing hands as well as a sense for the powers of nature - I think you\'re a natural born druid!', player.uid)
+			npcHandler:say('Hmmm, let me look at you. You have an aura of great wisdom and may have healing hands as well as a sense for the powers of nature - I think you\'re a natural born druid!', player.uid)
 		elseif destiny == 3 then
-			selfSay('Hmmm, let me look at you. <missing message, destiny for paladin>!', player.uid)
+			npcHandler:say('Hmmm, let me look at you. <missing message, destiny for paladin>!', player.uid)
 		elseif destiny == 4 then
-			selfSay('Hmmm, let me look at you. Strong and sturdy, with a determined look in your eyes - no doubt the knight profession would be suited for you!', player.uid)
+			npcHandler:say('Hmmm, let me look at you. Strong and sturdy, with a determined look in your eyes - no doubt the knight profession would be suited for you!', player.uid)
 		end
-		setPlayerStorageValue(cid, Storage.RookgaardDestiny, destiny)
+		player:setStorageValue(Storage.RookgaardDestiny, destiny)
 	end
 )
 
-keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a sorcerer in you. But of course it\'s completely up to you!'}, function(player) return getPlayerStorageValue(cid, Storage.RookgaardDestiny) == 1 end)
-keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a druid in you. But of course it\'s completely up to you!'}, function(player) return getPlayerStorageValue(cid, Storage.RookgaardDestiny) == 2 end)
-keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a paladin in you. But of course it\'s completely up to you!'}, function(player) return getPlayerStorageValue(cid, Storage.RookgaardDestiny) == 3 end)
-keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a knight in you. But of course it\'s completely up to you!'}, function(player) return getPlayerStorageValue(cid, Storage.RookgaardDestiny) == 4 end)
+keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a sorcerer in you. But of course it\'s completely up to you!'}, function(player) return player:getStorageValue(Storage.RookgaardDestiny) == 1 end)
+keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a druid in you. But of course it\'s completely up to you!'}, function(player) return player:getStorageValue(Storage.RookgaardDestiny) == 2 end)
+keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a paladin in you. But of course it\'s completely up to you!'}, function(player) return player:getStorageValue(Storage.RookgaardDestiny) == 3 end)
+keywordHandler:addKeyword({'destiny'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, like I told you before, I really think you got that spirit of a knight in you. But of course it\'s completely up to you!'}, function(player) return player:getStorageValue(Storage.RookgaardDestiny) == 4 end)
 
 -- Names
 keywordHandler:addKeyword({'obi'}, StdModule.say, {npcHandler = npcHandler, text = 'Obi sells and buys {weapons}. You can find his shop south of the academy.'})

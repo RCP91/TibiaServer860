@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,7 +8,11 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()				npcHandler:onThink()					end
 
 local function getTable(player)
-	local itemsList = {		
+	local itemsList = {
+		{name="exercise sword", id=32384, buy=262500},
+		{name="exercise axe", id=32385, buy=262500},
+		{name="exercise club", id=32386, buy=262500},
+		{name="exercise bow", id=32387, buy=262500},
 		{name="axe", id=2386, buy=20, sell=7},
 		{name="battle axe", id=2378, buy=235, sell=80},
 		{name="battle hammer", id=2417, buy=350, sell=120},
@@ -119,14 +122,14 @@ local function getTable(player)
 		}
 }
 
-	if getPlayerStorageValue(cid, Storage.TheNewFrontier.TomeofKnowledge) >= 3 then
+	if player:getStorageValue(Storage.TheNewFrontier.TomeofKnowledge) >= 3 then
 		-- 3 tomes
 		for i = 1, #tomes[1] do
 			itemsList[#itemsList] = tomes[1][i]
 		end
 	end
 
-	if getPlayerStorageValue(cid, Storage.TheNewFrontier.TomeofKnowledge) >= 9 then
+	if player:getStorageValue(Storage.TheNewFrontier.TomeofKnowledge) >= 9 then
 		-- 9 tomes
 		for i = 1, #tomes[2] do
 			itemsList[#itemsList] = tomes[2][i]
@@ -146,24 +149,24 @@ local function setNewTradeTable(table)
 end
 
 local function onBuy(cid, item, subType, amount, ignoreCap, inBackpacks)
-	
+	local player = Player(cid)
 	local items = setNewTradeTable(getTable(player))
 	if not ignoreCap and player:getFreeCapacity() < ItemType(items[item].itemId):getWeight(amount) then
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'You don\'t have enough cap.')
 	end
-	if not doPlayerRemoveMoney(cid, items[item].buyPrice * amount) then
+	if not player:removeMoneyNpc(items[item].buyPrice * amount) then
 		selfSay("You don't have enough money.", cid)
 	else
-		doPlayerAddItem(cid, items[item].itemId, amount)
+		player:addItem(items[item].itemId, amount)
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'Bought '..amount..'x '..items[item].realName..' for '..items[item].buyPrice * amount..' gold coins.')
 	end
 	return true
 end
 
 local function onSell(cid, item, subType, amount, ignoreCap, inBackpacks)
-	
+	local player = Player(cid)
 	local items = setNewTradeTable(getTable(player))
-	if items[item].sellPrice and doPlayerRemoveItem(cid, items[item].itemId, amount) then
+	if items[item].sellPrice and player:removeItem(items[item].itemId, amount) then
 		player:addMoney(items[item].sellPrice * amount)
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'Sold '..amount..'x '..items[item].realName..' for '..items[item].sellPrice * amount..' gold coins.')
 	else
@@ -178,10 +181,10 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, "trade") then
-		
+		local player = Player(cid)
 		local items = setNewTradeTable(getTable(player))
 		openShopWindow(cid, getTable(player), onBuy, onSell)
-		selfSay("Of course, just browse through my wares.", cid)
+		npcHandler:say("Of course, just browse through my wares.", cid)
 	end
 	return true
 end

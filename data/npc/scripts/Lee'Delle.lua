@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,7 +13,7 @@ local voices = {
 	{ text = 'No need to run from shop to shop, my place is all that\'s needed!' },
 	{ text = 'Special offers for premium customers!' }
 }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Basic keywords
 keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'My name is Lee\'Delle.'})
@@ -86,10 +85,10 @@ keywordHandler:addAliasKeyword({'zerbrus'})
 -- Football
 local footballKeyword = keywordHandler:addKeyword({'football'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you want to buy a football for 111 gold?'})
 	footballKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Here you go.', reset = true},
-			function(player) return getPlayerBalance(cid) + getPlayerBalance(cid) >= 111 end,
+			function(player) return player:getMoney() + player:getBankBalance() >= 111 end,
 			function(player)
-				if doPlayerRemoveMoney(cid, 111) then
-					doPlayerAddItem(cid, 2109, 1)
+				if player:removeMoneyNpc(111) then
+					player:addItem(2109, 1)
 				end
 			end
 	)
@@ -98,8 +97,8 @@ local footballKeyword = keywordHandler:addKeyword({'football'}, StdModule.say, {
 
 -- Honey Flower
 keywordHandler:addKeyword({'honey', 'flower'}, StdModule.say, {npcHandler = npcHandler, text = 'Oh, thank you so much! Please take this piece of armor as reward.'},
-	function(player) return getPlayerItemCount(cid, 2103) > 0 end,
-	function(player) doPlayerRemoveItem(cid, 2103, 1) doPlayerAddItem(cid, 2468, 1) end
+	function(player) return player:getItemCount(2103) > 0 end,
+	function(player) player:removeItem(2103, 1) player:addItem(2468, 1) end
 )
 keywordHandler:addKeyword({'honey', 'flower'}, StdModule.say, {npcHandler = npcHandler, text = 'Honey flowers are my favourites <sighs>.'})
 

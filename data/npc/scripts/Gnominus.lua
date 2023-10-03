@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,40 +12,40 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if msgcontains(msg, 'recruitment') then
-		if getPlayerStorageValue(cid, Storage.BigfootBurden.QuestLine) == 3 then
-			selfSay('Your examination is quite easy. Just step through the green crystal apparatus in the south! We will examine you with what we call g-rays. Where g stands for gnome of course ...', cid)
-			selfSay('Afterwards walk up to Gnomedix for your ear examination.', cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.BigfootBurden.QuestLine) == 3 then
+			npcHandler:say('Your examination is quite easy. Just step through the green crystal apparatus in the south! We will examine you with what we call g-rays. Where g stands for gnome of course ...', cid)
+			npcHandler:say('Afterwards walk up to Gnomedix for your ear examination.', cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, 'tavern') then
-			selfSay('I provide the population with some fresh alcohol-free mushroom {beer}!', cid)
+			npcHandler:say('I provide the population with some fresh alcohol-free mushroom {beer}!', cid)
 	elseif msgcontains(msg, 'beer') then
-			selfSay('Do you want some mushroom beer for 10 gold?', cid)
-			talkState[talkUser] = 2
-	elseif talkState[talkUser] == 1 then
+			npcHandler:say('Do you want some mushroom beer for 10 gold?', cid)
+			npcHandler.topic[cid] = 2
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'apparatus') then
-			selfSay('Don\'t be afraid. It won\'t hurt! Just step in!', cid)
-			setPlayerStorageValue(cid, Storage.BigfootBurden.QuestLine, 4)
-			talkState[talkUser] = 0
+			npcHandler:say('Don\'t be afraid. It won\'t hurt! Just step in!', cid)
+			player:setStorageValue(Storage.BigfootBurden.QuestLine, 4)
+			npcHandler.topic[cid] = 0
 		end
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		if msgcontains(msg, 'yes') then
-			if getPlayerBalance(cid) + getPlayerBalance(cid) >= 10 then
-				selfSay('And here it is! Drink it quick, it gets stale quite fast!', cid)
-				doPlayerRemoveMoney(cid, 10)
-				local beerItem = doPlayerAddItem(cid, 18305)
+			if player:getMoney() + player:getBankBalance() >= 10 then
+				npcHandler:say('And here it is! Drink it quick, it gets stale quite fast!', cid)
+				player:removeMoneyNpc(10)
+				local beerItem = player:addItem(18305)
 				if beerItem then
 					beerItem:decay()
 				end
 			else
-				selfSay('You do not have enough money.', cid)
+				npcHandler:say('You do not have enough money.', cid)
 			end
 		else
-			selfSay('Come back later.', cid)
+			npcHandler:say('Come back later.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

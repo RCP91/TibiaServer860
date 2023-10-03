@@ -1,0 +1,4 @@
+CASTEXP = {}
+
+CASTEXP_PERCENT = 0.05
+CASTEXP_NEEDTIME = 20 -- seconds

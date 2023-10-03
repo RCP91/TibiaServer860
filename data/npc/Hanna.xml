@@ -5,11 +5,32 @@
 	<parameters>
 		<parameter key="module_shop" value="1" />
 		<parameter key="shop_sellable" value="
+			ancient coin, 27058, 350;
 			black pearl, 2144, 280;
+			blue crystal shard, 18413, 1500;
+			blue crystal splinter, 18418, 400;
+			brown crystal splinter, 18417, 400;
+			coral brooch, 27059, 750;
+			crunor idol, 34693, 30000;
+			cyan crystal fragment, 18419, 800;
+			dragon figurine, 34691, 45000;
+			gemmed figurine, 27060, 3500;
+			giant emerald, 34698, 90000;
+			giant ruby, 34697, 70000;
+			giant sapphire, 34699, 50000;
 			green giant shimmering pearl, 7632, 3000;
 			brown giant shimmering pearl, 7633, 3000;
 			gold ingot, 9971, 5000;
 			gold nugget, 2157, 850;
+			green crystal fragment, 18421, 800;
+			green crystal shard, 18415, 1500;
+			green crystal splinter, 18416, 400;
+			onyx chip, 24849, 500;
+			opal, 24850, 500;
+			ornate locket, 34694, 18000;
+			prismatic quartz, 27630, 450;
+			rainbow quartz, 29038, 500;
+			red crystal fragment, 18420, 800;
 			small amethyst, 2150, 200;
 			small diamond, 2145, 300;
 			small emerald, 2149, 250;
@@ -20,38 +41,10 @@
 			small ruby, 2147, 250;
 			small sapphire, 2146, 250;
 			small topaz, 9970, 200;
+			tiger eye, 27629, 350;
+			unicorn figurine, 34692, 50000;
+			violet crystal shard, 18414, 1500;
 			wedding ring, 2121, 100;
-			imbuing crystal,13039,20000;
-			blue crystal,13040,30000;
-			green crystal,13042,30000;
-			violet crystal,13041,30000;
-			hexagonal ruby,13043,50000;
-			blue memory shard,13044,15000;
-			green crystal shard,13045,15000;
-			violet crystal shard,13046,15000;
-			blue marble,13047,5000;
-			blue marble (ii),13048,5000;
-			blue marble (iii),13049,5000;
-			onyx marble,13050,5000;
-			versicoloured marble,13051,5000;
-			turqoise marble,13052,5000;
-			Golden Marble,13053,5000;
-			orange marble,13054,5000;
-			psychedelic marble,13055,5000;
-			white gem,13056,8000;
-			giant ruby,13057,50000;
-			giant emerald,13058,50000;
-			giant sapphire,13059,50000;
-			giant amethyst,13060,50000;
-			giant topaz,13061,50000;
-			receipt, 13030, 100000;
-			luminescent crystal,13062,2000;
-			diamond,13063,2000;			
-			iron token, 13069, 5000;
-			copper token, 13071, 8000;			
-			gold token, 13070, 15000;			
-			platinum token, 13072, 20000;			
-			skull token,13074,2000;
 			white pearl, 2143, 160;" />
 		<parameter key="shop_buyable" value="
 			black pearl, 2144, 560;
@@ -66,7 +59,6 @@
 			small ruby, 2147, 500;
 			small sapphire, 2146, 500;
 			wedding ring, 2121, 990;
-			
 			white pearl, 2143, 320;" />
 	</parameters>
 </npc>

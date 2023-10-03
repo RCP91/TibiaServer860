@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Scarlett Etzel" nameDescription="a scarlett etzel" race="blood" experience="20000" speed="175" script="rewardboss.lua">
+	<health now="30000" max="30000"/>
+	<look type="1201" corpse="36288"/>
+	<targetchange interval="4000" chance="10"/>
+	<flags>
+		<flag rewardboss="1"/>
+		<flag summonable="0"/>
+		<flag attackable="1"/>
+		<flag hostile="1"/>
+		<flag illusionable="0"/>
+		<flag convinceable="0"/>
+		<flag pushable="0"/>
+		<flag canpushitems="1"/>
+		<flag canpushcreatures="1"/>
+		<flag targetdistance="1"/>
+		<flag staticattack="90"/>
+		<flag runonhealth="0"/>
+		<flag canwalkonenergy="1"/>
+		<flag canwalkonfire="1"/>
+		<flag canwalkonpoison="1"/>
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="0" max="-2000"/>
+		<attack name="Sudden Death" interval="2000" chance="16" distance="7" target="1" min="-900" max="-1200"/>
+		<attack name="holy" interval="2000" chance="13" length="7" spread="0" min="-650" max="-940">
+			<attribute key="areaEffect" value="holyarea"/>
+		</attack>
+		<attack name="earth" interval="2000" chance="15" radius="5" min="-480" max="-630">
+			<attribute key="areaEffect" value="explosion"/>
+		</attack>
+	</attacks>
+	<defenses armor="88" defense="88"/>
+	<immunities>
+		<immunity invisible="1"/>
+		<immunity paralyze="1"/>
+	</immunities>
+	<loot>
+		<item name="Energy Bar" chance="1000"/>
+		<item name="Platinum Coin" countmax="5" chance="8700"/>
+		<item name="Green Gem" chance="8500"/>
+		<item name="Supreme Health Potion" countmin="6" countmax="14" chance="5370"/>
+		<item name="Ultimate Mana Potion" countmin="6" countmax="20" chance="4815"/>
+		<item name="Red Gem" chance="4250"/>
+		<item name="Ultimate Spirit Potion" countmax="6" chance="3400"/>
+		<item name="Yellow Gem" countmax="2" chance="2960"/>
+		<item name="Royal Star" countmin="100" countmax="100" chance="2660"/>
+		<item id="7632" chance="24000"/><!-- Giant Shimmering Pearl -->
+		<item name="Berserk Potion" countmin="10" countmax="10" chance="2030"/>
+		<item name="Blue Gem" countmax="2" chance="1850"/>
+		<item name="Bullseye Potion" countmin="10" countmax="10" chance="1850"/>
+		<item name="Magma Coat" chance="1660"/>
+		<item name="Terra Rod" chance="110"/>
+		<item name="Crystal Coin" chance="920"/>
+		<item name="Violet Gem" chance="900"/>
+		<item name="Terra Legs" chance="850"/>
+		<item name="Terra Hood" chance="740"/>
+		<item name="Terra Mantle" chance="725"/>
+		<item name="Magma Amulet" chance="550"/>
+		<item name="Silver Token" countmax="4" chance="525"/>
+		<item name="Gold Ingot" chance="500"/>
+		<item name="Terra Amulet" chance="480"/>
+		<item name="Magma Monocle" chance="100"/>
+		<item name="Cobra Club" chance="60"/>
+		<item name="Cobra Axe" chance="60"/>
+		<item name="Cobra Crossbow" chance="60"/>
+		<item name="Cobra Hood" chance="60"/>
+		<item name="Cobra Rod" chance="60"/>
+		<item name="Cobra Sword" chance="60"/>
+		<item name="Cobra Wand" chance="60"/>
+		<item name="The Cobra Amulet" chance="60"/>
+	</loot>
+</monster>

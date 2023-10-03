@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,16 +11,16 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if msgcontains(msg, "measurements") then
-		if getPlayerStorageValue(cid, Storage.postman.Mission07) >= 1 and	getPlayerStorageValue(cid, Storage.postman.MeasurementsChrystal) ~= 1 then
-			selfSay("If its necessary ... <tells you her measurements>", cid)
-			setPlayerStorageValue(cid, Storage.postman.Mission07, getPlayerStorageValue(cid, Storage.postman.Mission07) + 1)
-			setPlayerStorageValue(cid, Storage.postman.MeasurementsChrystal, 1)
-			talkState[talkUser] = 0
+		if player:getStorageValue(Storage.postman.Mission07) >= 1 and	player:getStorageValue(Storage.postman.MeasurementsChrystal) ~= 1 then
+			npcHandler:say("If its necessary ... <tells you her measurements>", cid)
+			player:setStorageValue(Storage.postman.Mission07, player:getStorageValue(Storage.postman.Mission07) + 1)
+			player:setStorageValue(Storage.postman.MeasurementsChrystal, 1)
+			npcHandler.topic[cid] = 0
 	else
-			selfSay("...", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("...", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

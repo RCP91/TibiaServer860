@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,33 +11,33 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if msgcontains(msg, "present") then
-		if getPlayerStorageValue(cid, Storage.postman.Mission05) == 2 then
-			selfSay("You have a present for me?? Realy?", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.postman.Mission05) == 2 then
+			npcHandler:say("You have a present for me?? Realy?", cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, "key") then
-		selfSay("Do you want to buy the dungeon key for 2000 gold?", cid)
-		talkState[talkUser] = 2
+		npcHandler:say("Do you want to buy the dungeon key for 2000 gold?", cid)
+		npcHandler.topic[cid] = 2
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			if doPlayerRemoveItem(cid, 2331, 1) then
-				selfSay("Thank you very much!", cid)
-				setPlayerStorageValue(cid, Storage.postman.Mission05, 3)
-				talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			if player:removeItem(2331, 1) then
+				npcHandler:say("Thank you very much!", cid)
+				player:setStorageValue(Storage.postman.Mission05, 3)
+				npcHandler.topic[cid] = 0
 			end
-		elseif talkState[talkUser] == 2 then
-			if doPlayerRemoveMoney(cid, 2000) then
-				selfSay("Here it is.", cid)
-				local key = doPlayerAddItem(cid, 2087, 1)
+		elseif npcHandler.topic[cid] == 2 then
+			if player:removeMoneyNpc(2000) then
+				npcHandler:say("Here it is.", cid)
+				local key = player:addItem(2087, 1)
 				if key then
 					key:setActionId(3940)
 				end
 			else
-				selfSay("You don't have enough money.", cid)
+				npcHandler:say("You don't have enough money.", cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

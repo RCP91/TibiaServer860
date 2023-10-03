@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -15,16 +14,16 @@ local function creatureSayCallback(cid, type, msg)
 
 --[[
 	if msgcontains(msg, "fight") then
-		selfSay("You can help in the fight against the hive. There are several missions available to destabilise the hive. Just ask for them if you want to learn more. After completing many missions you might be worthy to get a reward.", cid)
-		talkState[talkUser] = 0
+		npcHandler:say("You can help in the fight against the hive. There are several missions available to destabilise the hive. Just ask for them if you want to learn more. After completing many missions you might be worthy to get a reward.", cid)
+		npcHandler.topic[cid] = 0
 	elseif msgcontains(msg, "mission") then
-		selfSay("You could try to blind the hive, you might disrupt its digestion, you could gather acid or you can disable the swarm pores. ...", cid)
-		talkState[talkUser] = 2
+		npcHandler:say("You could try to blind the hive, you might disrupt its digestion, you could gather acid or you can disable the swarm pores. ...", cid)
+		npcHandler.topic[cid] = 2
 
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 2 then
-			selfSay("So be it. Now you are a member of the inquisition. You might ask me for a mission to raise in my esteem.", cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 2 then
+			npcHandler:say("So be it. Now you are a member of the inquisition. You might ask me for a mission to raise in my esteem.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 --]]

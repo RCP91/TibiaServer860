@@ -6,6 +6,7 @@
 		<parameter key="module_shop" value="1" />
 		<parameter key="shop_sellable" value="
 			abyss hammer, 7414, 20000;
+			albino plate, 21692, 1500;
 			amber staff, 7426, 8000;
 			ancient amulet, 2142, 200;
 			assassin dagger, 7404, 20000;
@@ -18,6 +19,7 @@
 			bone shield, 2541, 80;
 			bonelord helmet, 3972, 7500;
 			brutetamer's staff, 7379, 1500;
+			buckle, 20109, 7000;
 			castle shield, 2535, 5000;
 			chain bolter, 8850, 40000;
 			chaos mace, 7427, 9000;
@@ -26,6 +28,7 @@
 			composite hornbow, 8855, 25000;
 			cranial basher, 7415, 30000;
 			crocodile boots, 3982, 1000;
+			crystal crossbow, 18453, 35000;
 			crystal mace, 2445, 12000;
 			crystal necklace, 2125, 400;
 			crystal ring, 6093, 250;
@@ -93,14 +96,19 @@
 			gold ring, 2179, 8000;
 			golden armor, 2466, 20000;
 			golden legs, 2470, 30000;
+			goo shell, 21706, 4000;
 			griffin shield, 2533, 3000;
 			guardian halberd, 2427, 11000;
 			hammer of wrath, 2444, 30000;
 			headchopper, 7380, 6000;
 			heavy mace, 2452, 50000;
 			heavy machete, 2442, 90;
+			heavy trident, 13838, 2000;
+			helmet of the lost, 20132, 2000;
 			heroic axe, 7389, 30000;
 			hibiscus dress, 8873, 3000;
+			hieroglyph banner, 13739, 500;
+			horn (ring), 21693, 300;
 			icy blacksteel sword, 7766, 6000;
 			icy cranial basher, 7775, 30000;
 			icy crystal mace, 7774, 12000;
@@ -137,14 +145,19 @@
 			medusa shield, 2536, 9000;
 			mercenary sword, 7386, 12000;
 			model ship, 2113, 1000;
+			mycological bow, 18454, 35000;
 			mystic blade, 7384, 30000;
 			naginata, 2426, 2000;
 			nightmare blade, 7418, 35000;
 			noble axe, 7456, 10000;
 			norse shield, 7460, 1500;
+			onyx pendant, 24851, 3500;
 			orcish maul, 7392, 6000;
+			oriental shoes, 24637, 15000;
+			pair of iron fists, 20108, 4000;
 			paladin armor, 8891, 15000;
 			patched boots, 2641, 2000;
+			pharaoh banner, 13472, 1000;
 			pharaoh sword, 2446, 23000;
 			pirate boots, 5462, 3000;
 			pirate hat, 6096, 1000;
@@ -154,6 +167,10 @@
 			platinum amulet, 2171, 2500;
 			ragnir helmet, 7462, 400;
 			relic sword, 7383, 25000;
+			rift bow, 25522, 45000;
+			rift crossbow, 25523, 45000;
+			rift lance, 25383, 30000;
+			rift shield, 25382, 50000;
 			ring of the sky, 2123, 30000;
 			royal axe, 7434, 40000;
 			ruby necklace, 2133, 2000;

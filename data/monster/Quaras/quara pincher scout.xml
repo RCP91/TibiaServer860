@@ -50,11 +50,11 @@
 		<item id="2394" chance="5000"/><!-- morning star -->
 		<item id="2381" chance="2222"/><!-- halberd -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2147" chance="1538"/><!-- small ruby -->
 				<item id="2177" chance="1538"/><!-- life crystal -->
 				<item id="5895" chance="2000"/><!-- fish fin -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

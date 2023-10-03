@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,7 +8,7 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()		npcHandler:onThink()		end
 
 local voices = { {text = 'Psst! Over here!'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local function getTable(player)
 	local itemsList = {}
@@ -24,7 +23,9 @@ local function getTable(player)
 		{name = "Bundle of Rags", id = 10109, buy = 5000},		-- Bundle of Rags
 		{name = "Carrying Device", id = 10615, buy = 1000},		-- Carrying Device
 		{name = "Cigar", id = 7499, buy = 2000},		-- Cigar
-		{name = "Cookbook", id = 2347, buy = 150},			-- Cookbook		
+		{name = "Cookbook", id = 2347, buy = 150},			-- Cookbook
+		{name = "Damaged Logbook", id = 14338, buy = 40000},		-- Damaged Logbook
+		{name = "Dark Essence", id = 14352, buy = 17000},		-- Dark Essence
 		{name = "Deep Crystal", id = 10158, buy = 13000},		-- Deep Crystal
 		{name = "Elemental Crystal", id = 10169, buy = 8000},		-- Elemental Crystal
 		{name = "Empty Beer Bottle", id = 11397, buy = 600},		-- Empty Beer Bottle
@@ -40,7 +41,8 @@ local function getTable(player)
 		{name = "Flask of Crown Polisher", id = 10926, buy = 700},		-- Flask of Crown Polisher
 		{name = "Flask of Extra Greasy Oil", id = 11106, buy = 1000},		-- Flask of Extra Greasy Oil
 		{name = "Flask of Poison", id = 10760, buy = 1000},		-- Flask of Poison
-		{name = "Flexible Dragon Scale", id = 12506, buy = 4000},		-- Flexible Dragon Scale		
+		{name = "Flexible Dragon Scale", id = 12506, buy = 4000},		-- Flexible Dragon Scale
+		{name = "Formula for a Memory Potion", id = 14351, buy = 5000},		-- Formula for a Memory Potion
 		{name = "Funeral Urn", id = 4858, buy = 6000},		-- Funeral Urn
 		{name = "Ghost Charm", id = 9737, buy = 20000},       -- Ghost Charm
 		{name = "Ghost's Tear", id = 9662, buy = 50000},		-- Ghost's Tear
@@ -63,17 +65,19 @@ local function getTable(player)
 		{name = "Old Power Core", id = 10170, buy = 13000},		-- Old Power Core
 		{name = "Plans for a Strange Device", id = 10613, buy = 1000},		-- Plans for a Strange Device
 		{name = "Rare Crystal", id = 11104, buy = 1000},		-- Rare Crystal
-		{name = "Sacred Earth", id = 12297, buy = 1000},		-- Sacred Earth		
+		{name = "Sacred Earth", id = 12297, buy = 1000},		-- Sacred Earth
+		{name = "Sceptre of Sun and Sea", id = 36249, buy = 50000},		-- Sceptre of Sun and Sea
 		{name = "Shadow Orb", id = 10155, buy = 12500},		-- Shadow Orb
 		{name = "Sheet of Tracing Paper", id = 4854, buy = 500},			-- Sheet of Tracing Paper
 		{name = "Suspicious Signet Ring", id = 7697, buy = 15000},		-- Suspicious Signet Ring
 		{name = "Snake Destroyer", id = 4846, buy = 8000},		-- Snake Destroyer
-		{name = "Soul Contract", id = 10945, buy = 666},		-- Soul Contract		
+		{name = "Soul Contract", id = 10945, buy = 666},		-- Soul Contract
+		{name = "Special Flask", id = 14323, buy = 5000},		-- Special Flask
 		{name = "Spectral Cloth", id = 12502, buy = 4000},		-- Spectral Cloth
 		{name = "Spectral Dress", id = 4847, buy = 15000},		-- Spectral Dress
-		{name = "Secret letter", id = 12666, buy = 1000},		-- Secret letter
 		{name = "Spyreport", id = 2345, buy = 3000},		-- Spyreport
-		{name = "Stabilizer", id = 10166, buy = 12500},		-- Stabilizer		
+		{name = "Stabilizer", id = 10166, buy = 12500},		-- Stabilizer
+		{name = "Strange Powder", id = 15389, buy = 5000},		-- Strange Powder
 		{name = "Strong Sinew", id = 12504, buy = 4000},		-- Strong Sinew
 		{name = "Tear of Daraman", id = 2346, buy = 16000},		-- Tear of Daraman
 		{name = "Technomancer Beard", id = 7699, buy = 5000},		-- Technomancer Beard
@@ -83,8 +87,8 @@ local function getTable(player)
 		{name = "Universal Tool", id = 10944, buy = 550},		-- Universal Tool
 		{name = "Unworked Sacred Wood", id = 12295, buy = 1000},		-- Unworked Sacred Wood
 		{name = "Whisper Moss", id = 4838, buy = 18000},		-- Whisper Moss
-		{name = "Worm Queen Tooth", id = 10157, buy = 12500}		-- Worm Queen Tooth
-		
+		{name = "Worm Queen Tooth", id = 10157, buy = 12500},		-- Worm Queen Tooth
+		{name = "Wrinkled Parchment", id = 14336, buy = 4000}		-- Wrinkled Parchment
 	}
 
 		for i = 1, #buyList do
@@ -103,24 +107,24 @@ local function setNewTradeTable(table)
 end
 
 local function onBuy(cid, item, subType, amount, ignoreCap, inBackpacks)
-	
+	local player = Player(cid)
 	local items = setNewTradeTable(getTable(player))
 	if not ignoreCap and player:getFreeCapacity() < ItemType(items[item].itemId):getWeight(amount) then
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'You don\'t have enough cap.')
 	end
-	if not doPlayerRemoveMoney(cid, items[item].buyPrice * amount) then
+	if not player:removeMoneyNpc(items[item].buyPrice * amount) then
 		selfSay("You don't have enough money.", cid)
 	else
-		doPlayerAddItem(cid, items[item].itemId, amount)
+		player:addItem(items[item].itemId, amount)
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'Bought '..amount..'x '..items[item].realName..' for '..items[item].buyPrice * amount..' gold coins.')
 	end
 	return true
 end
 
 local function onSell(cid, item, subType, amount, ignoreCap, inBackpacks)
-	
+	local player = Player(cid)
 	local items = setNewTradeTable(getTable(player))
-	if items[item].sellPrice and doPlayerRemoveItem(cid, items[item].itemId, amount) then
+	if items[item].sellPrice and player:removeItem(items[item].itemId, amount) then
 		player:addMoney(items[item].sellPrice * amount)
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'Sold '..amount..'x '..items[item].realName..' for '..items[item].sellPrice * amount..' gold coins.')
 	else
@@ -131,10 +135,10 @@ end
 
 local function creatureSayCallback(cid, type, msg)
 	if msgcontains(msg, "trade") then
-		
+		local player = Player(cid)
 		local items = setNewTradeTable(getTable(player))
 		openShopWindow(cid, getTable(player), onBuy, onSell)
-		selfSay("Keep in mind you won't find better offers here. Just browse through my wares.", cid)
+		npcHandler:say("Keep in mind you won't find better offers here. Just browse through my wares.", cid)
 	end
 	return true
 end

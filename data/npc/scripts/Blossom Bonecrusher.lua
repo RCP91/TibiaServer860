@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -17,8 +16,8 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 	if isInArray({"fuck", "idiot", "asshole", "ass", "fag", "stupid", "tyrant", "shit", "lunatic"}, msg) then
-		selfSay("Take this!", cid)
-		
+		npcHandler:say("Take this!", cid)
+		local player = Player(cid)
 		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)
 		player:addCondition(condition)
 		npcHandler:releaseFocus(cid)

@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,20 +12,20 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, 'supplies') then
-		if getPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission01) == 1 then
-			selfSay({
+		if player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01) == 1 then
+			npcHandler:say({
 				'What!? I bet, Baa\'leal sent you! ...',
 				'I won\'t tell you anything! Shove off!'
 			}, cid)
-			setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission01, 2)
+			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 2)
 		else
-			selfSay('I won\'t talk about that.', cid)
+			npcHandler:say('I won\'t talk about that.', cid)
 		end
 
 	elseif msgcontains(msg, 'ankrahmun') then
-		selfSay({
+		npcHandler:say({
 			'Yes, I\'ve lived in Ankrahmun for quite some time. Ahh, good old times! ...',
 			'Unfortunately I had to relocate. <sigh> ...',
 			'Business reasons - you know.'

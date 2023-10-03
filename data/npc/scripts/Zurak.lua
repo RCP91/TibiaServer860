@@ -2,7 +2,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,28 +13,28 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	elseif msgcontains(msg, "trip") or msgcontains(msg, "passage") then
 		--if Player(cid):getStorageValue(Storage.TheNewFrontier.Questline) >= 24 then
-			selfSay("You want trip to Izzle of Zztrife?", cid)
-			talkState[talkUser] = 1
+			npcHandler:say("You want trip to Izzle of Zztrife?", cid)
+			npcHandler.topic[cid] = 1
 			--else
-			--selfSay("You need The New Frontier Quest to travel.", cid)
+			--npcHandler:say("You need The New Frontier Quest to travel.", cid)
 		--end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			selfSay("It'zz your doom you travel to.", cid)
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say("It'zz your doom you travel to.", cid)
 			local player, destination = Player(cid), Position(33102, 31056, 7)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, "no") then
-		if talkState[talkUser] == 1 then
-			selfSay("Zzoftzzkinzz zzo full of fear.", cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say("Zzoftzzkinzz zzo full of fear.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'hurry') or msgcontains(msg, 'job')  then
-		selfSay('Me zzimple ferryman. I arrange {trip} to Izzle of Zztrife.', cid)
-		talkState[talkUser] = 0
+		npcHandler:say('Me zzimple ferryman. I arrange {trip} to Izzle of Zztrife.', cid)
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

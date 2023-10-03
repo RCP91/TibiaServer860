@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -23,26 +22,26 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	local AritosTask = getPlayerStorageValue(cid, Storage.TibiaTales.AritosTask)
+	local player = Player(cid)
+	local AritosTask = player:getStorageValue(Storage.TibiaTales.AritosTask)
 
 		-- AritosTask
 	if msgcontains(msg, "arito") then
-		if getPlayerStorageValue(cid, Storage.TibiaTales.AritosTask) == 1 then
-			selfSay({
+		if player:getStorageValue(Storage.TibiaTales.AritosTask) == 1 then
+			npcHandler:say({
 				'I don\'t know how something like this ever could be possible. He met a girl from {Ankrahmun} and she must have twisted his head. Arito started to tell stories about the Pharaoh and about Ankrahmun. ...',
 				'In the wink of an eye he left us and was never seen again. I think he feared revenge for leaving us - which partially is not without reason. Why are you asking me about him? Did he send you to me?'
 			}, cid)
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 
 	end
-			elseif talkState[talkUser] == 1 then
+			elseif npcHandler.topic[cid] == 1 then
 			if msgcontains(msg, "yes") then
-			selfSay({
+			npcHandler:say({
 				'Ahh, I know that some of my people fear that Arito tells the old secrets of our race and want to see him dead but I don\'t bear him a grudge. I will have to have a serious word with my people. ...',
 				'Tell him that he can consider himself as acquitted. He is not the reason for our attacks towards {Ankrahmun}.'
 			}, cid)
-			setPlayerStorageValue(cid, Storage.TibiaTales.AritosTask, 2)
+			player:setStorageValue(Storage.TibiaTales.AritosTask, 2)
 		end
 	end
 	return true

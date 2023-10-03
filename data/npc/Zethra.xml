@@ -2,4 +2,12 @@
 <npc name="Zethra" script="Zethra.lua" walkinterval="2000" floorchange="0">
 	<health now="100" max="100" />
 	<look type="471" head="79" body="45" legs="12" feet="94" addons="0" />
+		<parameters>
+		<parameter key="module_shop" value="1" />
+		<parameter key="shop_buyable" value="arrow,2544,3;bolt,2543,4;bow,2456,400;crossbow,2455,500;spear,2389,10;" />
+		<parameter key="shop_sellable" value="spear,2389,3;" />
+		<parameter key="message_greet" value="Oh, please come in, |PLAYERNAME|. What do you need? Distance weapons? I sell lots of them." />
+		<parameter key="message_sendtrade" value="Here you go." />
+	</parameters>
 </npc>
+

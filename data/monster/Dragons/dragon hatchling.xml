@@ -48,9 +48,9 @@
 		<item id="2148" countmax="55" chance="37500"/><!-- gold coin -->
 		<item id="2672" chance="25000"/><!-- dragon ham -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="7618" chance="5000"/><!-- health potion -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

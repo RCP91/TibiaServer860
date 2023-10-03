@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,20 +8,20 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()				npcHandler:onThink()					end
 
 -- Mission (Tibia Tales: Rest In Hallowed Ground)
-local startMissionKeyword = keywordHandler:addKeyword({'mission'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, I would do it myself but I can\'t leave town for a longer time. Would you be so kind to bring me a vial of holy water from the White Raven Monastery?'}, function(player) return getPlayerStorageValue(cid, Storage.TibiaTales.RestInHallowedGround.Questline) == -1 end)
-	startMissionKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'I thank you a lot in advance. The power of the holy water from the White Raven Monastery is legendary. For my task it is indispensable. We talk about that when you get back.', reset = true}, nil, function(player) setPlayerStorageValue(cid, Storage.TibiaTales.RestInHallowedGround.Questline, 1) end)
+local startMissionKeyword = keywordHandler:addKeyword({'mission'}, StdModule.say, {npcHandler = npcHandler, text = 'Well, I would do it myself but I can\'t leave town for a longer time. Would you be so kind to bring me a vial of holy water from the White Raven Monastery?'}, function(player) return player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) == -1 end)
+	startMissionKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'I thank you a lot in advance. The power of the holy water from the White Raven Monastery is legendary. For my task it is indispensable. We talk about that when you get back.', reset = true}, nil, function(player) player:setStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline, 1) end)
 	startMissionKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'It\'s your decision. I will ask the next believing mind that visits the temple of Banor\'s blood.', reset = true})
 
 local function addMissionKeyword(text, value, newValue, addItem)
 	keywordHandler:addKeyword({'mission'}, StdModule.say, {npcHandler = npcHandler, text = text},
-		function(player) return getPlayerStorageValue(cid, Storage.TibiaTales.RestInHallowedGround.Questline) == value end,
+		function(player) return player:getStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline) == value end,
 		function(player)
 			if newValue then
-				setPlayerStorageValue(cid, Storage.TibiaTales.RestInHallowedGround.Questline, newValue)
+				player:setStorageValue(Storage.TibiaTales.RestInHallowedGround.Questline, newValue)
 			end
 
 			if addItem then
-				doPlayerAddItem(cid, 7498, 1)
+				player:addItem(7498, 1)
 			end
 		end
 	)
@@ -50,28 +49,28 @@ local blessKeyword = keywordHandler:addKeyword({'twist of fate'}, StdModule.say,
 -- Adventurer Stone
 keywordHandler:addKeyword({'adventurer stone'}, StdModule.say, {npcHandler = npcHandler, text = 'Keep your adventurer\'s stone well.'}, function(player) return player:getItemById(18559, true) end)
 
-local stoneKeyword = keywordHandler:addKeyword({'adventurer stone'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, you want to replace your adventurer\'s stone for free?'}, function(player) return getPlayerStorageValue(cid, Storage.AdventurersGuild.FreeStone.Amanda) ~= 1 end)
-	stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Here you are. Take care.', reset = true}, nil, function(player) doPlayerAddItem(cid, 18559, 1) setPlayerStorageValue(cid, Storage.AdventurersGuild.FreeStone.Amanda, 1) end)
+local stoneKeyword = keywordHandler:addKeyword({'adventurer stone'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, you want to replace your adventurer\'s stone for free?'}, function(player) return player:getStorageValue(Storage.AdventurersGuild.FreeStone.Amanda) ~= 1 end)
+	stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Here you are. Take care.', reset = true}, nil, function(player) player:addItem(18559, 1) player:setStorageValue(Storage.AdventurersGuild.FreeStone.Amanda, 1) end)
 
 local stoneKeyword = keywordHandler:addKeyword({'adventurer stone'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, you want to replace your adventurer\'s stone for 30 gold?'})
 	stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Here you are. Take care.', reset = true},
-		function(player) return getPlayerBalance(cid) + getPlayerBalance(cid) >= 30 end,
-		function(player) if doPlayerRemoveMoney(cid, 30) then doPlayerAddItem(cid, 18559, 1) end end
+		function(player) return player:getMoney() + player:getBankBalance() >= 30 end,
+		function(player) if player:removeMoneyNpc(30) then player:addItem(18559, 1) end end
 	)
 	stoneKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, you don\'t have enough money.', reset = true})
 	stoneKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'No problem.', reset = true})
 
 -- Wooden Stake
-keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'I think you have forgotten to bring your stake, my child.'}, function(player) return getPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake) == 6 and getPlayerItemCount(cid, 5941) == 0 end)
+keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'I think you have forgotten to bring your stake, my child.'}, function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 6 and player:getItemCount(5941) == 0 end)
 
-local stakeKeyword = keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'Yes, I was informed what to do. Are you prepared to receive my line of the prayer?'}, function(player) return getPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake) == 6 end)
+local stakeKeyword = keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'Yes, I was informed what to do. Are you prepared to receive my line of the prayer?'}, function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 6 end)
 	stakeKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'So receive my prayer: \'Wicked curses shall be broken\'. Now, bring your stake to Kasmir in Darashia for the next line of the prayer. I will inform him what to do.', reset = true}, nil,
-		function(player) setPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake, 7) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end
+		function(player) player:setStorageValue(Storage.FriendsandTraders.TheBlessedStake, 7) player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE) end
 	)
 	stakeKeyword:addChildKeyword({''}, StdModule.say, {npcHandler = npcHandler, text = 'I\'ll wait for you.', reset = true})
 
-keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'You should visit Kasmir in Darashia now, my child.'}, function(player) return getPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake) == 7 end)
-keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'You already received my line of the prayer.'}, function(player) return getPlayerStorageValue(cid, Storage.FriendsandTraders.TheBlessedStake) > 7 end)
+keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'You should visit Kasmir in Darashia now, my child.'}, function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) == 7 end)
+keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'You already received my line of the prayer.'}, function(player) return player:getStorageValue(Storage.FriendsandTraders.TheBlessedStake) > 7 end)
 keywordHandler:addKeyword({'stake'}, StdModule.say, {npcHandler = npcHandler, text = 'A blessed stake? That\'s a strange request. Maybe Quentin knows more, he is one of the oldest monks after all.'})
 
 -- Healing

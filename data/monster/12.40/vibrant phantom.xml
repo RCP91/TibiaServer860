@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Vibrant Phantom" nameDescription="a vibrant phantom" race="undead" experience="24000" speed="210">
+	<health now="27000" max="27000" />
+	<look type="1298" head="82" body="0" legs="88" feet="92" addons="0" corpse="38979" />
+	<targetchange interval="3000" chance="35" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="500" max="-950" />
+		<attack name="manadrain" interval="2000" chance="15" range="6" min="300" max="-1970" >	
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+		<attack name="energy" interval="2000" chance="25" target="0" range="0" min="700" max="-1170" >	
+			<attribute key="shootEffect" value="energy" />
+			<attribute key="areaEffect" value="blueshimmer" />
+		</attack>				
+		<attack name="holy" interval="2000" chance="30" range="6" min="-700" max="-1400">
+			<attribute key="shootEffect" value="holy" />
+		</attack>	
+		<attack name="energy" interval="2000" chance="25" length="8" spread="0" min="-750" max="-1200">
+			<attribute key="areaEffect" value="purpleenergy" />
+		</attack>		
+	</attacks>
+	<defenses armor="60" defense="50">
+		<defense name="healing" interval="2000" chance="20" min="210" max="380">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>		
+	</defenses>
+	<elements>
+		<element physicalPercent="-20" />
+		<element deathPercent="-10" />
+		<element energyPercent="-20" />
+		<element earthPercent="10" />		
+		<element holyPercent="10" />
+	</elements>
+	<immunities>
+		<immunity fire="1" />
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<voices interval="5000" chance="10">
+		<voice sentence="All this beautiful lightning." />
+		<voice sentence="Feel the vibration!" />
+	</voices>
+	<loot>
+		<item id="2152" countmax="16" chance="15000" /> <!-- Platinum Coin -->
+		<item id="8473" countmax="6" chance="11000" /> <!-- Ultimate Health Potion -->
+		<item id="7632" chance="4100" /> <!-- Giant Shimmering Pearl -->
+		<item id="9971" chance="4300" /> <!-- Gold Ingot -->
+		<item id="2183" chance="3100" /> <!-- Hailstorm Rod -->
+		<item id="2181" chance="4200" /> <!-- Terra Rod -->
+		<item id="2153" chance="2700" /> <!-- Violet Gem -->
+		<item id="18413" chance="4100" /> <!-- Blue Crystal Shard -->
+		<item id="2158" chance="2700" /> <!-- Blue Gem -->
+		<item id="2155" chance="2700" /> <!-- Green Gem -->
+		<item id="26185" chance="1400" /> <!-- Ring of Blue Plasma -->
+		<item id="8912" chance="1100" /> <!-- Springsprout Rod -->
+		<item id="8910" chance="1100" /> <!-- Underworld Rod -->
+		<item id="39884" chance="760" /> <!-- Vibrant Heart -->
+		<item id="18414" chance="4100" /> <!-- Violet Crystal Shard -->
+		<item id="39856" chance="40" /> <!-- Bag You Desire -->
+	</loot>
+</monster>

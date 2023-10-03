@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,36 +12,36 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'cookie') then
-		if getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.Questline) == 31
-				and getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.CookieDelivery.Lorbas) ~= 1 then
-			selfSay('You want me to eat this cookie?', cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.WhatAFoolishQuest.Questline) == 31
+				and player:getStorageValue(Storage.WhatAFoolishQuest.CookieDelivery.Lorbas) ~= 1 then
+			npcHandler:say('You want me to eat this cookie?', cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			if not doPlayerRemoveItem(cid, 8111, 1) then
-				selfSay('You have no cookie that I\'d like.', cid)
-				talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			if not player:removeItem(8111, 1) then
+				npcHandler:say('You have no cookie that I\'d like.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.WhatAFoolishQuest.CookieDelivery.Lorbas, 1)
+			player:setStorageValue(Storage.WhatAFoolishQuest.CookieDelivery.Lorbas, 1)
 			if player:getCookiesDelivered() == 10 then
-				--player:addAchievement('Allow Cookies?')
+				player:addAchievement('Allow Cookies?')
 			end
 
 			Npc():getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
-			selfSay('Well, you don\'t mind if I play around with this antidote rune a bit ... UHHH, YOU LOU ... uhm that was so ... funny, haha ... ha. Mhm, you better leave now.', cid)
+			npcHandler:say('Well, you don\'t mind if I play around with this antidote rune a bit ... UHHH, YOU LOU ... uhm that was so ... funny, haha ... ha. Mhm, you better leave now.', cid)
 			npcHandler:releaseFocus(cid)
 			npcHandler:resetNpc(cid)
 		end
 	elseif msgcontains(msg, 'no') then
-		if talkState[talkUser] == 1 then
-			selfSay('I see.', cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say('I see.', cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

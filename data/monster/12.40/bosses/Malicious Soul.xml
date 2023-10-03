@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Malicious Soul" nameDescription="Malicious Soul" race="undead" experience="5000" speed="240" manacost="0">
+	<health now="4000" max="4000" />
+	<look type="1268" head="0" body="81" legs="0" feet="0" addons="1" corpse="0" />
+	<targetchange interval="5000" chance="8" />
+<targetstrategies nearest="100" health="0" damage="0" random="0" />	<flags>
+		
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" /> 
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="90" />
+		<flag runonhealth="0" />
+		<flag canwalkonenergy="1"/>
+		<flag canwalkonfire="1"/>
+		<flag canwalkonpoison="1"/>
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-100" max="-500" /> 
+ 
+	   	<attack name="poison" interval="1700" chance="15" radius="3" target="1" min="-150" max="-550">
+     	<attribute key="shootEffect" value="envenomedarrow"/>
+     	</attack>
+	
+ 		<attack name="energy" interval="1700" chance="25" length="4" spread="0" min="-150" max="-550">
+		<attribute key="areaEffect" value="ENERGY" /> 
+		</attack>
+		
+		<attack name="death" interval="1700" chance="35"  radius="3" min="-150" max="-550">
+		<attribute key="areaEffect" value="mortarea" />
+		</attack> 
+	</attacks>
+	 
+	 
+	
+	<defenses armor="79" defense="40" />
+	<elements>
+		<element physicalPercent="50" /> 
+		<element icePercent="0" />
+		<element earthPercent="20" />
+		<element holyPercent="-20" />
+		<element firePercent="0" />
+		<element energyPercent="20" />
+		<element deathPercent="50" />
+	</elements>
+	<immunities>
+		<immunity invisible="1" />
+		<immunity death="1" />
+		<immunity paralyze="1" />
+	</immunities>
+ 
+	<loot>
+	<!-- <item name="XXXX" countmax="XX" chance="XX" />
+	<item name="XXXX"  chance="XX" /> -->	 
+<!-- common -->	 
+	<item name="Platinum Coin" countmax="2" chance="10000" />
+	<item name="Lost Soul"  chance="8000" /> <!-- NOVO -->	 
+		
+<!-- semi-rare -->	
+<item name="Springsprout Rod"  chance="2750" />
+<item name="Ensouled Essence"  chance="2490" /><!-- NOVO -->	
+<item name="Death Toll"  chance="2600" /><!-- NOVO -->	
+<item name="Cursed Bone"  chance="2650" /><!-- NOVO -->	
+<item name="Wand of Cosmic Energy"  chance="2670" />
+<item name="Terra Rod"  chance="2500" />
+<item name="Hailstorm Rod"  chance="2250" />
+
+<!-- rare -->	
+<item name="Necklace of the Deep"  chance="1750" /><!-- NOVO -->	
+<item name="Wand of Starstorm"  chance="1850" />
+<item name="Glacial Rod"  chance="1545" />
+	
+<!-- very rare -->	
+<item name="Wand of Voodoo"  chance="1100" />
+
+		
+	</loot>
+</monster>

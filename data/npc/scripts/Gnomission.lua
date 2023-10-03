@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,102 +11,101 @@ local function creatureSayCallback(cid, type, msg)
 	if(not npcHandler:isFocused(cid)) then
 		return false
 	end
-	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
-	
+	local player = Player(cid)
 
 	if(msgcontains(msg, "warzones")) then
-		selfSay({
+		npcHandler:say({
 			"There are three warzones. In each warzone you will find fearsome foes. At the end you'll find their mean master. The masters is well protected though. ...",
 			"Make sure to talk to our gnomish agent in there for specifics of its' protection. ...",
 			"Oh, and to be able to enter the second warzone you have to best the first. To enter the third you have to best the second. ...",
 			"And you can enter each one only once every twenty hours. Your normal teleport crystals won't work on these teleporters. You will have to get mission crystals from Gnomally."
 		}, cid)
-		talkState[talkUser] = 1
+		npcHandler.topic[cid] = 1
 	elseif(msgcontains(msg, "job")) then
-		selfSay("I am responsible for our war {missions}, to {trade} with seasoned soldiers and rewarding war {heroes}. You have to be rank 4 to enter the {warzones}.", cid)
-		talkState[talkUser] = 2
+		npcHandler:say("I am responsible for our war {missions}, to {trade} with seasoned soldiers and rewarding war {heroes}. You have to be rank 4 to enter the {warzones}.", cid)
+		npcHandler.topic[cid] = 2
 	elseif(msgcontains(msg, "heroes")) then
-		if talkState[talkUser] == 2 then
-			selfSay({
+		if npcHandler.topic[cid] == 2 then
+			npcHandler:say({
 				"You can trade special spoils of war to get a permission to use the war teleporters to the area of the corresponding boss without need of mission crystals. ...",
 				"Which one would you like to trade: the deathstrike's {snippet}, gnomevil's {hat} or the abyssador {lash}?"
 			}, cid)
-			talkState[talkUser] = 3
+			npcHandler.topic[cid] = 3
 		end
 	elseif(msgcontains(msg, "snippet")) then
-		if talkState[talkUser] == 3 then
-			if getPlayerStorageValue(cid, Storage.BigfootBurden.QuestLine) < 30 then
-				selfSay("It seems you did not even set one big foot into the warzone, I am sorry.")
+		if npcHandler.topic[cid] == 3 then
+			if player:getStorageValue(Storage.BigfootBurden.QuestLine) < 30 then
+				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
 			else
-				if getPlayerStorageValue(cid, Storage.BigfootBurden.Warzone1Access) < 1 then
-					if doPlayerRemoveItem(cid, 18430, 1) then
-						setPlayerStorageValue(cid, Storage.BigfootBurden.Warzone1Access, 1)
-						selfSay("As a war hero you are allowed to use the warzone teleporter one for free!", cid)
-						talkState[talkUser] = 0
+				if player:getStorageValue(Storage.BigfootBurden.Warzone1Access) < 1 then
+					if player:removeItem(18430, 1) then
+						player:setStorageValue(Storage.BigfootBurden.Warzone1Access, 1)
+						npcHandler:say("As a war hero you are allowed to use the warzone teleporter one for free!", cid)
+						npcHandler.topic[cid] = 0
 					else
-						selfSay("I can't let you enter the warzone teleporter one for free, unless you handle me a Deathstrike's snippet. But can still always use a red teleport crystal.", cid)
+						npcHandler:say("I can't let you enter the warzone teleporter one for free, unless you handle me a Deathstrike's snippet. But can still always use a red teleport crystal.", cid)
 					end
 				else
-					selfSay("We've already talked about that.", cid)
+					npcHandler:say("We've already talked about that.", cid)
 				end
 			end
 		end
 	elseif(msgcontains(msg, "lash")) then
-		if talkState[talkUser] == 3 then
-			if getPlayerStorageValue(cid, Storage.BigfootBurden.QuestLine) < 30 then
-				selfSay("It seems you did not even set one big foot into the warzone, I am sorry.")
+		if npcHandler.topic[cid] == 3 then
+			if player:getStorageValue(Storage.BigfootBurden.QuestLine) < 30 then
+				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
 			else
-				if getPlayerStorageValue(cid, Storage.BigfootBurden.Warzone3Access) < 1 then 
-					if getPlayerStorageValue(cid, Storage.BigfootBurden.WarzoneStatus) >= 3 then
-						if doPlayerRemoveItem(cid, 18496, 1) then
-							setPlayerStorageValue(cid, Storage.BigfootBurden.Warzone3Access, 1)
-							selfSay("As a war hero you are allowed to use the warzone teleporter three for free!", cid)
-							talkState[talkUser] = 0
+				if player:getStorageValue(Storage.BigfootBurden.Warzone3Access) < 1 then 
+					if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) >= 3 then
+						if player:removeItem(18496, 1) then
+							player:setStorageValue(Storage.BigfootBurden.Warzone3Access, 1)
+							npcHandler:say("As a war hero you are allowed to use the warzone teleporter three for free!", cid)
+							npcHandler.topic[cid] = 0
 						else
-							selfSay("I can't let you enter the warzone teleporter two for free, unless you handle me an Abyssador's lash. But can still always use a red teleport crystal.", cid)
+							npcHandler:say("I can't let you enter the warzone teleporter two for free, unless you handle me an Abyssador's lash. But can still always use a red teleport crystal.", cid)
 						end
 					else
-						selfSay("You need to defeat the first warzone boss to be able to get free access to the second warzone.", cid)
+						npcHandler:say("You need to defeat the first warzone boss to be able to get free access to the second warzone.", cid)
 					end
 				else
-					selfSay("We've already talked about that.", cid)
+					npcHandler:say("We've already talked about that.", cid)
 				end
 			end
 		end
 	elseif(msgcontains(msg, "hat")) then
-		if talkState[talkUser] == 3 then
-			if getPlayerStorageValue(cid, Storage.BigfootBurden.QuestLine) < 30 then
-				selfSay("It seems you did not even set one big foot into the warzone, I am sorry.")
+		if npcHandler.topic[cid] == 3 then
+			if player:getStorageValue(Storage.BigfootBurden.QuestLine) < 30 then
+				npcHandler:say("It seems you did not even set one big foot into the warzone, I am sorry.")
 			else
-				if getPlayerStorageValue(cid, Storage.BigfootBurden.Warzone2Access) < 1 then
-					if getPlayerStorageValue(cid, Storage.BigfootBurden.WarzoneStatus) >= 2 then
-						if doPlayerRemoveItem(cid, 18495, 1) then
-							setPlayerStorageValue(cid, Storage.BigfootBurden.Warzone2Access, 1)
-							selfSay("As a war hero you are allowed to use the warzone teleporter second for free!", cid)
-							talkState[talkUser] = 0
+				if player:getStorageValue(Storage.BigfootBurden.Warzone2Access) < 1 then
+					if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) >= 2 then
+						if player:removeItem(18495, 1) then
+							player:setStorageValue(Storage.BigfootBurden.Warzone2Access, 1)
+							npcHandler:say("As a war hero you are allowed to use the warzone teleporter second for free!", cid)
+							npcHandler.topic[cid] = 0
 						else
-							selfSay("I can't let you enter the warzone teleporter three for free, unless you handle me a Gnomevil's hat. But can still always use a red teleport crystal.", cid)
+							npcHandler:say("I can't let you enter the warzone teleporter three for free, unless you handle me a Gnomevil's hat. But can still always use a red teleport crystal.", cid)
 						end
 					else
-						selfSay("You need to defeat the second warzone boss to be able to get free access to the third warzone.", cid)
+						npcHandler:say("You need to defeat the second warzone boss to be able to get free access to the third warzone.", cid)
 					end
 				else
-					selfSay("We've already talked about that.", cid)
+					npcHandler:say("We've already talked about that.", cid)
 				end
 			end
 		end
 	elseif(msgcontains(msg, "mission")) then
-		if getPlayerStorageValue(cid, Storage.BigfootBurden.QuestLine) >= 30 then
-			if getPlayerStorageValue(cid, Storage.BigfootBurden.WarzoneStatus) < 1 then
-				selfSay("Fine, I grant you the permission to enter the warzones. Be warned though, this will be not a picnic. Better bring some friends with you. Bringing a lot of them sounds like a good idea.", cid)
-				setPlayerStorageValue(cid, Storage.BigfootBurden.WarzoneStatus, 1)
+		if player:getStorageValue(Storage.BigfootBurden.QuestLine) >= 30 then
+			if player:getStorageValue(Storage.BigfootBurden.WarzoneStatus) < 1 then
+				npcHandler:say("Fine, I grant you the permission to enter the warzones. Be warned though, this will be not a picnic. Better bring some friends with you. Bringing a lot of them sounds like a good idea.", cid)
+				player:setStorageValue(Storage.BigfootBurden.WarzoneStatus, 1)
 			else
-				selfSay("You have already accepted this mission.", cid)
+				npcHandler:say("You have already accepted this mission.", cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		else
-			selfSay("Sorry, you have not yet earned enough renown that we would risk your life in such a dangerous mission.", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("Sorry, you have not yet earned enough renown that we would risk your life in such a dangerous mission.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true
@@ -115,7 +113,7 @@ end
 
 local function onTradeRequest(cid)
 	if Player(cid):getStorageValue(Storage.BigfootBurden.bossKills) < 20 then
-		selfSay('Only if you have killed 20 of our major enemies in the warzones I am allowed to trade with you.', cid)
+		npcHandler:say('Only if you have killed 20 of our major enemies in the warzones I am allowed to trade with you.', cid)
 		return false
 	end
 

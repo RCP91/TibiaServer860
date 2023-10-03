@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,26 +11,26 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if msgcontains(msg, "measurements") then
-		if getPlayerStorageValue(cid, Storage.postman.Mission07) >= 1 and	getPlayerStorageValue(cid, Storage.postman.MeasurementsOlrik) ~= 1 then
-			selfSay("My measurements? Listen, lets make that a bit more exciting ... No, no, not what you think! I mean let's gamble. I will roll a dice. If I roll a 6 you win and I'll tell you what you need to know, else I win and get 5 gold. Deal? ", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.postman.Mission07) >= 1 and	player:getStorageValue(Storage.postman.MeasurementsOlrik) ~= 1 then
+			npcHandler:say("My measurements? Listen, lets make that a bit more exciting ... No, no, not what you think! I mean let's gamble. I will roll a dice. If I roll a 6 you win and I'll tell you what you need to know, else I win and get 5 gold. Deal? ", cid)
+			npcHandler.topic[cid] = 1
 	else
-			selfSay("...", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("...", cid)
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, "yes") then
-		if getPlayerBalance(cid) + getPlayerBalance(cid) >= 5 then
-			doPlayerRemoveMoney(cid, 5)
+		if player:getMoney() + player:getBankBalance() >= 5 then
+			player:removeMoneyNpc(5)
 			local number = math.random(6)
 			if number ~= 6 then
-				selfSay("Ok, here we go ... " .. number .. "! You lose! Try again.", cid)
+				npcHandler:say("Ok, here we go ... " .. number .. "! You lose! Try again.", cid)
 			else
-				selfSay("Ok, here we go ... " .. number .. "! You have won! How lucky you are! So listen ...<tells you what you need to know> ", cid)
-				setPlayerStorageValue(cid, Storage.postman.Mission07, getPlayerStorageValue(cid, Storage.postman.Mission07) + 1)
-				setPlayerStorageValue(cid, Storage.postman.MeasurementsOlrik, 1)
-				talkState[talkUser] = 0
+				npcHandler:say("Ok, here we go ... " .. number .. "! You have won! How lucky you are! So listen ...<tells you what you need to know> ", cid)
+				player:setStorageValue(Storage.postman.Mission07, player:getStorageValue(Storage.postman.Mission07) + 1)
+				player:setStorageValue(Storage.postman.MeasurementsOlrik, 1)
+				npcHandler.topic[cid] = 0
 			end
 		end
 	end

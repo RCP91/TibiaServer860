@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -33,58 +32,58 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 
 	if (msgcontains(msg, "offers")) then
 		local text = "I have these offers: "
 		for i, v in pairs(itemsTable) do
 			text = text.. "{" ..i.. "}, "
 		end
-		selfSay(text, cid)
+		npcHandler:say(text, cid)
 	end
 
-	if talkState[talkUser] == 0 then
+	if npcHandler.topic[cid] == 0 then
 		local table = itemsTable[msg]
 		if table then
 			if (table.itemId ~= 6497) then
-				selfSay("So you want to exchange "..msg..", for ".. table.count .." christmas tokens?", cid)
+				npcHandler:say("So you want to exchange "..msg..", for ".. table.count .." christmas tokens?", cid)
 				storeTable[cid] = msg
-				talkState[talkUser] = 1
+				npcHandler.topic[cid] = 1
 			else
-				selfSay("So you want to exchange ".. msg .." to "..table.count.." christmas token(s)?", cid)
+				npcHandler:say("So you want to exchange ".. msg .." to "..table.count.." christmas token(s)?", cid)
 				storeTable[cid] = 6527
-				talkState[talkUser] = 1
+				npcHandler.topic[cid] = 1
 			end
 		end
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, "yes") then
 			if (tonumber(storeTable[cid]) == 6527) then
-				if (doPlayerRemoveItem(cid, 6497, 1)) then
-					selfSay("Thank you, here is your 1 christmas token.", cid)
-					doPlayerAddItem(cid, 6527, 1)
-					talkState[talkUser] = 0
+				if (player:removeItem(6497, 1)) then
+					npcHandler:say("Thank you, here is your 1 christmas token.", cid)
+					player:addItem(6527, 1)
+					npcHandler.topic[cid] = 0
 				else
-					selfSay("You don't have a present bag.", cid)
-					talkState[talkUser] = 0
+					npcHandler:say("You don't have a present bag.", cid)
+					npcHandler.topic[cid] = 0
 				end
 				return false
 			end
-			if doPlayerRemoveItem(cid, 6527, itemsTable[storeTable[cid]].count) then
-				selfSay("Thank you, here is your "..storeTable[cid]..".", cid)
-				doPlayerAddItem(cid, itemsTable[storeTable[cid]].itemId, 1)
-				talkState[talkUser] = 0
+			if player:removeItem(6527, itemsTable[storeTable[cid]].count) then
+				npcHandler:say("Thank you, here is your "..storeTable[cid]..".", cid)
+				player:addItem(itemsTable[storeTable[cid]].itemId, 1)
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("You don't have enough of tokens.", cid)
-				talkState[talkUser] = 0
+				npcHandler:say("You don't have enough of tokens.", cid)
+				npcHandler.topic[cid] = 0
 			end
 		end
-	elseif talkState[talkUser] > 0 then
+	elseif npcHandler.topic[cid] > 0 then
 		if msgcontains(msg, "no") then
-			selfSay("Come back when you are ready to trade some tokens!", cid)
+			npcHandler:say("Come back when you are ready to trade some tokens!", cid)
 		end
 	end
 	if msgcontains(msg, "santa claus") then
-		selfSay({
+		npcHandler:say({
 			"Well, he does not really like it if someone tells his story ... but I do! A long, long time ago Santa was nothing but a greedy little dwarf. A real miser, I tell ya ...",
 			"He was greedy even by dwarven standards. He would never share anything or give away the cheapest thing in his possession ...",
 			"One day a woman came to his house and asked him for a cup of water ...",

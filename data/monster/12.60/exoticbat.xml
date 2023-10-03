@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Exotic Bat" nameDescription="a exotic bat" race="venom" experience="1200" speed="230">
+	<health now="1500" max="1500" />
+	<look type="1373" corpse="6068" />
+	<targetchange interval="4000" chance="10" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+		<flag canwalkonfire="0" />
+		<flag canwalkonenergy="1" />
+		<flag canwalkonpoison="1" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-100" max="-400" poison="160" />
+		<attack name="poisonfield" interval="2000" chance="10" range="7" radius="1" target="1">
+			<attribute key="shootEffect" value="poison" />
+		</attack>
+		<attack name="earth" interval="2000" chance="10" range="7" radius="1" target="1" min="-80" max="-170">
+			<attribute key="shootEffect" value="poison" />
+		</attack>
+	</attacks>
+	<defenses armor="30" defense="0">
+		<defense name="speed" interval="2000" chance="15" speedchange="390" duration="5000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</defense>
+	</defenses>
+	<elements>
+		<element energyPercent="20" />
+		<element icePercent="20" />
+		<element firePercent="-10" />
+	</elements>
+	<immunities>
+		<immunity invisible="1" />
+		<immunity earth="1" />
+	</immunities>
+	<loot>
+		<item id="2148" countmax="99" chance="100000" /><!-- gold coin -->
+		<item id="2152" countmax="10" chance="100000" /><!-- platinum coin -->
+		<item name="Great Mana Potion" countmax="3" chance="33000" />
+		<item name="Bat Wing" chance="6000" />
+		<item name="Garlic Necklace" chance="9200" />
+		<item name="Terra Amulet" chance="2980" />
+		<item name="Spider Silk" chance="1250" />
+		<item name="Dark Mushroom" countmax="15" chance="100000" />
+		<item name="Green Mushroom" countmax="15" chance="100000" />
+	</loot>
+</monster>

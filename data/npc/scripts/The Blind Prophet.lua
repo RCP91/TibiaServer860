@@ -2,7 +2,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -33,19 +32,19 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, "transport") or msgcontains(msg, "passage") then
-		selfSay("You want me to transport you to forbidden land?", cid)
-		talkState[talkUser] = 1
-	elseif talkState[talkUser] == 1 then
+		npcHandler:say("You want me to transport you to forbidden land?", cid)
+		npcHandler.topic[cid] = 1
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
-			selfSay("Take care!", cid)
+			npcHandler:say("Take care!", cid)
 			local destination = Position(33025, 32580, 6)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:teleportTo(destination)
 			destination:sendMagicEffect(CONST_ME_TELEPORT)
 		elseif msgcontains(msg, 'no') then
-			selfSay("Wise decision maybe.", cid)
+			npcHandler:say("Wise decision maybe.", cid)
 		end
 	end
 	return true

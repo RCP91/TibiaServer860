@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,7 +12,7 @@ local voices = {
 	{ text = 'Hail Pumin. Yes, hail.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local config = {
 	[1] = "S O R C E R E R",
@@ -32,32 +31,32 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	local vocationId = player:getVocation():getBase():getId()
 
 	if msgcontains(msg, "pumin") then
-		if getPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin) == 1 then
-			selfSay("I'm not sure if you know what you are doing but anyway. Your name is?", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 1 then
+			npcHandler:say("I'm not sure if you know what you are doing but anyway. Your name is?", cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, player:getName()) then
-		if talkState[talkUser] == 1 then
-			selfSay("Alright |PLAYERNAME|. Vocation?", cid)
-			talkState[talkUser] = 2
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say("Alright |PLAYERNAME|. Vocation?", cid)
+			npcHandler.topic[cid] = 2
 		end
 	elseif msgcontains(msg, Vocation(vocationId):getName()) then
-		if talkState[talkUser] == 2 then
-			selfSay(config[vocationId] .. ", is that right?! What do you want from me?", cid)
-			talkState[talkUser] = 3
+		if npcHandler.topic[cid] == 2 then
+			npcHandler:say(config[vocationId] .. ", is that right?! What do you want from me?", cid)
+			npcHandler.topic[cid] = 3
 		end
 	elseif msgcontains(msg, "356") then
-		if talkState[talkUser] == 3 then
-			setPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin, 2)
-			selfSay("Sorry, you need Form 145 to get Form 356. Come back when you have it", cid)
-			talkState[talkUser] = 0
-		elseif getPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin) == 7 then
-			setPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin, 8)
-			selfSay("You are better than I thought! Congratulations, here you are: Form 356!", cid)
+		if npcHandler.topic[cid] == 3 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 2)
+			npcHandler:say("Sorry, you need Form 145 to get Form 356. Come back when you have it", cid)
+			npcHandler.topic[cid] = 0
+		elseif player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 7 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 8)
+			npcHandler:say("You are better than I thought! Congratulations, here you are: Form 356!", cid)
 		end
 	end
 	return true

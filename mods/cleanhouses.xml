@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mod name="Cleanhouses" version="1.03" author="nsanee" contact="tibiaking.com" enabled="yes">
+    <description>
+        v.1.03 - Added 'onlyNonPremium' configurable.
+                 Removed modlib, since the script is run once anyway we don't need it loaded at all times.
+                 It shouldn't now stop execution when a house is nameless.
+				
+		v.1.02 - now uses only one sql query, removed multiworld configurable  since it's not needed anymore
+        v.1.01 - small fixes, optimized query + multiworld support.
+       
+		
+        This mod will clean houses of inactive players and move their items to the depot.
+        
+        config explained:
+            
+            days - If the player hasn't logged in for this number of days his house will be freed.
+            log - true/false, whether to enable logging of which houses have been cleaned.
+            file - path to the log file, where logs will be stored. Ignored if 'log' set to false
+            onlyNonPremium - if set to 'true', the script will clean only the houses of players who don't have any pacc days left.
+			
+		other notes:
+			DO NOT remove doSaveServer() at the end, otherwise if your server happens to crash before the nearest server save you will regret it =)
+    </description>
+
+    <globalevent name="cleanhouses" type="start" event="buffer"><![CDATA[
+	
+	
+        local config = { 
+            days = 30,
+            log = true,
+            file = getDataDir() .. "/logs/cleanhouses.txt",
+	    onlyNonPremium = true
+        }
+		
+		
+		
+        local ns_query =[[ SELECT houses.owner, houses.id as hid, houses.name as house_name ,players.name FROM houses
+            LEFT JOIN players ON players.id=houses.owner
+            LEFT JOIN accounts ON players.account_id=accounts.id
+            WHERE players.lastlogin < (UNIX_TIMESTAMP() - ]] ..config.days.. [[*24*60*60)
+            ]] ..(config.onlyNonPremium and ' AND accounts.premdays=0 ' or '')..[[
+            AND	players.world_id =]] .. getConfigValue("worldId")
+		
+        local house = db.getResult(ns_query)
+        local logs = " :: Houses cleaned:\n\n"
+        if house:getID() ~= -1 then
+            repeat
+                logs = logs .. house:getDataString('house_name') ..", owned by " .. house:getDataString('name') .. "\n"
+                setHouseOwner(house:getDataInt('hid'), 0)
+            until not house:next()
+            house:free()
+        else
+            logs = logs .. "There were no houses to clean."
+        end
+        if config.log then
+            doWriteLogFile(config.file, logs)
+        end
+        addEvent(doSaveServer, 1000)
+		
+    ]]></globalevent>
+</mod>

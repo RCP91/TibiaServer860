@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -20,11 +19,11 @@ if not npcHandler:isFocused(cid) then
 		return false
 	end
 
-
-	if msgcontains(msg, "magic") and getPlayerStorageValue(cid, 12902) < 1 then
-	selfSay("...Tell me...the first... magic word.", cid)
-	setPlayerStorageValue(cid, 12902, 1)
-	else selfSay("...continue with your mission...", cid)
+local player = Player(cid)
+	if msgcontains(msg, "magic") and player:getStorageValue(12902) < 1 then
+	npcHandler:say("...Tell me...the first... magic word.", cid)
+	player:setStorageValue(12902, 1)
+	else npcHandler:say("...continue with your mission...", cid)
 	end
 
 	end
@@ -34,6 +33,6 @@ keywordHandler:addKeyword({'lives'}, StdModule.say, {npcHandler = npcHandler, te
 keywordHandler:addKeyword({'forever'}, StdModule.say, {npcHandler = npcHandler, text = 'Yes... YES... friendship... lives... FOREVER ... And say hello... to... my old friend... Omrabas. '})
 
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())

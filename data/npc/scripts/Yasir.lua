@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,11 +13,11 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msg:lower() == "name" then
-		return selfSay("Me Yasir.", cid)
+		return npcHandler:say("Me Yasir.", cid)
 	elseif msg:lower() == "job" then
-		return selfSay("Tje hari ku ne finjala. {Ariki}?", cid)
+		return npcHandler:say("Tje hari ku ne finjala. {Ariki}?", cid)
 	elseif msg:lower() == "passage" then
-		return selfSay("Soso yana. <shakes his head>", cid)
+		return npcHandler:say("Soso yana. <shakes his head>", cid)
 	end
 	return true
 end

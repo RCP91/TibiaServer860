@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Courage Leech" nameDescription="a courage leech" race="fire" experience="29900" speed="310">
+	<health now="27000" max="27000" />
+	<look type="1315" corpse="39075" />
+	<targetchange interval="4000" chance="20" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" skill="250" attack="350"/>
+		<attack name="manadrain" interval="1000" chance="7" range="7" min="-900" max="-1500">
+			<attribute key="shootEffect" value="energy"/>
+			<attribute key="areaEffect" value="poff"/>
+		</attack>
+		<attack name="drunk" interval="2000" chance="20" target="0" radius="5" duration="9000">
+			<attribute key="areaEffect" value="smallclouds"/>
+		</attack>
+		<attack name="strength" interval="1000" chance="9" range="7">
+			<attribute key="shootEffect" value="largerock"/>
+			<attribute key="areaEffect" value="energyarea"/>
+		</attack>
+		<attack name="energy strike" interval="2000" chance="30" range="1" min="-400" max="-1000">
+		</attack>
+		
+		<attack name="energy" interval="2000" chance="15" range="7" target="1" min="-500" max="-1000">
+			<attribute key="shootEffect" value="energyball"/>
+			<attribute key="areaEffect" value="energy"/>
+		</attack>
+		<attack name="lifedrain" interval="1000" chance="20" radius="8" target="0" min="-400" max="-1200">
+			<attribute key="areaEffect" value="bluebubble"/>
+		</attack>
+		<attack name="lifedrain" interval="2000" chance="10" length="8" spread="0" min="-500" max="-1200">
+			<attribute key="areaEffect" value="purpleenergy"/>
+		</attack>		
+		<attack name="renegade knight" interval="2000" chance="20"/>		
+		<attack name="choking fear drown" interval="2000" chance="20"/>
+		<attack name="death" interval="2000" chance="20" radius="4" target="1" min="-450" max="-1400">
+			<attribute key="shootEffect" value="suddendeath"/>
+			<attribute key="areaEffect" value="mortarea"/>
+		</attack>
+		<attack name="manadrain" interval="1000" chance="10" radius="8" target="0" min="-500" max="-1200">
+			<attribute key="areaEffect" value="greenshimmer"/>
+		</attack>
+		<attack name="speed" interval="1000" chance="12" radius="6" target="0" speedchange="-1900" duration="60000">
+			<attribute key="areaEffect" value="poison"/>
+		</attack>
+		<attack name="strength" interval="1000" chance="8" radius="5" target="0">
+			<attribute key="areaEffect" value="blackspark"/>
+		</attack>		
+		
+		<attack name="lifedrain" interval="1000" chance="15" length="8" spread="0" min="-300" max="-950">
+			<attribute key="areaEffect" value="redshimmer"/>
+		</attack>
+	</attacks>
+	<defenses armor="160" defense="160">
+		<defense name="healing" interval="6000" chance="25" min="500" max="600">
+			<attribute key="areaEffect" value="blueshimmer"/>
+		</defense>
+		<defense name="speed" interval="1000" chance="8" speedchange="1901" duration="5000">
+			<attribute key="areaEffect" value="redshimmer"/>
+		</defense>
+	</defenses>
+	<immunities>
+		<immunity lifedrain="1"/>
+		<immunity paralyze="1"/>
+		<immunity invisible="1"/>
+	</immunities>
+	<voices interval="5000" chance="10">
+		<voice sentence="Zap! Zap!" />
+	</voices>
+	<loot>
+		<item id="2152" countmax="18" chance="1180" /> <!-- Platinum Coin -->
+		<item id="8473" countmax="8" chance="1180" /> <!-- Ultimate Health Potion -->
+		<item id="7895" chance="4200" /> <!-- Lightning Legs -->
+		<item id="7901" chance="5700" /> <!-- Lightning Headband -->
+		<item id="2179" chance="3300" /> <!-- Gold Ring -->
+		<item id="7422" chance="2400" /> <!-- Jade Hammer -->
+		<item id="2444" chance="2100" /> <!-- Hammer of Wrath -->
+		<item id="7382" chance="1900" /> <!-- Demonrage Sword -->
+		<item id="7412" chance="1700" /> <!-- Butcher's Axe -->
+		<item id="7418" chance="1400" /> <!-- Nightmare Blade -->
+		<item id="7419" chance="1100" /> <!-- Dreaded Cleaver -->
+		<item id="7421" chance="1200" /> <!-- Onyx Flail -->
+		<item id="12613" chance="1300" /> <!-- Twiceslicer -->
+		<item id="38944" chance="10" /> <!-- Twiceslicer -->
+	</loot>
+</monster>

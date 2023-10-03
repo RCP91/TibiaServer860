@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -22,54 +21,54 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	local missionProgress = getPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission03)
+	local player = Player(cid)
+	local missionProgress = player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission03)
 	if msgcontains(msg, 'mission') then
-		if getPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission02) == 3 then
+		if player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission02) == 3 then
 			if missionProgress < 1 then
-				selfSay({
+				npcHandler:say({
 					'I guess this is the first time I entrust a human with a mission. And such an important mission, too. But well, we live in hard times, and I am a bit short of adequate staff. ...',
 					'Besides, Baa\'leal told me you have distinguished yourself well in previous missions, so I think you might be the right person for the job. ...',
 					'But think carefully, human, for this mission will bring you close to certain death. Are you prepared to embark on this mission?'
 				}, cid)
-				talkState[talkUser] = 1
+				npcHandler.topic[cid] = 1
 
 			elseif missionProgress == 1 then
-				selfSay('You haven\'t finished your final mission yet. Shall I explain it again to you?', cid)
-				talkState[talkUser] = 1
+				npcHandler:say('You haven\'t finished your final mission yet. Shall I explain it again to you?', cid)
+				npcHandler.topic[cid] = 1
 
 			elseif missionProgress == 2 then
-				selfSay('Have you found Fa\'hradin\'s lamp and placed it in Malor\'s personal chambers?', cid)
-				talkState[talkUser] = 2
+				npcHandler:say('Have you found Fa\'hradin\'s lamp and placed it in Malor\'s personal chambers?', cid)
+				npcHandler.topic[cid] = 2
 			else
-				selfSay('There\'s no mission left for you, friend of the Efreet. However, I have a {task} for you.', cid)
+				npcHandler:say('There\'s no mission left for you, friend of the Efreet. However, I have a {task} for you.', cid)
 			end
 		else
-			selfSay({
+			npcHandler:say({
 				'So you would like to fight for us. Hmm. ...',
 				'You show true courage, human, but I will not accept your offer at this point of time.'
 			}, cid)
 		end
 
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
-			selfSay({
+			npcHandler:say({
 				'Well, listen. We are trying to acquire the ultimate weapon to defeat Gabel: Fa\'hradin\'s lamp! ...',
 				'At the moment it is still in the possession of that good old friend of mine, the Orc King, who kindly released me from it. ...',
 				'However, for some reason he is not as friendly as he used to be. You better watch out, human, because I don\'t think you will get the lamp without a fight. ...',
 				'Once you have found the lamp you must enter Ashta\'daramai again. Sneak into Gabel\'s personal chambers and exchange his sleeping lamp with Fa\'hradin\'s lamp! ...',
 				'If you succeed, the war could be over one night later!'
 			}, cid)
-			setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission03, 1)
+			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission03, 1)
 
 		elseif msgcontains(msg, 'no') then
-			selfSay('Your choice.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('Your choice.', cid)
+			npcHandler.topic[cid] = 0
 		end
 
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		if msgcontains(msg, 'yes') then
-			selfSay({
+			npcHandler:say({
 				'Well well, human. So you really have made it - you have smuggled the modified lamp into Gabel\'s bedroom! ...',
 				'I never thought I would say this to a human, but I must confess I am impressed. ...',
 				'Perhaps I have underestimated you and your kind after all. ...',
@@ -77,15 +76,15 @@ local function creatureSayCallback(cid, type, msg)
 				'But that\'s in the future. For now, I will confine myself to give you the permission to trade with my people whenever you want to. ...',
 				'Farewell, human!'
 			}, cid)
-			setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission03, 3)
-			setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory, 1)
-			--player:addAchievement('Efreet Ally')
+			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission03, 3)
+			player:setStorageValue(Storage.DjinnWar.EfreetFaction.DoorToMaridTerritory, 1)
+			player:addAchievement('Efreet Ally')
 			addEvent(releasePlayer, 1000, cid)
 
 		elseif msgcontains(msg, 'no') then
-			selfSay('Just do it!', cid)
+			npcHandler:say('Just do it!', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

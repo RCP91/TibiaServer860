@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -56,24 +55,24 @@ local function setNewTradeTable(table)
 end
 
 local function onBuy(cid, item, subType, amount, ignoreCap, inBackpacks)
-	
+	local player = Player(cid)
 	local items = setNewTradeTable(getTable(player))
 	if not ignoreCap and player:getFreeCapacity() < ItemType(items[item].itemId):getWeight(amount) then
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'You don\'t have enough cap.')
 	end
-	if not doPlayerRemoveMoney(cid, items[item].buyPrice * amount) then
+	if not player:removeMoneyNpc(items[item].buyPrice * amount) then
 		selfSay("You don't have enough money.", cid)
 	else
-		doPlayerAddItem(cid, items[item].itemId, amount)
+		player:addItem(items[item].itemId, amount)
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'Bought '..amount..'x '..items[item].realName..' for '..items[item].buyPrice * amount..' gold coins.')
 	end
 	return true
 end
 
 local function onSell(cid, item, subType, amount, ignoreCap, inBackpacks)
-	
+	local player = Player(cid)
 	local items = setNewTradeTable(getTable(player))
-	if items[item].sellPrice and doPlayerRemoveItem(cid, items[item].itemId, amount) then
+	if items[item].sellPrice and player:removeItem(items[item].itemId, amount) then
 		player:addMoney(items[item].sellPrice * amount)
 		return player:sendTextMessage(MESSAGE_INFO_DESCR, 'Sold '..amount..'x '..items[item].realName..' for '..items[item].sellPrice * amount..' gold coins.')
 	else
@@ -93,50 +92,50 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, 'equipment') then
-		selfSay({
+		npcHandler:say({
 			'You can buy different equipment for minor or for major tokens. So, which is the equipment you are interested in, the one for {minor} or {major} tokens? ...',
 			'By the way, if you want to have a look on the prismatic and gill items first, just head over to the depot and check the market.'
 		}, cid)
 	elseif msgcontains(msg, 'major') then
-		selfSay({
+		npcHandler:say({
 			'For ten major tokens, I can offer you a {gill gugel}, a {gill coat}, {gill legs}, a {spellbook} of vigilance, a {prismatic helmet}, a {prismatic armor}, {prismatic legs}, {prismatic boots} or a {prismatic shield} ...',
 			'For twenty major tokens, I can offer you a {basic soil guardian outfit}, a {basic crystal warlord outfit}, an {iron loadstone} or a {glow wine}.'
 		}, cid)
 	elseif msgcontains(msg, 'minor') then
-		selfSay({
+		npcHandler:say({
 			'For two minor tokens, you can buy one gnomish {supply} package! For eight tokens, you can buy a {muck} remover! For ten tokens, you can buy a {mission} crystal. For fifteen tokens, you can buy a crystal {lamp} or a mushroom {backpack}. ...',
 			'For seventy tokens, I can offer you a voucher for an {addition to the soil guardian outfit}, or a voucher for an {addition to the crystal warlord armor outfit}.'
 		}, cid)
 	elseif config[msg] then
 		local itemType = ItemType(config[msg].itemid)
-		selfSay(string.format('Do you want to trade %s %s for %d %s tokens?', (itemType:getArticle() ~= "" and itemType:getArticle() or ""), itemType:getName(), config[msg].token.count, config[msg].token.type), cid)
-		talkState[talkUser] = 1
+		npcHandler:say(string.format('Do you want to trade %s %s for %d %s tokens?', (itemType:getArticle() ~= "" and itemType:getArticle() or ""), itemType:getName(), config[msg].token.count, config[msg].token.type), cid)
+		npcHandler.topic[cid] = 1
 		t[cid] = msg
 	elseif msgcontains(msg, 'relations') then
-		
-		if getPlayerStorageValue(cid, Storage.BigfootBurden.QuestLine) >= 25 then
-			selfSay('Our relations improve with every mission you undertake on our behalf. Another way to improve your relations with us gnomes is to trade in minor crystal tokens. ...', cid)
-			selfSay('Your renown amongst us gnomes is currently {' .. math.max(0, getPlayerStorageValue(cid, Storage.BigfootBurden.Rank)) .. '}. Do you want to improve your standing by sacrificing tokens? One token will raise your renown by 5 points. ', cid)
-			talkState[talkUser] = 2
+		local player = Player(cid)
+		if player:getStorageValue(Storage.BigfootBurden.QuestLine) >= 25 then
+			npcHandler:say('Our relations improve with every mission you undertake on our behalf. Another way to improve your relations with us gnomes is to trade in minor crystal tokens. ...', cid)
+			npcHandler:say('Your renown amongst us gnomes is currently {' .. math.max(0, player:getStorageValue(Storage.BigfootBurden.Rank)) .. '}. Do you want to improve your standing by sacrificing tokens? One token will raise your renown by 5 points. ', cid)
+			npcHandler.topic[cid] = 2
 		else
-			selfSay('You are not even a recruit of the Bigfoots. Sorry I can\'t help you.', cid)
+			npcHandler:say('You are not even a recruit of the Bigfoots. Sorry I can\'t help you.', cid)
 		end
-	elseif talkState[talkUser] == 3 then
+	elseif npcHandler.topic[cid] == 3 then
 		local amount = getMoneyCount(msg)
 		if amount > 0 then
-			selfSay('Do you really want to trade ' .. amount .. ' minor tokens for ' .. amount * 5 .. ' renown?', cid)
+			npcHandler:say('Do you really want to trade ' .. amount .. ' minor tokens for ' .. amount * 5 .. ' renown?', cid)
 			renown[cid] = amount
-			talkState[talkUser] = 4
+			npcHandler.topic[cid] = 4
 		end
 	elseif msgcontains(msg, 'items') then
-		selfSay('Do you need to buy any mission items?', cid)
-		talkState[talkUser] = 5
+		npcHandler:say('Do you need to buy any mission items?', cid)
+		npcHandler.topic[cid] = 5
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
+		if npcHandler.topic[cid] == 1 then
 			local player, targetTable = Player(cid), config[t[cid]]
-			if getPlayerItemCount(cid, targetTable.token.id) < targetTable.token.count then
-				selfSay('Sorry, you don\'t have enough ' .. targetTable.token.type .. ' tokens with you.', cid)
-				talkState[talkUser] = 0
+			if player:getItemCount(targetTable.token.id) < targetTable.token.count then
+				npcHandler:say('Sorry, you don\'t have enough ' .. targetTable.token.type .. ' tokens with you.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
@@ -146,38 +145,38 @@ local function creatureSayCallback(cid, type, msg)
 
 			if player:addItemEx(item) ~= RETURNVALUE_NOERROR then
 				if player:getFreeCapacity() < weight then
-					selfSay('First make sure you have enough capacity to hold it.', cid)
+					npcHandler:say('First make sure you have enough capacity to hold it.', cid)
 				else
-					selfSay('First make sure you have enough space in your inventory.', cid)
+					npcHandler:say('First make sure you have enough space in your inventory.', cid)
 				end
-				talkState[talkUser] = 0
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			doPlayerRemoveItem(cid, targetTable.token.id, targetTable.token.count)
-			selfSay('Here have one of our ' .. item:getPluralName() .. '.', cid)
-			talkState[talkUser] = 0
-		elseif talkState[talkUser] == 2 then
-			selfSay("How many tokens do you want to trade?", cid)
-			talkState[talkUser] = 3
-		elseif talkState[talkUser] == 4 then
-			
-			if doPlayerRemoveItem(cid, 18422, renown[cid]) then
-				setPlayerStorageValue(cid, Storage.BigfootBurden.Rank, math.max(0, getPlayerStorageValue(cid, Storage.BigfootBurden.Rank)) + renown[cid] * 5)
+			player:removeItem(targetTable.token.id, targetTable.token.count)
+			npcHandler:say('Here have one of our ' .. item:getPluralName() .. '.', cid)
+			npcHandler.topic[cid] = 0
+		elseif npcHandler.topic[cid] == 2 then
+			npcHandler:say("How many tokens do you want to trade?", cid)
+			npcHandler.topic[cid] = 3
+		elseif npcHandler.topic[cid] == 4 then
+			local player = Player(cid)
+			if player:removeItem(18422, renown[cid]) then
+				player:setStorageValue(Storage.BigfootBurden.Rank, math.max(0, player:getStorageValue(Storage.BigfootBurden.Rank)) + renown[cid] * 5)
 				player:checkGnomeRank()
-				selfSay('As you wish! Your new renown is {' .. getPlayerStorageValue(cid, Storage.BigfootBurden.Rank) .. '}.', cid)
+				npcHandler:say('As you wish! Your new renown is {' .. player:getStorageValue(Storage.BigfootBurden.Rank) .. '}.', cid)
 			else
-				selfSay('You don\'t have these many tokens.', cid)
+				npcHandler:say('You don\'t have these many tokens.', cid)
 			end
-			talkState[talkUser] = 0
-		elseif talkState[talkUser] == 5 then
+			npcHandler.topic[cid] = 0
+		elseif npcHandler.topic[cid] == 5 then
 			openShopWindow(cid, getTable(), onBuy, onSell)
-			selfSay('Let us see if I have what you need.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('Let us see if I have what you need.', cid)
+			npcHandler.topic[cid] = 0
 		end
-	elseif msgcontains(msg, 'no') and isInArray({1, 3, 4, 5}, talkState[talkUser]) then
-		selfSay('As you like.', cid)
-		talkState[talkUser] = 0
+	elseif msgcontains(msg, 'no') and isInArray({1, 3, 4, 5}, npcHandler.topic[cid]) then
+		npcHandler:say('As you like.', cid)
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

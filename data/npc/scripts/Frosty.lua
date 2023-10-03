@@ -24,15 +24,15 @@ sleighinfo = {
 local o = {'bright percht sleigh', 'cold percht sleigh', 'dark percht sleigh'}
 function creatureSayCallback(cid, type, msg)
 local talkUser = cid
+local player = Player(cid)
 
 	if(not npcHandler:isFocused(cid)) then
 		return false
 	end
-	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
 	if sleighinfo[msg] ~= nil then
 		if (getPlayerStorageValue(cid, sleighinfo[msg].storageID) ~= -1) then
-				selfSay('You already have this sleigh!', cid)
+				npcHandler:say('You already have this sleigh!', cid)
 				npcHandler:resetNpc()
 		else
 		local itemsTable = sleighinfo[msg].items
@@ -54,7 +54,7 @@ local talkUser = cid
 			elseif (sleighinfo[msg].cost > 0) and table.maxn(sleighinfo[msg].items) then
 				text = items_list .. ' and ' .. sleighinfo[msg].cost .. ' gp'
 			end
-			selfSay('For a ' .. msg .. ' you will need ' .. text .. '. Do you have it with you?', cid)
+			npcHandler:say('For a ' .. msg .. ' you will need ' .. text .. '. Do you have it with you?', cid)
 			rtnt[talkUser] = msg
 			talkState[talkUser] = sleighinfo[msg].storageID
 			return true
@@ -70,8 +70,7 @@ local talkUser = cid
 					end
 				end
 			end
-			if(getPlayerMoney(cid) >= sleighinfo[rtnt[talkUser]].cost) and (items_number == table.maxn(sleighinfo[rtnt[talkUser]].items)) then
-				doPlayerRemoveMoney(cid, sleighinfo[rtnt[talkUser]].cost)
+			if(player:removeMoneyNpc(sleighinfo[rtnt[talkUser]].cost) and (items_number == table.maxn(sleighinfo[rtnt[talkUser]].items))) then
 				if table.maxn(sleighinfo[rtnt[talkUser]].items) > 0 then
 					for i = 1, table.maxn(sleighinfo[rtnt[talkUser]].items) do
 						local item = sleighinfo[rtnt[talkUser]].items[i]
@@ -80,9 +79,9 @@ local talkUser = cid
 				end
 				doPlayerAddMount(cid, sleighinfo[rtnt[talkUser]].mount)
 				setPlayerStorageValue(cid,sleighinfo[rtnt[talkUser]].storageID,1)
-				selfSay('Here you are.', cid)
+				npcHandler:say('Here you are.', cid)
 			else
-				selfSay('You do not have needed items!', cid)
+				npcHandler:say('You do not have needed items!', cid)
 			end
 			rtnt[talkUser] = nil
 			talkState[talkUser] = 0
@@ -90,13 +89,13 @@ local talkUser = cid
 			return true
 		end
 	elseif msgcontains(msg, "mount") or msgcontains(msg, "mounts") or msgcontains(msg, "sleigh") or msgcontains(msg, "sleighs") then
-		selfSay('I can give you one of the following sleighs: {' .. table.concat(o, "}, {") .. '}.', cid)
+		npcHandler:say('I can give you one of the following sleighs: {' .. table.concat(o, "}, {") .. '}.', cid)
 		rtnt[talkUser] = nil
 		talkState[talkUser] = 0
 		npcHandler:resetNpc()
 		return true
 	elseif msgcontains(msg, "help") then
-		selfSay('Just tell me which {sleigh} you want to know more about.', cid)
+		npcHandler:say('Just tell me which {sleigh} you want to know more about.', cid)
 		rtnt[talkUser] = nil
 		talkState[talkUser] = 0
 		npcHandler:resetNpc()
@@ -104,7 +103,7 @@ local talkUser = cid
 	else
 		if talkState[talkUser] ~= nil then
 			if talkState[talkUser] > 0 then
-			selfSay('Come back when you get these items.', cid)
+			npcHandler:say('Come back when you get these items.', cid)
 			rtnt[talkUser] = nil
 			talkState[talkUser] = 0
 			npcHandler:resetNpc()

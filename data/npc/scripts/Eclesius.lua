@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -17,72 +16,8 @@ local voices = {
 	{ text = "So much to do, so much to do... uh... where should I start?" }
 }
 
+npcHandler:addModule(VoiceModule:new(voices))
 
-local function creatureSayCallback(cid, type, msg)
-	if not npcHandler:isFocused(cid) then
-		return false
-	end
-	
-	
-	
-	--Cuadno responde Mission
-	if msgcontains(msg, 'mission') then	
-		if getPlayerStorageValue(cid, 45215) == -1 then
-			selfSay({
-				'Well, now that you mention it, there is in fact something you could do for me apart from your usual tasks. It\'s all because of that fool! ...',
-				'I can\'t remember who it was, but someone ruined my favourite hat which used to complete my favourite outfit. It\'s totally dented! Also there are some suspicious stains on it. It is out of the question for me to wear it in that state!! ...',
-				'So I guess I need a new hat. And while we\'re at it, I want it to be kind of stylish. Also manly. Not pink! And, uh, not too heavy. But since you\'re my assistant, I\'ll leave all that up to you. Hehe. ...',
-				'Unfortunately I\'m not good at sewing, so you might need to find a tailor. I heard they have a large warehouse for clothing in {Venore}. Maybe you can find someone there who could help you with the hat. Will you take on this mission?'
-			}, cid)
-			talkState[talkUser] = 1  
-		end
-		
-		if getPlayerStorageValue(cid, 45215) == 2 then
-			selfSay({
-				'Oh wow. A hat, you say? You\'ve actually brought me a new hat?! How did you know I wanted one? That\'s almost sweet of you <sniff>. Can I see it?'
-			}, cid)
-			talkState[talkUser] = 2 
-		end
-		
-		
-	end
-	
-	
-	--Cuadno responde YES
-	if msgcontains(msg, 'yes') then	
-		if talkState[talkUser] == 1  then
-			selfSay({
-				'<claps hands> How splendid! ... What was it again? Uhm... I can\'t remember right now, but I feel happy anyway. Just surprise me with whatever you have planned. Hehe.'
-			}, cid)
-			setPlayerStorageValue(cid, 45215, 1) 
-		end
-		
-		if talkState[talkUser] == 2  then			
-			if doPlayerRemoveItem(cid, 10046, 1) then
-				selfSay({
-				'<claps hands> How splendid! ... What was it again? Uhm... I can\'t remember right now, but I feel happy anyway. Just surprise me with whatever you have planned. Hehe.'
-				}, cid)
-				setPlayerStorageValue(cid, 45215, 3) 
-				player:addExperience(10000)
-				doPlayerAddItem(player,2152,50)
-			else
-				selfSay("His is not my hat =(", cid)
-			end
-			
-		end
-		
-		
-		
-		
-	end
-
-	return true
-end
-
-
-
-
---npcHandler:addModule(VoiceModule:new(voices))
 npcHandler:setMessage(MESSAGE_GREET, "Who are you? What do you want? You seem too experienced to become my assistant. Please leave.")
-npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+
 npcHandler:addModule(FocusModule:new())

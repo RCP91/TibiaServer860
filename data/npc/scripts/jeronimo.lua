@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)               npcHandler:onCreatureAppear(cid)             end
 function onCreatureDisappear(cid)       npcHandler:onCreatureDisappear(cid)               end
@@ -24,38 +23,38 @@ local function creatureSayCallback(cid, type, msg)
           return false
      end
 
-     
+     local player = Player(cid)
      msg = string.lower(msg)
      if (msg == "event shop") then
-          selfSay("In our website enter in {Events} => {Events Shop}.", cid)
+          npcHandler:say("In our website enter in {Events} => {Events Shop}.", cid)
      end
      
      if (eventShopItems[msg]) then
-          talkState[talkUser] = 0
+          npcHandler.topic[cid] = 0
           local itemId, itemCount, itemPrice = eventShopItems[msg][1], eventShopItems[msg][2], eventShopItems[msg][3]
-          if (getPlayerItemCount(cid, 15515) > 0) then
-               selfSay("You want buy {" ..msg.. "} for " ..itemPrice.. "x?", cid)
-               talkState[talkUser] = msg
+          if (player:getItemCount(15515) > 0) then
+               npcHandler:say("You want buy {" ..msg.. "} for " ..itemPrice.. "x?", cid)
+               npcHandler.topic[cid] = msg
           else
-               selfSay("You don't have " ..itemPrice.. " {Bar of Gold(s)}!", cid)
+               npcHandler:say("You don't have " ..itemPrice.. " {Bar of Gold(s)}!", cid)
                return true
           end
      end
 
-     if (eventShopItems[talkState[talkUser]]) then
-          local itemId, itemCount, itemPrice = eventShopItems[talkState[talkUser]][1], eventShopItems[talkState[talkUser]][2], eventShopItems[talkState[talkUser]][3]
+     if (eventShopItems[npcHandler.topic[cid]]) then
+          local itemId, itemCount, itemPrice = eventShopItems[npcHandler.topic[cid]][1], eventShopItems[npcHandler.topic[cid]][2], eventShopItems[npcHandler.topic[cid]][3]
           if (msg == "no" or
-               msg == "nï¿½o") then
-               selfSay("So... what you want?", cid)
-               talkState[talkUser] = 0
+               msg == "não") then
+               npcHandler:say("So... what you want?", cid)
+               npcHandler.topic[cid] = 0
           elseif (msg == "yes" or
                     msg == "sim") then
-               if (getPlayerItemCount(cid, 15515) >= itemPrice) then
-                    selfSay("You bought {" ..talkState[talkUser].."} " ..itemCount.. "x for " ..itemPrice.. " {Bar of Gold(s)}!", cid)
-                    doPlayerRemoveItem(cid, 15515, itemPrice)
-                    doPlayerAddItem(cid, itemId, itemCount)
+               if (player:getItemCount(15515) >= itemPrice) then
+                    npcHandler:say("You bought {" ..npcHandler.topic[cid].."} " ..itemCount.. "x for " ..itemPrice.. " {Bar of Gold(s)}!", cid)
+                    player:removeItem(15515, itemPrice)
+                    player:addItem(itemId, itemCount)
                else
-                    selfSay("You don't have enough bar's.", cid)
+                    npcHandler:say("You don't have enough bar's.", cid)
                     return true
                end
           end
@@ -63,7 +62,7 @@ local function creatureSayCallback(cid, type, msg)
 end
 
 local voices = { {text = 'Change your Bar of Gold\'s for Items here!'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())

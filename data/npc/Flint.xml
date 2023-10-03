@@ -3,7 +3,12 @@
 	<health now="100" max="100" />
 	<look type="134" head="95" body="57" legs="76" feet="39" addons="0" />
 	<parameters>
-		<parameter key="module_shop" value="1" />		
+		<parameter key="module_shop" value="1" />
+		<parameter key="shop_buyable" value="
+			exercise sword,32384,262500,500;
+			exercise axe,32385,262500,500;
+			exercise club,32386,262500,500;
+			exercise bow,32387,262500,500;" />
 		<parameter key="shop_sellable" value="
 			Alloy Legs,23539,11000;
 			axe,2386,7;

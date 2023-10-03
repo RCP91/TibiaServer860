@@ -1,157 +1,109 @@
-local config = {
-	waters = {4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 4665, 4666, 4820, 4821, 4822, 4823, 4824, 4825},
-	fishable = {4608, 4609, 4610, 4611, 4612, 4613, 7236},
-	spawning = {4614, 4615, 4616, 4617, 4618, 4619},
-	holes = {7236},
+local waterIds = {493, 4608, 4609, 4610, 4611, 13550, 13552, 4612, 4613, 4614, 4615, 4616, 4617, 4618, 4619, 4620, 4621, 4622, 4623, 4624, 4625, 7236, 10499, 15401, 15402, 13549}
+local lootTrash = {2234, 2238, 2376, 2509, 2667}
+local lootCommon = {2152, 2167, 2168, 2669, 7588, 7589}
+local lootRare = {2143, 2146, 2149, 7158, 7159}
+local lootVeryRare = {7632, 7633, 10220}
+local lootVeryRare1 = {7632, 13546}
+local lootRare1 = {2143, 13546}
+local lootCommon1 = {2152, 7589, 13546}
 
-	corpses = {
-		-- [corpse] = {[aid] = { {itemid, countmax, chance} }}
-		[10499] = {
-			[101] = {
-				-- TODO: Water Elemental loot...
-			},
-			[102] = {
-				-- TODO: Massive Water Elemental loot
-			}
-		}
-	},
-	checkCorpseOwner = getConfigValue("checkCorpseOwner"),
-	rateLoot = getConfigValue("rateLoot"),
+local useWorms = true
 
-	summons = {
-		-- {skill, name, chance, bossName, bossChance}
-	},
-	rateSpawn = getConfigValue("rateSpawn"),
-
-	baitFailRemoveChance = 10,
-	allowFromPz = false,
-	useBait = true,
-	baitCount = 1,
-	fishes = 1
-}
-
-config.checkCorpseOwner = getBooleanFromString(config.checkCorpseOwner)
-
-function onUse(cid, item, fromPosition, itemEx, toPosition)
-	if(isInArray(config.waters, itemEx.itemid)) then
-		if(isInArray(config.spawning, itemEx.itemid)) then
-			doPlayerSendDefaultCancel(cid, RETURNVALUE_NOTPOSSIBLE)
-		end
-
-		doSendMagicEffect(toPosition, CONST_ME_LOSEENERGY)
-		return true
-	end
-
-	local corpse = config.corpses[itemEx.itemid]
-	if(corpse ~= nil) then
-		corpse = corpse[itemEx.actionid]
-		if(corpse ~= nil) then
-			local owner = getItemAttribute(itemEx.uid, "corpseowner")
-			if(owner ~= 0 and owner ~= getPlayerGUID(cid) and config.checkCorpseOwner) then
-				doPlayerSendDefaultCancel(cid, RETURNVALUE_YOUARENOTTHEOWNER)
-				return true
-			end
-
-			local chance, items = math.random(0, 100000) / config.rateLoot, {}
-			for _, data in ipairs(corpse) do
-				if(data[3] >= chance) then
-					local tmp = {data[1], math.random(1, data[2])}
-					table.insert(items, tmp)
-				end
-			end
-
-			local itemCount = table.maxn(items)
-			if(itemCount > 0) then
-				local loot = items[math.random(1, itemCount)]
-				doPlayerAddItem(cid, loot[1], loot[2])
-			end
-
-			doTransformItem(itemEx.uid, getItemInfo(itemEx.itemid).decayTo)
-			doSendMagicEffect(toPosition, CONST_ME_WATERSPLASH)
-			doDecayItem(itemEx.uid)
-			return true
-		end
-	end
-
-	if(not isInArray(config.fishable, itemEx.itemid)) then
+function onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not isInArray(waterIds, target.itemid) then
 		return false
 	end
 
-	local position, formula, tries = getThingPosition(cid), getPlayerSkill(cid, SKILL_FISHING) / 200 + 0.85 * math.random(), 0
-	config.allowFromPz = config.allowFromPz or not getTileInfo(position).protection
-	if(item.itemid ~= ITEM_MECHANICAL_FISHING_ROD) then
-		if(config.allowFromPz and (not config.useBait or getPlayerItemCount(cid, ITEM_WORM) >= config.baitCount)) then
-			tries = 1
-			if(isInArray(config.holes, itemEx.itemid)) then
-				if(doPlayerRemoveItem(cid, ITEM_WORM, config.baitCount)) then
-					tries = 2
-					if(formula > 0.83) then
-						doPlayerAddItem(cid, ITEM_RAINBOW_TROUT, config.fishes)
-					elseif(formula > 0.7) then
-						doPlayerAddItem(cid, ITEM_NORTHERN_PIKE, config.fishes)
-					elseif(formula > 0.5) then
-						doPlayerAddItem(cid, ITEM_GREEN_PERCH, config.fishes)
-					else
-						doPlayerAddItem(cid, ITEM_FISH, config.fishes)
-					end
-				end
-			elseif(formula > 0.7 and doPlayerRemoveItem(cid, ITEM_WORM, config.baitCount)) then
-				tries = 2
-				if(table.maxn(config.summons) > 0 and getDistanceBetween(position, toPosition) < 2) then
-					local skill, summon = getPlayerSkill(cid, SKILL_FISHING), {name = "", chance = 0, bossName = "", bossChance = 0}
-					for _, data in pairs(config.summons) do
-						if(skill >= data[1]) then
-							summon.name = data[2]
-							summon.chance = data[3]
-							summon.bossName = data[4]
-							summon.bossChance = data[5]
-						end
-					end
+	local targetId = target.itemid
+	if targetId == 10499 then
+		local owner = target:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER)
+		if owner ~= 0 and owner ~= player.uid then
+			player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are not the owner.")
+			return true
+		end
 
-					local random = math.random(1, 100000) / config.rateSpawn
-					if(summon.bossName ~= "" and summon.bossChance >= random) then
-						doCreateMonster(summon.bossName, position)
-						tries = 4
-					elseif(summon.name ~= "" and summon.chance >= random) then
-						doCreateMonster(summon.name, position)
-						tries = 3
-					else
-						doPlayerAddItem(cid, ITEM_FISH, config.fishes)
-					end
-				else
-					doPlayerAddItem(cid, ITEM_FISH, config.fishes)
-				end
-			end
-		end
-	elseif(config.allowFromPz and (not config.useBait or getPlayerItemCount(cid, ITEM_NAIL) >= config.baitCount)) then
-		if(formula > 0.7 and doPlayerRemoveItem(cid, ITEM_NAIL, config.baitCount)) then
-			doPlayerAddItem(cid, ITEM_MECHANICAL_FISH, config.fishes)
-			tries = 2
+		toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
+		target:remove()
+
+		local rareChance = math.random(100)
+		if rareChance == 1 then
+			player:addItem(lootVeryRare[math.random(#lootVeryRare)], 1)
+		elseif rareChance <= 3 then
+			player:addItem(lootRare[math.random(#lootRare)], 1)
+		elseif rareChance <= 10 then
+			player:addItem(lootCommon[math.random(#lootCommon)], 1)
 		else
-			tries = 1
+			player:addItem(lootTrash[math.random(#lootTrash)], 1)
 		end
+		return true
 	end
 
-	if(tries > 1) then
-		doPlayerAddSkillTry(cid, SKILL_FISHING, tries)
-		if(not isInArray(config.holes, itemEx.itemid)) then
-			doTransformItem(itemEx.uid, itemEx.itemid + 6)
-		else
-			doTransformItem(itemEx.uid, itemEx.itemid + 1)
-		end
 
-		doDecayItem(itemEx.uid)
-	elseif(tries > 0) then
-		doPlayerAddSkillTry(cid, SKILL_FISHING, 1)
-		if(config.baitFailRemoveChance >= math.random(1, 100)) then
-			if(item.itemid == ITEM_MECHANICAL_FISHING_ROD) then
-				doPlayerRemoveItem(cid, ITEM_NAIL, config.baitCount)
-			else
-				doPlayerRemoveItem(cid, ITEM_FISH, config.baitCount)
-			end
+	-- COMEÇO
+	if targetId == 13549 then
+		--local owner = target:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER)
+		--if owner ~= 0 and owner ~= player.uid then
+		--	player:sendTextMessage(MESSAGE_STATUS_SMALL, "You are not the owner.")
+		--	return true
+		--end
+
+		toPosition:sendMagicEffect(CONST_ME_WATERSPLASH)
+		--target:remove()
+
+		local rareChance = math.random(100)
+		if rareChance == 1 then
+			player:addItem(lootVeryRare1[math.random(#lootVeryRare1)], 1)
+	    elseif rareChance <= 3 then
+			player:addItem(lootRare1[math.random(#lootRare1)], 1)
+		elseif rareChance <= 10 then
+			player:addItem(lootCommon1[math.random(#lootCommon1)], 1)
+		else
+			player:addItem(lootTrash[math.random(#lootTrash)], 1)
 		end
+		return true
 	end
 
-	doSendMagicEffect(toPosition, CONST_ME_LOSEENERGY)
+	-- FIM
+
+	if targetId ~= 7236 then
+		toPosition:sendMagicEffect(CONST_ME_LOSEENERGY)
+	end
+
+	if targetId == 493 or targetId == 15402 then
+		return true
+	end
+
+	player:addSkillTries(SKILL_FISHING, 1)
+	if math.random(100) <= math.min(math.max(10 + (player:getEffectiveSkillLevel(SKILL_FISHING) - 10) * 0.597, 10), 50) then
+		if useWorms and not player:removeItem("worm", 1) then
+			return true
+		end
+
+		if targetId == 15401 then
+			target:transform(targetId + 1)
+			target:decay()
+
+			if math.random(100) >= 97 then
+				player:addItem(15405, 1)
+				return true
+			end
+		elseif targetId == 7236 then
+			target:transform(targetId + 1)
+			target:decay()
+
+			local rareChance = math.random(100)
+			if rareChance == 1 then
+				player:addItem(7158, 1)
+				return true
+			elseif rareChance <= 4 then
+				player:addItem(2669, 1)
+				return true
+			elseif rareChance <= 10 then
+				player:addItem(7159, 1)
+				return true
+			end
+		end
+		player:addItem(2667, 1)
+	end
 	return true
 end

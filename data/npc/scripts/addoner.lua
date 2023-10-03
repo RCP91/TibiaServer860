@@ -1,268 +1,152 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
-NpcSystem.parseParameters(npcHandler)
 local talkState = {}
-
-
+local rtnt = {}
 function onCreatureAppear(cid)                npcHandler:onCreatureAppear(cid)             end
 function onCreatureDisappear(cid)             npcHandler:onCreatureDisappear(cid)         end
 function onCreatureSay(cid, type, msg)         npcHandler:onCreatureSay(cid, type, msg)     end
 function onThink()                             npcHandler:onThink()                         end
-
-npcHandler:setMessage(MESSAGE_GREET, "Greetings |PLAYERNAME|. Will you help me? If you do, I'll reward you with nice addons! Just say {addons} or {help} if you don't know what to do.")
-
-function playerBuyAddonNPC(cid, message, keywords, parameters, node)
-    if(not npcHandler:isFocused(cid)) then
-        return false
-    end
-    if (parameters.confirm ~= true) and (parameters.decline ~= true) then
-        if(getPlayerPremiumDays(cid) == 0) and (parameters.premium == true) then
-            selfSay('Sorry, but this addon is only for premium players!', cid)
-            npcHandler:resetNpc()
-            return true
+ 
+npcHandler:setMessage(MESSAGE_GREET, "Greetings |PLAYERNAME|. I need your help and I'll reward you with nice addons if you help me! Just say {addons} or {help} if you don't know what to do.")
+ 
+addoninfo = {
+['first citizen addon'] = {cost = 0, items = {{5878,20}}, outfit_female = 136, outfit_male = 128, addon = 1, storageID = 10042},
+['second citizen addon'] = {cost = 0, items = {{5890,50}, {5902,25}, {2480,1}}, outfit_female = 136, outfit_male = 128, addon = 2, storageID = 10043},
+['first hunter addon'] = {cost = 0, items = {{5876,50}, {5948,50}, {5891,5}, {5887,1}, {5889,1}, {5888,1}}, outfit_female = 137, outfit_male = 129, addon = 1, storageID = 10044},
+['second hunter addon'] = {cost = 0, items = {{5875,1}}, outfit_female = 137, outfit_male = 129, addon = 2, storageID = 10045},
+['first knight addon'] = {cost = 0, items = {{5880,100}, {5892,1}}, outfit_female = 139, outfit_male = 131, addon = 1, storageID = 10046},
+['second knight addon'] = {cost = 0, items = {{5893,100}, {11422,1}, {5885,1}, {5887,1}}, outfit_female = 139, outfit_male = 131, addon = 2, storageID = 10047},
+['first mage addon'] = {cost = 0, items = {{2182,1}, {2186,1}, {2185,1}, {8911,1}, {2181,1}, {2183,1}, {2190,1}, {2191,1}, {2188,1}, {8921,1}, {2189,1}, {2187,1}, {5904,20}, {5809,1}, {2193,20}}, outfit_female = 138, outfit_male = 130, addon = 1, storageID = 10048},
+['second mage addon'] = {cost = 0, items = {{5903,1}}, outfit_female = 141, outfit_male = 130, addon = 2, storageID = 10049},
+['first summoner addon'] = {cost = 0, items = {{5878,100}}, outfit_female = 138, outfit_male = 133, addon = 1, storageID = 10050},
+['second summoner addon'] = {cost = 0, items = {{5894,35}, {5911,20}, {5883,40}, {5922,35}, {5879,10}, {5881,30}, {5882,40}, {2392,3}, {5905,30}}, outfit_female = 141, outfit_male = 133, addon = 2, storageID = 10051},
+['first barbarian addon'] = {cost = 0, items = {{5884,1}, {5885,1}, {5910,25}, {5911,50}, {5886,10}}, outfit_female = 147, outfit_male = 143, addon = 1, storageID = 10011},
+['second barbarian addon'] = {cost = 0, items = {{5880,100}, {5892,1}, {5893,100}, {5876,100}}, outfit_female = 147, outfit_male = 143, addon = 2, storageID = 10012},
+['first druid addon'] = {cost = 0, items = {{5896,50}, {5897,50}}, outfit_female = 148, outfit_male = 144, addon = 1, storageID = 10013},
+['second druid addon'] = {cost = 0, items = {{5906,100}, {5940,1}}, outfit_female = 148, outfit_male = 144, addon = 2, storageID = 10014},
+['first nobleman addon'] = {cost = 300000, items = {}, outfit_female = 140, outfit_male = 132, addon = 1, storageID = 10015},
+['second nobleman addon'] = {cost = 300000, items = {}, outfit_female = 140, outfit_male = 132, addon = 2, storageID = 10016},
+['first oriental addon'] = {cost = 0, items = {{5945,1}}, outfit_female = 150, outfit_male = 146, addon = 1, storageID = 10017},
+['second oriental addon'] = {cost = 0, items = {{5883,100}, {5895,100}, {5891,5}, {5912,50}}, outfit_female = 150, outfit_male = 146, addon = 2, storageID = 10018},
+['first warrior addon'] = {cost = 0, items = {{5925,100}, {5899,100}, {5884,1}, {5919,1}}, outfit_female = 142, outfit_male = 134, addon = 1, storageID = 10019},
+['second warrior addon'] = {cost = 0, items = {{5880,40}, {5887,1}}, outfit_female = 142, outfit_male = 134, addon = 2, storageID = 10020},
+['first wizard addon'] = {cost = 0, items = {{2536,1}, {2492,1}, {2488,1}, {2123,1}}, outfit_female = 149, outfit_male = 145, addon = 1, storageID = 10021},
+['second wizard addon'] = {cost = 0, items = {{5922,50}}, outfit_female = 149, outfit_male = 145, addon = 2, storageID = 10022},
+['first assassin addon'] = {cost = 0, items = {{5912,50}, {5910,50}, {5911,50}, {5913,50}, {5914,50}, {5909,50}, {5886,10}}, outfit_female = 156, outfit_male = 152, addon = 1, storageID = 10023},
+['second assassin addon'] = {cost = 0, items = {{5804,1}, {5930,10}}, outfit_female = 156, outfit_male = 152, addon = 2, storageID = 10024},
+['first beggar addon'] = {cost = 0, items = {{5878,100}, {5921,30}, {5913,20}, {5894,40}}, outfit_female = 157, outfit_male = 153, addon = 1, storageID = 10025},
+['second beggar addon'] = {cost = 0, items = {{5883,100}, {2160,2}}, outfit_female = 157, outfit_male = 153, addon = 2, storageID = 10026},
+['first pirate addon'] = {cost = 0, items = {{6098,100}, {6126,100}, {6097,100}}, outfit_female = 155, outfit_male = 151, addon = 1, storageID = 10027},
+['second pirate addon'] = {cost = 0, items = {{6101,1}, {6102,1}, {6100,1}, {6099,1}}, outfit_female = 155, outfit_male = 151, addon = 2, storageID = 10028},
+['first shaman addon'] = {cost = 0, items = {{5810,10}, {3955,10}, {5015,1}}, outfit_female = 158, outfit_male = 154, addon = 1, storageID = 10029},
+['second shaman addon'] = {cost = 0, items = {{3966,5}, {3967,5}}, outfit_female = 158, outfit_male = 154, addon = 2, storageID = 10030},
+['first norseman addon'] = {cost = 0, items = {{7290,20}}, outfit_female = 252, outfit_male = 251, addon = 1, storageID = 10031},
+['second norseman addon'] = {cost = 0, items = {{7290,20}}, outfit_female = 252, outfit_male = 251, addon = 2, storageID = 10032},
+['first jester addon'] = {cost = 0, items = {{5912,50}, {5913,50}, {5914,50}, {5909,50}}, outfit_female = 270, outfit_male = 273, addon = 1, storageID = 10033},
+['second jester addon'] = {cost = 0, items = {{5912,50}, {5910,50}, {5911,50}, {5912,50}}, outfit_female = 270, outfit_male = 273, addon = 2, storageID = 10034},
+['first demonhunter addon'] = {cost = 0, items = {{5905,30}, {5906,40}, {5954,20}, {6500,50}}, outfit_female = 288, outfit_male = 289, addon = 1, storageID = 10035},
+['second demonhunter addon'] = {cost = 0, items = {{5906,50}, {6500,200}}, outfit_female = 288, outfit_male = 289, addon = 2, storageID = 10036},
+['first nightmare addon'] = {cost = 0, items = {{6500,1500}}, outfit_female = 269, outfit_male = 268, addon = 1, storageID = 10037},
+['second nightmare addon'] = {cost = 0, items = {{6500,1500}}, outfit_female = 269, outfit_male = 268, addon = 2, storageID = 10038},
+['first brotherhood addon'] = {cost = 0, items = {{6500,1500}}, outfit_female = 279, outfit_male = 278, addon = 1, storageID = 10039},
+['second brotherhood addon'] = {cost = 0, items = {{6500,1500}}, outfit_female = 279, outfit_male = 278, addon = 2, storageID = 10040},
+['first yalaharian addon'] = {cost = 0, items = {{9955,1}}, outfit_female = 324, outfit_male = 325, addon = 1, storageID = 10041},
+['second yalaharian addon'] = {cost = 0, items = {{9955,1}}, outfit_female = 324, outfit_male = 325, addon = 2, storageID = 10041}
+-- next storage 10052   -- next storage 10052   -- next storage 10052   -- next storage 10052   -- next storage 10052   -- next storage 10052   -- next storage 10052 --
+}
+local o = {'citizen', 'hunter', 'knight', 'mage', 'nobleman', 'summoner', 'warrior', 'barbarian', 'druid', 'wizard', 'oriental', 'pirate', 'assassin', 'beggar', 'shaman', 'norseman', 'nighmare', 'jester', 'yalaharian', 'brotherhood'}
+function creatureSayCallback(cid, type, msg)
+local talkUser = cid
+ 
+        if(not npcHandler:isFocused(cid)) then
+                return false
         end
-        if (getPlayerStorageValue(cid, parameters.storageID) ~= -1) then
-            selfSay('You already have this addon!', cid)
-            npcHandler:resetNpc()
-            return true
-        end
-        local itemsTable = parameters.items
-        local items_list = ''
-        if table.maxn(itemsTable) > 0 then
-            for i = 1, table.maxn(itemsTable) do
-                local item = itemsTable[i]
-                items_list = items_list .. item[2] .. ' ' .. getItemNameById(item[1])
-                if i ~= table.maxn(itemsTable) then
-                    items_list = items_list .. ', '
+ 
+        if addoninfo[msg] ~= nil then
+                if (getPlayerStorageValue(cid, addoninfo[msg].storageID) ~= -1) then
+                                npcHandler:say('You already have this addon!', cid)
+                                npcHandler:resetNpc()
+                else
+                local itemsTable = addoninfo[msg].items
+                local items_list = ''
+                        if table.maxn(itemsTable) > 0 then
+                                for i = 1, table.maxn(itemsTable) do
+                                        local item = itemsTable[i]
+                                        items_list = items_list .. item[2] .. ' ' .. ItemType(item[1]):getName()
+                                        if i ~= table.maxn(itemsTable) then
+                                                items_list = items_list .. ', '
+                                        end
+                                end
+                        end
+                local text = ''
+                        if (addoninfo[msg].cost > 0) then
+                                text = addoninfo[msg].cost .. ' gp'
+                        elseif table.maxn(addoninfo[msg].items) then
+                                text = items_list
+                        elseif (addoninfo[msg].cost > 0) and table.maxn(addoninfo[msg].items) then
+                                text = items_list .. ' and ' .. addoninfo[msg].cost .. ' gp'
+                        end
+                        npcHandler:say('For ' .. msg .. ' you will need ' .. text .. '. Do you have it all with you?', cid)
+                        rtnt[talkUser] = msg
+                        talkState[talkUser] = addoninfo[msg].storageID
+                        return true
                 end
-            end
-        end
-        local text = ''
-        if (parameters.cost > 0) and table.maxn(parameters.items) then
-            text = items_list .. ' and ' .. parameters.cost .. ' gp'
-        elseif (parameters.cost > 0) then
-            text = parameters.cost .. ' gp'
-        elseif table.maxn(parameters.items) then
-            text = items_list
-        end
-        selfSay('Did you bring me ' .. text .. ' for ' .. keywords[1] .. '?', cid)
-        return true
-    elseif (parameters.confirm == true) then
-        local addonNode = node:getParent()
-        local addoninfo = addonNode:getParameters()
-        local items_number = 0
-        if table.maxn(addoninfo.items) > 0 then
-            for i = 1, table.maxn(addoninfo.items) do
-                local item = addoninfo.items[i]
-                if (getPlayerItemCount(cid,item[1]) >= item[2]) then
-                    items_number = items_number + 1
+        elseif msgcontains(msg, "yes") then
+                if (talkState[talkUser] > 10010 and talkState[talkUser] < 10100) then
+                        local items_number = 0
+                        if table.maxn(addoninfo[rtnt[talkUser]].items) > 0 then
+                                for i = 1, table.maxn(addoninfo[rtnt[talkUser]].items) do
+                                        local item = addoninfo[rtnt[talkUser]].items[i]
+                                        if (getPlayerItemCount(cid,item[1]) >= item[2]) then
+                                                items_number = items_number + 1
+                                        end
+                                end
+                        end
+                        if(getPlayerMoney(cid) >= addoninfo[rtnt[talkUser]].cost) and (items_number == table.maxn(addoninfo[rtnt[talkUser]].items)) then
+                                doPlayerRemoveMoney(cid, addoninfo[rtnt[talkUser]].cost)
+                                if table.maxn(addoninfo[rtnt[talkUser]].items) > 0 then
+                                        for i = 1, table.maxn(addoninfo[rtnt[talkUser]].items) do
+                                                local item = addoninfo[rtnt[talkUser]].items[i]
+                                                doPlayerRemoveItem(cid,item[1],item[2])
+                                        end
+                                end
+                                doPlayerAddOutfit(cid, addoninfo[rtnt[talkUser]].outfit_male, addoninfo[rtnt[talkUser]].addon)
+                                doPlayerAddOutfit(cid, addoninfo[rtnt[talkUser]].outfit_female, addoninfo[rtnt[talkUser]].addon)
+                                setPlayerStorageValue(cid,addoninfo[rtnt[talkUser]].storageID,1)
+                                npcHandler:say('Here you are.', cid)
+                        else
+                                npcHandler:say('You do not have needed items!', cid)
+                        end
+                        rtnt[talkUser] = nil
+                        talkState[talkUser] = 0
+                        npcHandler:resetNpc()
+                        return true
                 end
-            end
-        end
-        if(getPlayerMoney(cid) >= addoninfo.cost) and (items_number == table.maxn(addoninfo.items)) then
-            doPlayerRemoveMoney(cid, addoninfo.cost)
-            if table.maxn(addoninfo.items) > 0 then
-                for i = 1, table.maxn(addoninfo.items) do
-                    local item = addoninfo.items[i]
-                    doPlayerRemoveItem(cid,item[1],item[2])
-                end
-            end
-            doPlayerAddOutfit(cid, addoninfo.outfit_male, addoninfo.addon)
-            doPlayerAddOutfit(cid, addoninfo.outfit_female, addoninfo.addon)
-            setPlayerStorageValue(cid,addoninfo.storageID,1)
-            selfSay('Here you are.', cid)
+        elseif msgcontains(msg, "addon") then
+                npcHandler:say('I can give you addons for {' .. table.concat(o, "}, {") .. '} outfits.', cid)
+                rtnt[talkUser] = nil
+                talkState[talkUser] = 0
+                npcHandler:resetNpc()
+                return true
+        elseif msgcontains(msg, "help") then
+                npcHandler:say('To buy the first addon say \'first NAME addon\', for the second addon say \'second NAME addon\'.', cid)
+                rtnt[talkUser] = nil
+                talkState[talkUser] = 0
+                npcHandler:resetNpc()
+                return true
         else
-            selfSay('You do not have needed items or cash!', cid)
+                if talkState[talkUser] ~= nil then
+                        if talkState[talkUser] > 0 then
+                        npcHandler:say('Come back when you get these items.', cid)
+                        rtnt[talkUser] = nil
+                        talkState[talkUser] = 0
+                        npcHandler:resetNpc()
+                        return true
+                        end
+                end
         end
-        npcHandler:resetNpc()
         return true
-    elseif (parameters.decline == true) then
-        selfSay('Not interested? Maybe other addon?', cid)
-        npcHandler:resetNpc()
-        return true
-    end
-    return false
 end
-
-local noNode = KeywordNode:new({'no'}, playerBuyAddonNPC, {decline = true})
-local yesNode = KeywordNode:new({'yes'}, playerBuyAddonNPC, {confirm = true})
-
--- citizen (done)
-local outfit_node = keywordHandler:addKeyword({'first citizen addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5878,100}}, outfit_female = 136, outfit_male = 128, addon = 1, storageID = 60001})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second citizen addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5890,100}, {5902,50}, {2480,1}}, outfit_female = 136, outfit_male = 128, addon = 2, storageID = 60002})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- hunter (done)
-local outfit_node = keywordHandler:addKeyword({'first hunter addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5947,1}, {5876,100}, {5948,100}, {5891,5}, {5887,1}, {5889,1}, {5888,1}}, outfit_female = 137, outfit_male = 129, addon = 1, storageID = 60003})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second hunter addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5875,1}}, outfit_female = 137, outfit_male = 129, addon = 2, storageID = 60004})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- knight (done)
-local outfit_node = keywordHandler:addKeyword({'first knight addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5880,100}, {5892,1}}, outfit_female = 139, outfit_male = 131, addon = 1, storageID = 60055})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second knight addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5893,100}, {5924,1}, {5885,1}, {5887,1}}, outfit_female = 139, outfit_male = 131, addon = 2, storageID = 60056})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- mage (done)
-local outfit_node = keywordHandler:addKeyword({'first mage addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{2182,1}, {2186,1}, {2185,1}, {8911,1}, {2181,1}, {2183,1}, {2190,1}, {2191,1}, {2188,1}, {8921,1}, {2189,1}, {2187,1}, {5904,10}, {5809,1}, {2193,20}}, outfit_female = 141, outfit_male = 130, addon = 1, storageID = 60005}) 
-outfit_node:addChildKeywordNode(yesNode) 
-outfit_node:addChildKeywordNode(noNode) 
-local outfit_node = keywordHandler:addKeyword({'second mage addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5903,1}}, outfit_female = 141, outfit_male = 130, addon = 2, storageID = 60006}) 
-outfit_node:addChildKeywordNode(yesNode) 
-outfit_node:addChildKeywordNode(noNode) 
-
-
--- summoner (done)
-local outfit_node = keywordHandler:addKeyword({'first summoner addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5958,1}}, outfit_female = 138, outfit_male = 133, addon = 1, storageID = 60009}) 
-outfit_node:addChildKeywordNode(yesNode) 
-outfit_node:addChildKeywordNode(noNode) 
-local outfit_node = keywordHandler:addKeyword({'second summoner addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5894,70}, {5911,20}, {5883,40}, {5922,35}, {5879,10}, {5881,60}, {5882,40}, {5904,1}, {5905,30}}, outfit_female = 138, outfit_male = 133, addon = 2, storageID = 60010}) 
-outfit_node:addChildKeywordNode(yesNode) 
-outfit_node:addChildKeywordNode(noNode) 
-
-
--- barbarian (done)
-local outfit_node = keywordHandler:addKeyword({'first barbarian addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5884,1}, {5885,1}, {5910,50}, {5911,50}, {5886,10}}, outfit_female = 147, outfit_male = 143, addon = 1, storageID = 60011})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second barbarian addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5880,100}, {5892,1}, {5893,50}, {5876,50}}, outfit_female = 147, outfit_male = 143, addon = 2, storageID = 60012})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- druid (done)
-local outfit_node = keywordHandler:addKeyword({'first druid addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5896,50}, {5897,50}}, outfit_female = 148, outfit_male = 144, addon = 1, storageID = 60013})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second druid addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5906,100}, {8303,1}, {5940,1}}, outfit_female = 148, outfit_male = 144, addon = 2, storageID = 60014})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- nobleman (done)
-local outfit_node = keywordHandler:addKeyword({'first nobleman addon'}, playerBuyAddonNPC, {premium = false, cost = 150000, items = {}, outfit_female = 140, outfit_male = 132, addon = 1, storageID = 60015})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second nobleman addon'}, playerBuyAddonNPC, {premium = false, cost = 150000, items = {}, outfit_female = 140, outfit_male = 132, addon = 2, storageID = 60016})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- oriental (done)
-local outfit_node = keywordHandler:addKeyword({'first oriental addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5945,1}}, outfit_female = 150, outfit_male = 146, addon = 1, storageID = 60017})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second oriental addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5883,100}, {5895,100}, {5891,2}, {5912,100}}, outfit_female = 150, outfit_male = 146, addon = 2, storageID = 60018})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- warrior (done)
-local outfit_node = keywordHandler:addKeyword({'first warrior addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5925,100}, {5899,100}, {5884,1}, {10020,1}}, outfit_female = 142, outfit_male = 134, addon = 1, storageID = 60019})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second warrior addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5880,100}, {5887,1}}, outfit_female = 142, outfit_male = 134, addon = 2, storageID = 60020})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- wizard (done)
-local outfit_node = keywordHandler:addKeyword({'first wizard addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{2536,1}, {2492,1}, {2488,1}, {2123,1}}, outfit_female = 149, outfit_male = 145, addon = 1, storageID = 60021})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second wizard addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5922,50}}, outfit_female = 149, outfit_male = 145, addon = 2, storageID = 60022})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- assassin (done)
-local outfit_node = keywordHandler:addKeyword({'first assassin addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5912,50}, {5910,50}, {5911,50}, {5913,50}, {5914,50}, {5909,50}, {5886,10}}, outfit_female = 156, outfit_male = 152, addon = 1, storageID = 60023})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second assassin addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5804,1}, {5930,1}}, outfit_female = 156, outfit_male = 152, addon = 2, storageID = 60024})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- beggar (done)
-local outfit_node = keywordHandler:addKeyword({'first beggar addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5883,100}, {2160,2}}, outfit_female = 157, outfit_male = 153, addon = 1, storageID = 60025})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second beggar addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{6107,1}}, outfit_female = 157, outfit_male = 153, addon = 2, storageID = 60026})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- pirate (done)
-local outfit_node = keywordHandler:addKeyword({'first pirate addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{6098,100}, {6126,100}, {6097,100}}, outfit_female = 155, outfit_male = 151, addon = 1, storageID = 60027})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second pirate addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{6101,1}, {6102,1}, {6100,1}, {6099,1}}, outfit_female = 155, outfit_male = 151, addon = 2, storageID = 60028})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- shaman (done)
-local outfit_node = keywordHandler:addKeyword({'first shaman addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5810,5}, {3955,5}, {5015,1}}, outfit_female = 158, outfit_male = 154, addon = 1, storageID = 60029})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second shaman addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{3966,5}, {3967,5}}, outfit_female = 158, outfit_male = 154, addon = 2, storageID = 60030})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- norseman (done)
-local outfit_node = keywordHandler:addKeyword({'first norseman addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{7290,5}}, outfit_female = 252, outfit_male = 251, addon = 1, storageID = 60031})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second norseman addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{7290,10}}, outfit_female = 252, outfit_male = 251, addon = 2, storageID = 60032})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
--- jester (done)(custom)
-local outfit_node = keywordHandler:addKeyword({'first jester addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5912,50}, {5913,50}, {5914,50}, {5909,50}}, outfit_female = 270, outfit_male = 273, addon = 1, storageID = 60033})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second jester addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5912,50}, {5910,50}, {5911,50}, {5912,50}}, outfit_female = 270, outfit_male = 273, addon = 2, storageID = 60034})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-
-	
--- Demon Outfits Quest
-local outfit_node = keywordHandler:addKeyword({'first demon addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5906,50}}, outfit_female = 288, outfit_male = 289, addon = 1, storageID = 60035})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second demon addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{5906,50}}, outfit_female = 288, outfit_male = 289, addon = 2, storageID = 60036})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-	
-
--- yalaharian Outfits Quest
-local outfit_node = keywordHandler:addKeyword({'first yalaharian addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{9955,1}}, outfit_female = 324, outfit_male = 325, addon = 1, storageID = 60037})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second yalaharian addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{9955,1}}, outfit_female = 324, outfit_male = 325, addon = 2, storageID = 60038})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-	
-	
--- Warmaster Outfits Quest
-local outfit_node = keywordHandler:addKeyword({'first warmaster addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{11112,1}}, outfit_female = 336, outfit_male = 335, addon = 1, storageID = 60039})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second warmaster addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{11111,1}}, outfit_female = 336, outfit_male = 335, addon = 2, storageID = 60040})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)	
-
-
--- Wayfarer Outfits Quest
-local outfit_node = keywordHandler:addKeyword({'first wayfarer addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{12618,1}}, outfit_female = 366, outfit_male = 367, addon = 1, storageID = 60041})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)
-local outfit_node = keywordHandler:addKeyword({'second wayfarer addon'}, playerBuyAddonNPC, {premium = false, cost = 0, items = {{12617,1}}, outfit_female = 366, outfit_male = 367, addon = 2, storageID = 60042})
-    outfit_node:addChildKeywordNode(yesNode)
-    outfit_node:addChildKeywordNode(noNode)	
-	
-	
-keywordHandler:addKeyword({'addons'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'I can give you citizen, hunter, knight, mage, nobleman, summoner, warrior, barbarian, druid, wizard, oriental, demon, wayfarer, pirate, assassin, beggar, shaman, norseman, warmaster, jester, and yalaharian  addons.'})
-keywordHandler:addKeyword({'help'}, StdModule.say, {npcHandler = npcHandler, onlyFocus = true, text = 'To buy the first addon say \'first NAME addon\', for the second addon say \'second NAME addon\'.'})
-
+ 
+npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())

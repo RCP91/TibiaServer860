@@ -2,7 +2,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -16,8 +15,8 @@ keywordHandler:addKeyword({'plan'}, StdModule.say, {npcHandler = npcHandler, tex
 keywordHandler:addKeyword({'years'}, StdModule.say, {npcHandler = npcHandler, text = 'I used the time to prepare. You\'ll find my talking tubes all the {way} to his lair, and I can provide you with vital information about the things ahead.'})
 
 local function greetCallback(cid)
-	
-	setPlayerStorageValue(cid, Storage.HeroRathleton.AccessTeleport3, 1)
+	local player = Player(cid)
+	player:setStorageValue(Storage.HeroRathleton.AccessTeleport3, 1)
 	return true
 end
 
@@ -26,34 +25,34 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, "madman") then
-		selfSay({
+		npcHandler:say({
 			"He is an old enemy of the city and I've battled him often in the past. ...",
 			"Now he has returned for vengeance, he reclaimed an old abandoned underground {laboratory} and he has acquired new powerful {allies}."
 		}, cid)
 	end
 	if msgcontains(msg, 'allies') then
-		selfSay({
+		npcHandler:say({
 			"His allies are an enigma even to me. It seems they belong to some unknown race that lives deep under the earth. ...",
 			"They seem to have supplied him with resources and workforce and a powerful {guardian} to prevent anyone from entering the passages to his lair."
 		}, cid)
 	end
 	if msgcontains(msg, 'guardian') then
-		selfSay({
+		npcHandler:say({
 			"It's a fearsome subterranean beast like nothing I've ever encountered. It is dangerous and almost unbeatable because its main body is hidden beneath the ground ...",
 			"And it has an endless supply of tentacles. But not all is lost, as I have devised a {plan} to battle the beast."
 		}, cid)
 	end
 	if msgcontains(msg, 'enraged') then
-		selfSay({
+		npcHandler:say({
 			"While it's buried, it only uses his tentacles to attack. If one is destroyed it will simply use another set of tentacles and its supply seems endless. ...",
 			"If you manage though to kill all the tentacles it is using within a few heartbeats, it will become confused by its momentary helplessness and will probably attack with its main body. ...",
 			"That is when you have a chance to destroy it. Pass through its chamber and look for another of my tubes to contact me. Please hurry! End of communication."
 		}, cid)
 	end
 	if msgcontains(msg, 'way') then
-		selfSay({
+		npcHandler:say({
 			"You will have to leave the plant through the eastern door on the lowest level. I have arranged for it to be 'accidentally' open. ...",
 			"As in the past, our enemy still uses a series of machines to open the way to the next section of his lair. You have to turn them all on to proceed. ...",
 			"They will only work for a certain amount of time though, so you will have to hurry or some of the machines will turn inactive again."

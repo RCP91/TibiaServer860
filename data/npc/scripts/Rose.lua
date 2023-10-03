@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,27 +11,26 @@ local function creatureSayCallback(cid, type, msg)
 	if(not npcHandler:isFocused(cid)) then
 		return false
 	end
-	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 
-	
+	local player = Player(cid)
 	if msgcontains(msg, "Hydra Tongue") then
-		selfSay("Do you want to buy a Hydra Tongue for 100 gold?", cid)
-		talkState[talkUser] = 1
+		npcHandler:say("Do you want to buy a Hydra Tongue for 100 gold?", cid)
+		npcHandler.topic[cid] = 1
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			if getPlayerBalance(cid) + getPlayerBalance(cid) >= 100 then
-				doPlayerRemoveMoney(cid, 100)
-				selfSay("Here you are. A Hydra Tongue!", cid)
-				doPlayerAddItem(cid, 7250, 1)
-				talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			if player:getMoney() + player:getBankBalance() >= 100 then
+				player:removeMoneyNpc(100)
+				npcHandler:say("Here you are. A Hydra Tongue!", cid)
+				player:addItem(7250, 1)
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("You don't have enough money.", cid)
+				npcHandler:say("You don't have enough money.", cid)
 			end
 		end
 	elseif msgcontains(msg, "no") then
-		if talkState[talkUser] == 1 then
-			selfSay("Then not.", cid)
-			talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say("Then not.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

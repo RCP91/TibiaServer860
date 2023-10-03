@@ -61,7 +61,7 @@
 		<item id="2475"  chance="6800"/><!-- warrior helmet -->
 		<item id="2417" chance="3900"/><!-- battle hammer -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>		
+					
 				<item id="2430" chance="3900"/><!-- knight axe -->
 				<item id="2476" chance="2000"/><!-- knight armor -->
 				<item id="2489" chance="1428"/><!-- dark armor -->
@@ -73,7 +73,7 @@
 				<item id="7895" chance="375"/><!-- lightning legs -->
 				<item id="2114" chance="250"/><!-- piggy bank -->
 				<item id="2195" chance="200"/><!-- boots of haste -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -21,14 +20,14 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	if msgcontains(msg, "mission") and getPlayerStorageValue(cid, Storage.FerumbrasAscension.TarbazNotes) >= 2 then
-		talkState[talkUser] = 1
-		selfSay("Oh, are you talking about {Tevon}?", cid)
-	elseif msgcontains(msg, "tevon") and talkState[talkUser] == 1 then
-		talkState[talkUser] = 0
-		selfSay("Ok, sure, now you may pass the door.", cid)
-		setPlayerStorageValue(cid, Storage.FerumbrasAscension.TarbazDoor, 1)
+	local player = Player(cid)
+	if msgcontains(msg, "mission") and player:getStorageValue(Storage.FerumbrasAscension.TarbazNotes) >= 2 then
+		npcHandler.topic[cid] = 1
+		npcHandler:say("Oh, are you talking about {Tevon}?", cid)
+	elseif msgcontains(msg, "tevon") and npcHandler.topic[cid] == 1 then
+		npcHandler.topic[cid] = 0
+		npcHandler:say("Ok, sure, now you may pass the door.", cid)
+		player:setStorageValue(Storage.FerumbrasAscension.TarbazDoor, 1)
 	end
 	return true
 end

@@ -39,9 +39,9 @@
 		<item id="2511" chance="15000"/><!-- brass shield -->
 		<item id="2787" countmax="3" chance="5000"/><!-- white mushroom -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>		
+					
 				<item id="2789" chance="7500"/><!-- brown mushroom -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

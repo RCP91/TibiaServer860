@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Pirat Bombardier" nameDescription="Pirat Bombardier" race="blood" experience="1700" speed="340">
+	<health now="2300 " max="2300 " />
+	<look type="1346" head="86" body="85" legs="18" feet="18" addons="2" corpse="40538" />
+	<targetchange interval="5000" chance="8" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="90" />
+		<flag runonhealth="0" />
+		<flag canwalkonfire="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-200" max="-450" />	
+		<attack name="energy" interval="2000" chance="50" range="7" radius="4" target="1" min="-270" max="-780">
+			<attribute key="shootEffect" value="energy" />
+			<attribute key="areaEffect" value="energyarea" />
+		</attack>		
+		<attack name="energy" interval="2000" chance="15" range="1" min="-300" max="-600">
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+	</attacks>
+	<defenses armor="17" defense="21">
+		<defense name="healing" interval="1000" chance="17" min="225" max="275">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+	</defenses>
+	<immunities>
+		<immunity fire="1" />
+		<immunity poison="1" />
+		<immunity lifedrain="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<loot>
+		<item id="2148" countmax="99" chance="100000" /><!-- gold coin -->
+		<item id="2152" countmax="10" chance="100000" /><!-- platinum coin -->
+		<item name="Great Health Potion" countmax="3" chance="33000" />
+		<item name="pirate coin" countmax="2" chance="2950" />
+		<item name="Knight Axe" chance="3000" />
+		<item name="Crystal Sword" chance="8200" />
+		<item name="Knight Armor" chance="1980" />
+		<item name="Wood Cape" chance="8250" />
+		<item name="Magma Boots" chance="1230" />
+		<item name="pirate tail" chance="4060" />
+		<item name="Lightning Boots" chance="990" />
+	</loot>
+</monster>

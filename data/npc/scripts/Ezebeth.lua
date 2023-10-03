@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 
 function onCreatureAppear(cid) npcHandler:onCreatureAppear(cid) end
@@ -17,26 +16,26 @@ function creatureSayCallback(cid, type, msg)
 
 	if(msgcontains(msg, "mission")) then
 		if(getPlayerStorageValue(cid, 10050) < 1) then
-			selfSay("Well, there is little where we need help beyond the normal tasks you can do for the city. However, there is one thing out of the ordinary where some assistance would be appreciated.", cid)
-			talkState[talkUser] = 1
+			npcHandler:say("Well, there is little where we need help beyond the normal tasks you can do for the city. However, there is one thing out of the ordinary where some assistance would be appreciated.", cid)
+			npcHandler.topic[cid] = 1
 
-		else selfSay("You already asked for a mission, go to th next.", cid)
+		else npcHandler:say("You already asked for a mission, go to th next.", cid)
 
 		end
 	elseif(msgcontains(msg, "assistance")) then
-		if(talkState[talkUser] == 1) then
-			selfSay(" It's nothing really important, so no one has yet found the time to look it up. It concerns the towns beggars that have started to behave strange lately.", cid)
-			talkState[talkUser] = 2
+		if(npcHandler.topic[cid] == 1) then
+			npcHandler:say(" It's nothing really important, so no one has yet found the time to look it up. It concerns the towns beggars that have started to behave strange lately.", cid)
+			npcHandler.topic[cid] = 2
 		end
 
 
 	elseif(msgcontains(msg, "strange")) then
-		if(talkState[talkUser] == 2) then
-			selfSay("They usually know better than to show up in the streets and harass our citizens, but lately they've grown more bold or desperate or whatever. I ask you to investigate what they are up to. If necessary, you may scare them away a bit.", cid)
+		if(npcHandler.topic[cid] == 2) then
+			npcHandler:say("They usually know better than to show up in the streets and harass our citizens, but lately they've grown more bold or desperate or whatever. I ask you to investigate what they are up to. If necessary, you may scare them away a bit.", cid)
 			setPlayerStorageValue(cid, 10050, 1)
 			setPlayerStorageValue(cid, 20050, 1) -- quest log mission 1
 			setPlayerStorageValue(cid, 20051, 0) -- quest log mission 1
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 	    end
 
 		elseif(msgcontains(msg, "outfit")) then

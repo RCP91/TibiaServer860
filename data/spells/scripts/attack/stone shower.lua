@@ -1,12 +1,25 @@
-local combat = createCombatObject()
-setCombatParam(combat, COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
-setCombatParam(combat, COMBAT_PARAM_EFFECT, CONST_ME_STONES)
-setCombatParam(combat, COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_EARTH)
-setAttackFormula(combat, COMBAT_FORMULA_LEVELMAGIC, 5, 5, 1.4, 2.8, 40, 70)
+dofile('data/lib/miscellaneous/warPrivate_lib.lua')
+local combat = Combat()
+combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
+combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_STONES)
+combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_EARTH)
+combat:setArea(createCombatArea(AREA_CIRCLE3X3))
 
-local area = createCombatArea(AREA_CIRCLE3X3)
-setCombatArea(combat, area)
-
-function onCastSpell(cid, var)
-	return doCombat(cid, combat, var)
+function onGetFormulaValues(player, level, maglevel)
+	local min = (level / 5) + (maglevel * 1) + 6
+	local max = (level / 5) + (maglevel * 2.6) + 16
+	return -min, -max
 end
+
+combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+
+function onCastSpell(creature, variant, isHotkey)
+	if(creature:isPlayer()) then
+		if(creature:getStorageValue(STORAGE_PLAYER_WAR_TYPE) == WAR_TYPE_SD_ONLY) then
+		creature:sendCancelMessage("You are in a war zone that does not allow this spell.")
+			return false
+		end
+	end
+	return combat:execute(creature, variant)
+end
+

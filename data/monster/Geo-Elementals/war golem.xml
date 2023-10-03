@@ -18,7 +18,7 @@
 		<flag runonhealth="0"/>
 	</flags>
 	<attacks>
-		<attack name="melee" interval="2000" skill="50" attack="100"/>
+		<attack name="melee" interval="2000" skill="30" attack="70"/>
 		<attack name="energy" interval="1000" chance="7" range="7" min="-0" max="-220">
 			<attribute key="shootEffect" value="energy"/>
 		</attack>
@@ -72,7 +72,7 @@
 		<item id="8473" chance="5000"/><!-- ultimate health potion -->
 		<item id="7590" chance="5500"/><!-- great mana potion -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="5880" chance="3500"/><!-- iron ore -->
 				<item id="7439" chance="4000"/><!-- berserk potion -->
 				<item id="2438" chance="3500"/><!-- epee -->
@@ -86,7 +86,7 @@
 				<item id="7422" chance="250"/><!-- jade hammer -->
 				<item id="7428" chance="300"/><!-- bonebreaker -->
 				<item id="2177" chance="300"/><!-- life crystal -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

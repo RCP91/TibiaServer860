@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -15,14 +14,14 @@ local function creatureSayCallback(cid, type, msg)
 
 	if msgcontains(msg, "mission") then
 		if Player(cid):getStorageValue(Storage.hiddenCityOfBeregar.RoyalRescue) < 300 then
-			selfSay("I warn you, those trolls are WAY more dangerous than the usual kind. Alone, I can't do anything for my brothers. Find a way to the trolls' hideout and rescue my brothers. Are you willing to help me?", cid)
-			talkState[talkUser] = 1
+			npcHandler:say("I warn you, those trolls are WAY more dangerous than the usual kind. Alone, I can't do anything for my brothers. Find a way to the trolls' hideout and rescue my brothers. Are you willing to help me?", cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
+		if npcHandler.topic[cid] == 1 then
 			Player(cid):setStorageValue(Storage.hiddenCityOfBeregar.RoyalRescue, 4)
-			selfSay(" Great! I hope you find my brothers. Good luck!", cid)
-			talkState[talkUser] = 0
+			npcHandler:say(" Great! I hope you find my brothers. Good luck!", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

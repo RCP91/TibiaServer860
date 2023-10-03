@@ -11,7 +11,9 @@
 		<parameter key="module_shop" value="1" />
 	<parameter key="shop_buyable" value="
 			big table kit,3911,30;
+			round table kit,14328,25;
 			small table kit,3908,20;
+			square table kit,14329,25;
 			trophy stand,7936,50;" />
 	</parameters>
 </npc>

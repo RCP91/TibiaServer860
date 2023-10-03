@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,10 +13,10 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, "mission") then
-		
-		if getPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.RoyalRescue) == 4 and doPlayerRemoveItem(cid, 12662, 1) then
-			setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.RoyalRescue, 5)
-			selfSay("By the Gods! You have the key to the cell! Thank you sooo much, mate. And now leave. I'll wait here until the air is clean and then I'm out of here.", cid)
+		local player = Player(cid)
+		if player:getStorageValue(Storage.hiddenCityOfBeregar.RoyalRescue) == 4 and player:removeItem(14350, 1) then
+			player:setStorageValue(Storage.hiddenCityOfBeregar.RoyalRescue, 5)
+			npcHandler:say("By the Gods! You have the key to the cell! Thank you sooo much, mate. And now leave. I'll wait here until the air is clean and then I'm out of here.", cid)
 		end
 	end
 	return true

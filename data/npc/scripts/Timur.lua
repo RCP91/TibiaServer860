@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,7 +12,7 @@ local voices = {
 	{ text = 'Selling ammunition and buying bows and crossbows!' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to my little shop, adventurer! First read my blackboards.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye, bye.")

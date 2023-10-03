@@ -13,6 +13,10 @@
 			club,2382,5;
 			crowbar,2416,260;
 			dagger,2379,5;
+			exercise sword,32384,262500,500;
+			exercise axe,32385,262500,500;
+			exercise club,32386,262500,500;
+			exercise bow,32387,262500,500;
 			hand axe,2380,8;
 			longsword,2397,160;
 			mace,2398,90;
@@ -53,6 +57,7 @@
 			small axe,2559,5;
 			spike sword,2383,240;
 			studded club,2448,10;
+			swampling club,20104,40;
 			sword,2376,25;
 			throwing knife,2410,2;
 			two handed sword,2377,450;

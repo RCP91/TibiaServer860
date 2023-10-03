@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -81,13 +80,3 @@ npcHandler:setMessage(MESSAGE_SENDTRADE, 'Here. Don\'t forget, if you buy potion
 npcHandler:setMessage(MESSAGE_GREET, 'Greetings, traveller |PLAYERNAME|. As you have found the way to my hut, how can I {help} you?')
 
 npcHandler:addModule(FocusModule:new())
-
-keywordHandler:addSpellKeyword({'apprentice\'s','strike'}, {npcHandler = npcHandler, spellName = 'Apprentice\'s Strike', price = 50, level = 2, vocation ={0}})
-keywordHandler:addSpellKeyword({'arrow','call'}, {npcHandler = npcHandler, spellName = 'Arrow Call', price = 50, level = 2, vocation ={0}})
-keywordHandler:addSpellKeyword({'practise','fire','wave'}, {npcHandler = npcHandler, spellName = 'Practise Fire Wave', price = 100, level = 2, vocation ={0}})
-keywordHandler:addSpellKeyword({'practise','healing'}, {npcHandler = npcHandler, spellName = 'Practise Healing', price = 100, level = 2, vocation ={0}})
-keywordHandler:addSpellKeyword({'practise','magic','missile'}, {npcHandler = npcHandler, spellName = 'Practise Magic Missile', price = 200, level = 2, vocation ={0}})
-keywordHandler:addKeyword({'attack', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Apprentice's Strike}' and '{Practise Fire Wave}'."})
-keywordHandler:addKeyword({'healing', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Practise Healing}'."})
-keywordHandler:addKeyword({'support', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Arrow Call}' and '{Practise Magic Missile}'."})
-keywordHandler:addKeyword({'spells'}, StdModule.say, {npcHandler = npcHandler, text = 'I can teach you {Attack spells}, {Healing spells} and {Support spells}.'})

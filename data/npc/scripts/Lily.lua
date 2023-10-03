@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -16,7 +15,7 @@ local voices = {
 	{ text = 'Do you need help? Just ask me about anything you\'d like to know!' },
 	{ text = 'I\'m buying all of your blueberries for my famous blueberry juice!' }
 }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Basic Keywords
 keywordHandler:addKeyword({'sell'}, StdModule.say, {npcHandler = npcHandler, text = 'Just ask me for a {trade} to see what I buy from you. If you want to sell {blueberries}, ask me about them separately.'})
@@ -75,9 +74,9 @@ keywordHandler:addAliasKeyword({'torch'})
 
 local cookiKeyword = keywordHandler:addKeyword({'cooki'}, StdModule.say, {npcHandler = npcHandler, text = 'Oh yes, I love cookies! Will you accept 1 gold for it?'})
 	cookiKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Fine! Here\'s your gold.', reset = true},
-		function(player) return getPlayerItemCount(cid, 2687) > 0 end,
+		function(player) return player:getItemCount(2687) > 0 end,
 		function(player)
-			doPlayerRemoveItem(cid, 2687, 1)
+			player:removeItem(2687, 1)
 			player:addMoney(1)
 		end
 	)
@@ -86,9 +85,9 @@ local cookiKeyword = keywordHandler:addKeyword({'cooki'}, StdModule.say, {npcHan
 
 local blueberryKeyword = keywordHandler:addKeyword({'blueberry'}, StdModule.say, {npcHandler = npcHandler, text = 'Oh, do you have blueberries for sale? I need them for my {antidote potion}. I give you 1 gold for 5 of them, yes?'})
 	blueberryKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Fine! Here\'s your gold.', reset = true},
-		function(player) return getPlayerItemCount(cid, 2677) >= 5 end,
+		function(player) return player:getItemCount(2677) >= 5 end,
 		function(player)
-			doPlayerRemoveItem(cid, 2677, 5)
+			player:removeItem(2677, 5)
 			player:addMoney(1)
 		end
 	)

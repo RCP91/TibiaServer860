@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,7 +13,7 @@ local voices = {
 	{ text = 'Tools and general equipment at Al Dee\'s!' },
 	{ text = 'Don\'t head for adventure without a rope and torches! Buy your supplies here!' }
 }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Basic Keywords
 keywordHandler:addKeyword({'hint'}, StdModule.rookgaardHints, {npcHandler = npcHandler})
@@ -89,10 +88,10 @@ keywordHandler:addAliasKeyword({'dallheim'})
 -- Pick quest
 local pickKeyword = keywordHandler:addKeyword({'pick'}, StdModule.say, {npcHandler = npcHandler, text = 'Picks are hard to come by. I trade them only in exchange for high quality small axes. Would you like to make that deal?'})
 	pickKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Splendid! Here, take your pick.', reset = true},
-		function(player) return getPlayerItemCount(cid, 2559) > 0 end,
+		function(player) return player:getItemCount(2559) > 0 end,
 		function(player)
-			doPlayerRemoveItem(cid, 2559, 1)
-			doPlayerAddItem(cid, 2553, 1)
+			player:removeItem(2559, 1)
+			player:addItem(2553, 1)
 		end
 	)
 	pickKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Sorry, I am looking for a SMALL axe.', reset = true})

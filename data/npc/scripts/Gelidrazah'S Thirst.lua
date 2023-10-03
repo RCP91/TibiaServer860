@@ -2,7 +2,6 @@ local keywordHandler = KeywordHandler:new()
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid) npcHandler:onCreatureAppear(cid) end
 function onCreatureDisappear(cid) npcHandler:onCreatureDisappear(cid) end
@@ -14,31 +13,31 @@ local function creatureSayCallback(cid, type, msg)
         return false
     end
 
-    
+    local player = Player(cid)
 
     if msgcontains(msg, "yes") then
-        if talkState[talkUser] == 0 then
-            selfSay({
+        if npcHandler.topic[cid] == 0 then
+            npcHandler:say({
 				"There are three questions. First: What is the name of the princess who fell in love with a Thaian nobleman during the regency of pharaoh Uthemath? Second: Who is the author of the book ,The Language of the Wolves'? ...",
 				"Third: Which ancient Tibian race reportedly travelled the sky in cloud ships? Can you answer these {questions}?"
 			}, cid)
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 		else
-            selfSay('I don\'t know what you are talking about.', cid)
+            npcHandler:say('I don\'t know what you are talking about.', cid)
         end
-    elseif msgcontains(msg, "questions") and talkState[talkUser] == 1 then
-		selfSay("So I ask you: What is the name of the princess who fell in love with a Thaian nobleman during the regency of pharaoh Uthemath?", cid)
-		talkState[talkUser] = 2
-    elseif msgcontains(msg, "Tahmehe") and talkState[talkUser] == 2 then
-        selfSay("That's right. Listen to the second question: Who is the author of the book ,The Language of the Wolves'?", cid)
-		talkState[talkUser] = 3
-    elseif msgcontains(msg, "Ishara") and talkState[talkUser] == 3 then
-        selfSay("That's right. Listen to the third question: Which ancient Tibian race reportedly travelled the sky in cloud ships?", cid)
-		talkState[talkUser] = 4
-	 elseif msgcontains(msg, "Svir") and talkState[talkUser] == 4 then
-        selfSay("That is correct. You satisfactorily answered all questions. You may pass and enter Gelidrazah's lair.", cid)
-		talkState[talkUser] = 0
-		setPlayerStorageValue(cid, Storage.FirstDragon.GelidrazahAccess, 1)
+    elseif msgcontains(msg, "questions") and npcHandler.topic[cid] == 1 then
+		npcHandler:say("So I ask you: What is the name of the princess who fell in love with a Thaian nobleman during the regency of pharaoh Uthemath?", cid)
+		npcHandler.topic[cid] = 2
+    elseif msgcontains(msg, "Tahmehe") and npcHandler.topic[cid] == 2 then
+        npcHandler:say("That's right. Listen to the second question: Who is the author of the book ,The Language of the Wolves'?", cid)
+		npcHandler.topic[cid] = 3
+    elseif msgcontains(msg, "Ishara") and npcHandler.topic[cid] == 3 then
+        npcHandler:say("That's right. Listen to the third question: Which ancient Tibian race reportedly travelled the sky in cloud ships?", cid)
+		npcHandler.topic[cid] = 4
+	 elseif msgcontains(msg, "Svir") and npcHandler.topic[cid] == 4 then
+        npcHandler:say("That is correct. You satisfactorily answered all questions. You may pass and enter Gelidrazah's lair.", cid)
+		npcHandler.topic[cid] = 0
+		player:setStorageValue(Storage.FirstDragon.GelidrazahAccess, 1)
     end
     return true
 end

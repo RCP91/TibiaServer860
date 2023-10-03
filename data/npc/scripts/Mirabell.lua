@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,60 +8,60 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()		npcHandler:onThink()		end
 
 local voices = { {text = 'The Horn of Plenty is always open for tired adventurers.'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'pies') then
-		if getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.PieBuying) == -1 then
-			selfSay('Oh you\'ve heard about my excellent pies, didn\'t you? I am flattered. Unfortunately I\'m completely out of flour. I need 2 portions of flour for one pie. Just tell me when you have enough flour for your pies.', cid)
+		if player:getStorageValue(Storage.WhatAFoolishQuest.PieBuying) == -1 then
+			npcHandler:say('Oh you\'ve heard about my excellent pies, didn\'t you? I am flattered. Unfortunately I\'m completely out of flour. I need 2 portions of flour for one pie. Just tell me when you have enough flour for your pies.', cid)
 			return true
 		end
 
-		selfSay('For 12 pies this is 240 gold. Do you want to buy them?', cid)
-		talkState[talkUser] = 2
+		npcHandler:say('For 12 pies this is 240 gold. Do you want to buy them?', cid)
+		npcHandler.topic[cid] = 2
 	elseif msgcontains(msg, 'flour') then
-		selfSay('Do you bring me the flour needed for your pies?', cid)
-		talkState[talkUser] = 1
+		npcHandler:say('Do you bring me the flour needed for your pies?', cid)
+		npcHandler.topic[cid] = 1
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			if not doPlayerRemoveItem(cid, 2692, 24) then
-				selfSay('I think you are confusing the dust in your pockets with flour. You certainly do not have enough flour for 12 pies.', cid)
-				talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			if not player:removeItem(2692, 24) then
+				npcHandler:say('I think you are confusing the dust in your pockets with flour. You certainly do not have enough flour for 12 pies.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.WhatAFoolishQuest.PieBuying, getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.PieBuying) + 1)
-			selfSay('Excellent. Now I can start baking the pies. As you helped me, I will make you a good price for them.', cid)
-			talkState[talkUser] = 0
-		elseif talkState[talkUser] == 2 then
-			if not doPlayerRemoveMoney(cid, 240) then
-				selfSay('You don\'t have enough money, don\'t try to fool me.', cid)
-				talkState[talkUser] = 0
+			player:setStorageValue(Storage.WhatAFoolishQuest.PieBuying, player:getStorageValue(Storage.WhatAFoolishQuest.PieBuying) + 1)
+			npcHandler:say('Excellent. Now I can start baking the pies. As you helped me, I will make you a good price for them.', cid)
+			npcHandler.topic[cid] = 0
+		elseif npcHandler.topic[cid] == 2 then
+			if not player:removeMoneyNpc(240) then
+				npcHandler:say('You don\'t have enough money, don\'t try to fool me.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			doPlayerAddItem(cid, 7484, 1)
-			setPlayerStorageValue(cid, Storage.WhatAFoolishQuest.PieBuying, getPlayerStorageValue(cid, Storage.WhatAFoolishQuest.PieBuying) - 1)
-			setPlayerStorageValue(cid, Storage.WhatAFoolishQuest.PieBoxTimer, os.time() + 1200) -- 20 minutes to deliver
-			selfSay({
+			player:addItem(7484, 1)
+			player:setStorageValue(Storage.WhatAFoolishQuest.PieBuying, player:getStorageValue(Storage.WhatAFoolishQuest.PieBuying) - 1)
+			player:setStorageValue(Storage.WhatAFoolishQuest.PieBoxTimer, os.time() + 1200) -- 20 minutes to deliver
+			npcHandler:say({
 				'Here they are. Wait! Two things you should know: Firstly, they won\'t last long in the sun so you better get them to their destination as quickly as possible ...',
 				'Secondly, since my pies are that delicious it is forbidden to leave the town with them. We can\'t afford to attract more tourists to Edron.'
 			}, cid)
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'no') then
-		if talkState[talkUser] == 1 then
-			selfSay('Without flour I can\'t do anything, sorry.', cid)
-		elseif talkState[talkUser] == 2 then
-			selfSay('What are you? Some kind of fool?', cid)
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say('Without flour I can\'t do anything, sorry.', cid)
+		elseif npcHandler.topic[cid] == 2 then
+			npcHandler:say('What are you? Some kind of fool?', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 
 	return true

@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,28 +12,28 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'cookbook') then
-		if getPlayerStorageValue(cid, Storage.MaryzaCookbook) ~= 1 then
-			selfSay('The cookbook of the famous dwarven kitchen. You\'re lucky. I have a few copies on sale. Do you like one for 150 gold?', cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.MaryzaCookbook) ~= 1 then
+			npcHandler:say('The cookbook of the famous dwarven kitchen. You\'re lucky. I have a few copies on sale. Do you like one for 150 gold?', cid)
+			npcHandler.topic[cid] = 1
 		else
-			selfSay('I\'m sorry but I sell only one copy to each customer. Otherwise they would have been sold out a long time ago.', cid)
+			npcHandler:say('I\'m sorry but I sell only one copy to each customer. Otherwise they would have been sold out a long time ago.', cid)
 		end
 
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
-			if not doPlayerRemoveMoney(cid, 150) then
-				selfSay('No gold, no sale, that\'s it.', cid)
+			if not player:removeMoneyNpc(150) then
+				npcHandler:say('No gold, no sale, that\'s it.', cid)
 				return true
 			end
 
-			selfSay('Here you are. Happy cooking!', cid)
-			setPlayerStorageValue(cid, Storage.MaryzaCookbook, 1)
-			doPlayerAddItem(cid, 2347, 1)
+			npcHandler:say('Here you are. Happy cooking!', cid)
+			player:setStorageValue(Storage.MaryzaCookbook, 1)
+			player:addItem(2347, 1)
 		elseif msgcontains(msg, 'no') then
-			selfSay('I have but a few copies, anyway.', cid)
+			npcHandler:say('I have but a few copies, anyway.', cid)
 		end
 	end
 	return true
@@ -45,6 +44,5 @@ npcHandler:setMessage(MESSAGE_GREET, 'Welcome to the Jolly Axeman, |PLAYERNAME|.
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 local focusModule = FocusModule:new()
 focusModule:addGreetMessage('hello maryza')
-focusModule:addGreetMessage('hi maryza')
 focusModule:addGreetMessage('hello, maryza')
 npcHandler:addModule(focusModule)

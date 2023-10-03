@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -112,28 +111,28 @@ function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
-	if talkState[talkUser] == 0 then
+	if npcHandler.topic[cid] == 0 then
 		if msgcontains(msg, 'mission') then
-			if getPlayerStorageValue(cid, Storage.FathersBurdenQuest.Status) == 1 then
-				if getPlayerStorageValue(cid, Storage.FathersBurdenQuest.Progress) ~= 8 then
-					selfSay('Well, I need the parts of a sorcerer\'s robe, a paladin\'s bow, a knight\'s shield, and a druid\'s rod. If you cannot find one of them, ask me about it and I might provide you with some minor hints.', cid)
+			if player:getStorageValue(Storage.FathersBurdenQuest.Status) == 1 then
+				if player:getStorageValue(Storage.FathersBurdenQuest.Progress) ~= 8 then
+					npcHandler:say('Well, I need the parts of a sorcerer\'s robe, a paladin\'s bow, a knight\'s shield, and a druid\'s rod. If you cannot find one of them, ask me about it and I might provide you with some minor hints.', cid)
 					return true
 				end
 
-				setPlayerStorageValue(cid, Storage.FathersBurdenQuest.Status, 2)
-				doPlayerAddItem(cid, 12657, 1)
+				player:setStorageValue(Storage.FathersBurdenQuest.Status, 2)
+				player:addItem(12657, 1)
 				player:addExperience(8000, true)
-				selfSay({
+				npcHandler:say({
 					'I\'m so glad I finally have all the parts for the presents. Your reward is my eternal gratitude. Well, that and some gold of course. ...',
 					'Take this sachet over there, I wrapped the coins into this old cape I had still lying around here from a barter with a stranger, it is of no use for me anyway. Farewell and thank you once again.'
 				}, cid)
-			elseif getPlayerStorageValue(cid, Storage.FathersBurdenQuest.Status) == 2 then
-				selfSay('Thank you for your help!', cid)
+			elseif player:getStorageValue(Storage.FathersBurdenQuest.Status) == 2 then
+				npcHandler:say('Thank you for your help!', cid)
 				return true
 			else
-				selfSay({
+				npcHandler:say({
 					'I have four sons which are very dear to me. Though they were born on the same day and even in the same hour, they took quite different paths in life. ...',
 					'Each of them chose a different vocation, one will become a knight, one a sorcerer, one a druid, and the other a paladin. In a few weeks they will reach adulthood and I am holding a birthday party for them. ...',
 					'It should become a day to remember and so I want to give them something special as a present. I searched the land for the finest craftsmen so they could create suitable presents for my sons. ...',
@@ -142,48 +141,48 @@ function creatureSayCallback(cid, type, msg)
 					'As far as I understood it, the places where you can get these items are quite dangerous and so it would take some adventurer to get them. ...',
 					'That would be your mission if you are interested. Uhm, so are you interested?'
 				}, cid)
-				talkState[talkUser] = 1
+				npcHandler.topic[cid] = 1
 			end
 		elseif config[msg:lower()] then
 			local targetMessage = config[msg:lower()]
-			if getPlayerStorageValue(cid, targetMessage.storage) == 2 then
-				selfSay(targetMessage.messages.done, cid)
+			if player:getStorageValue(targetMessage.storage) == 2 then
+				npcHandler:say(targetMessage.messages.done, cid)
 				return true
 			end
 
-			selfSay(targetMessage.messages.deliever, cid)
-			talkState[talkUser] = 2
+			npcHandler:say(targetMessage.messages.deliever, cid)
+			npcHandler.topic[cid] = 2
 			message[cid] = targetMessage
 		end
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
-			selfSay('I am relieved someone as capable as you will handle the task. Well, I need the parts of a sorcerer\'s robe, a paladin\'s bow, a knight\'s shield, and a druid\'s wand.', cid)
-			setPlayerStorageValue(cid, Storage.FathersBurdenQuest.QuestLog, 1)
-			setPlayerStorageValue(cid, Storage.FathersBurdenQuest.Progress, 0)
-			setPlayerStorageValue(cid, Storage.FathersBurdenQuest.Status, 1)
+			npcHandler:say('I am relieved someone as capable as you will handle the task. Well, I need the parts of a sorcerer\'s robe, a paladin\'s bow, a knight\'s shield, and a druid\'s wand.', cid)
+			player:setStorageValue(Storage.FathersBurdenQuest.QuestLog, 1)
+			player:setStorageValue(Storage.FathersBurdenQuest.Progress, 0)
+			player:setStorageValue(Storage.FathersBurdenQuest.Status, 1)
 			for i = 1, #storages do
-				setPlayerStorageValue(cid, storages[i], 1)
+				player:setStorageValue(storages[i], 1)
 			end
 		elseif msgcontains(msg, 'no') then
-			selfSay('Oh my. I really hope you will change your mind.', cid)
+			npcHandler:say('Oh my. I really hope you will change your mind.', cid)
 		end
-		talkState[talkUser] = 0
-	elseif talkState[talkUser] == 2 then
+		npcHandler.topic[cid] = 0
+	elseif npcHandler.topic[cid] == 2 then
 		local targetMessage = message[cid]
 		if msgcontains(msg, 'yes') then
-			if not doPlayerRemoveItem(cid, targetMessage.itemId, 1) then
-				selfSay(targetMessage.messages.failure, cid)
+			if not player:removeItem(targetMessage.itemId, 1) then
+				npcHandler:say(targetMessage.messages.failure, cid)
 				return true
 			end
 
-			setPlayerStorageValue(cid, targetMessage.storage, 2)
-			setPlayerStorageValue(cid, Storage.FathersBurdenQuest.Progress, getPlayerStorageValue(cid, Storage.FathersBurdenQuest.Progress) + 1)
+			player:setStorageValue(targetMessage.storage, 2)
+			player:setStorageValue(Storage.FathersBurdenQuest.Progress, player:getStorageValue(Storage.FathersBurdenQuest.Progress) + 1)
 			player:addExperience(2500, true)
-			selfSay(targetMessage.messages.success, cid)
+			npcHandler:say(targetMessage.messages.success, cid)
 		elseif msgcontains(msg, 'no') then
-			selfSay(targetMessage.messages.no, cid)
+			npcHandler:say(targetMessage.messages.no, cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

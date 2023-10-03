@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Ratmiral Blackwhiskers" nameDescription="a Ratmiral Blackwhiskers" race="blood" experience="5" speed="135" manacost="200">
+	<health now="100000" max="100000"/>
+	<look type="1377" corpse="5964"/>
+	<targetchange interval="4000" chance="60" />
+	<flags>
+		<flag rewardboss="1" />
+		<flag summonable="1" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+	    <attack name="Piratsumonsbomb" interval="2000" chance="80" range="7" min="-20" max="-20" />
+	    <attack name="piratoutfit" interval="2000" chance="20" range="7" min="-20" max="-20" />
+	    <attack name="the pale count manadrain" interval="2000" chance="0" range="7" min="-600" max="-1200" />
+	    <attack name="the pale count bomb" interval="2000" chance="0" range="7" min="-1200" max="-1300" />
+	    <attack name="arkhothep curse" interval="2000" chance="0" range="7" min="-800" max="-950" />
+	    <attack name="warlock skill reducer" interval="2000" chance="50" range="7" min="-100" max="-100" />
+		<attack name="mutated bat curse" interval="2000" chance="30" range="7" min="-800" max="-1200" />		
+		<attack name="energy" interval="2000" chance="35" radius="3" min="600" max="-950">
+			<attribute key="shootEffect" value="energy" />
+			<attribute key="areaEffect" value="bigclouds" />
+		</attack>		
+	</attacks>
+	<defenses armor="80" defense="110">
+		<defense name="healing" interval="2000" chance="60" min="2500" max="5000">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>		
+	</defenses>
+	<immunities>
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>	
+	<summons maxSummons="2">
+		<summon name="Pirate Cutthroat" interval="1000" chance="20" max="4" />
+	</summons>
+	<loot>
+		<item name="platinum coin" countmax="6" chance="25000" />
+		<item name="broken helmet"  chance="4000" />
+		<item name="bug meat"  chance="5000" />
+		<item name="Combat Knife"  chance="8000" />
+		<item name="Dark Armor"  chance="4000" />
+		<item name="Dark Shield"  chance="3500" />
+		<item name="Dirty Cape"  chance="3200" />
+		<item name="Dirty Fur"  chance="3100" />
+		<item name="Dwarven Shield"  chance="5000" />
+		<item name="Fishbone"  chance="8000" />
+		<item name="Ham"  chance="10000" />
+		<item name="Knife"  chance="7000" />
+		<item name="Life Preserver"  chance="4000" />
+		<item name="Plate Armor"  chance="3900" />
+		<item name="Studded Shield"  chance="9500" />
+		<item name="Twigs"  chance="7000" />
+		<item name="Lion Axe"  chance="80" />
+		<item name="Lion Hammer"  chance="80" />
+		<item name="Lion Longbow"  chance="80" />
+		<item name="Lion Plate"  chance="80" />
+		<item name="Lion Rod"  chance="80" />
+		<item name="Lion Spangenhelm"  chance="80" />
+		<item name="Lion Spellbook"  chance="80" />
+	</loot>
+</monster>

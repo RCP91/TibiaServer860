@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -15,31 +14,31 @@ local voices = {
 	{ text = 'No, no, no, there IS no parcel bug, I\'m telling you!' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if msgcontains(msg, "measurements") then
-		if getPlayerStorageValue(cid, Storage.postman.Mission07) >= 1 and	getPlayerStorageValue(cid, Storage.postman.MeasurementsLiane) ~= 1 then
-			selfSay("I have more urgent problem to attend then that. Those hawks are hunting my carrier pigeons. Bring me 12 arrows and I'll see if I have the time for this nonsense. Do you have 12 arrows with you? ", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.postman.Mission07) >= 1 and	player:getStorageValue(Storage.postman.MeasurementsLiane) ~= 1 then
+			npcHandler:say("I have more urgent problem to attend then that. Those hawks are hunting my carrier pigeons. Bring me 12 arrows and I'll see if I have the time for this nonsense. Do you have 12 arrows with you? ", cid)
+			npcHandler.topic[cid] = 1
 	else
-			selfSay("...", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("...", cid)
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			if doPlayerRemoveItem(cid, 2544, 12) then
-				selfSay("Great! Now I'll teach them a lesson ... For those measurements ... <tells you her measurements> ", cid)
-				setPlayerStorageValue(cid, Storage.postman.Mission07, getPlayerStorageValue(cid, Storage.postman.Mission07) + 1)
-				setPlayerStorageValue(cid, Storage.postman.MeasurementsLiane, 1)
-				talkState[talkUser] = 0
+		if npcHandler.topic[cid] == 1 then
+			if player:removeItem(2544, 12) then
+				npcHandler:say("Great! Now I'll teach them a lesson ... For those measurements ... <tells you her measurements> ", cid)
+				player:setStorageValue(Storage.postman.Mission07, player:getStorageValue(Storage.postman.Mission07) + 1)
+				player:setStorageValue(Storage.postman.MeasurementsLiane, 1)
+				npcHandler.topic[cid] = 0
 	else
-			selfSay("Oh, you don\'t have it.", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("Oh, you don\'t have it.", cid)
+			npcHandler.topic[cid] = 0
 			end
 		end
 	end

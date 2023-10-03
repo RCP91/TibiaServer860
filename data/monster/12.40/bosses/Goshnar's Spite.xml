@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Goshnars Spite" nameDescription="a Goshnars Spite" race="fire" experience="120000" speed="550">
+	<health now="120000" max="120000" />
+	<look type="1305" corpse="39033" />
+	<targetchange interval="4000" chance="20" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<script>
+	<event name="SoulWarBosses"/>
+	</script>
+	<attacks>
+		<attack name="melee" interval="2000" min="-1500" max="-2100" />
+		<attack name="manadrain" interval="2000" chance="10" range="7" min="-1550" max="-2300" />
+		<attack name="fire" interval="2000" chance="20" range="7" radius="7" target="1" min="-1900" max="-3000">
+			<attribute key="shootEffect" value="fire" />
+			<attribute key="areaEffect" value="firearea" />
+		</attack>
+		<attack name="firefield" interval="2000" chance="10" range="7" radius="1" target="1">
+			<attribute key="shootEffect" value="fire" />
+		</attack>
+		<attack name="lifedrain" interval="2000" chance="10" length="8" spread="0" min="-2100" max="-3200">
+			<attribute key="areaEffect" value="purpleenergy" />
+		</attack>
+		<attack name="energy" interval="2000" chance="10" range="1" min="-1125" max="-1950">
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+		<attack name="speed" interval="2000" chance="15" radius="1" target="1" speedchange="-700" duration="30000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</attack>
+	</attacks>
+	<defenses armor="30" defense="30">
+		<defense name="healing" interval="2000" chance="15" min="180" max="250">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+		<defense name="speed" interval="2000" chance="15" speedchange="320" duration="5000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</defense>
+	</defenses>
+	<elements>
+		<element physicalPercent="10" />
+		<element deathPercent="10" />
+		<element energyPercent="10" />
+		<element earthPercent="10" />
+		<element icePercent="-10" />
+		<element holyPercent="-10" />
+	</elements>
+	<immunities>
+		<immunity fire="1" />
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<summons maxSummons="1">
+		<summon name="fire elemental" interval="2000" chance="10" />
+	</summons>
+	<voices interval="5000" chance="10">
+		<voice sentence="Your soul will be mine!" />
+		<voice sentence="MUHAHAHAHA!" />
+		<voice sentence="CHAMEK ATH UTHUL ARAK!" />
+		<voice sentence="I SMELL FEEEEAAAAAR!" />
+		<voice sentence="Your resistance is futile!" />
+	</voices>
+	<loot>
+		<item name="crystal coin" countmax="10" chance="60000" />
+		<item name="small emerald" countmax="10" chance="9690" />
+		<item name="small amethyst" countmax="10" chance="7250" />		
+		<item name="small ruby" countmax="10" chance="7430" />		
+		<item name="small topaz" countmax="10" chance="7470" />		
+		<item name="red gem" chance="5000" />
+		<item name="Bonfire Amulet" chance="630" />		
+		<item name="Silver Token" countmax="5" chance="90540" />
+		<item name="Gold Token" countmax="3" chance="90540" />
+		<item name="Bar of Gold" chance="1000" />
+		<item name="Mycological Mace" chance="100" />
+		<item name="Shiny Blade" chance="100" />
+		<item name="Ectoplasmic Shield" chance="200" />
+		<item name="Wand of Defiance" chance="9000" />
+		<item name="Glacial Rod" chance="8300" />
+		<item name="Vampire Silk Slippers" chance="300" />
+		<item name="Royal Scale Robe" chance="1000" />
+		<item name="Thundersoul Tabard" chance="100" />
+		<item name="Thundermind Raiment" chance="200" />
+		<item name="Dragon Scale Helmet" chance="200" />
+		<item name="magic plate armor" chance="6050" />
+		<item name="mastermind shield" chance="6000" />
+	</loot>
+</monster>

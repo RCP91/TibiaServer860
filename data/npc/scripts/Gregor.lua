@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,168 +8,170 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()		npcHandler:onThink()		end
 
 local voices = { {text = 'Gather around me, young knights! I\'m going to teach you some spells!'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
 
-	
-	local addonProgress = getPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonHelmet)
+	local player = Player(cid)
+	local addonProgress = player:getStorageValue(Storage.OutfitQuest.Knight.AddonHelmet)
 	if msgcontains(msg, 'task') then
 		if not player:isPremium() then
-			selfSay('Sorry, but our tasks are only for premium warriors.', cid)
+			npcHandler:say('Sorry, but our tasks are only for premium warriors.', cid)
 			return true
 		end
 
 		if addonProgress < 1 then
-			selfSay('You mean you would like to prove that you deserve to wear such a helmet?', cid)
-			talkState[talkUser] = 1
+			npcHandler:say('You mean you would like to prove that you deserve to wear such a helmet?', cid)
+			npcHandler.topic[cid] = 1
 		elseif addonProgress == 1 then
-			selfSay('Your current task is to bring me 100 perfect behemoth fangs, |PLAYERNAME|.', cid)
+			npcHandler:say('Your current task is to bring me 100 perfect behemoth fangs, |PLAYERNAME|.', cid)
 		elseif addonProgress == 2 then
-			selfSay('Your current task is to retrieve the helmet of Ramsay the Reckless from Banuta, |PLAYERNAME|.', cid)
+			npcHandler:say('Your current task is to retrieve the helmet of Ramsay the Reckless from Banuta, |PLAYERNAME|.', cid)
 		elseif addonProgress == 3 then
-			selfSay('Your current task is to obtain a flask of warrior\'s sweat, |PLAYERNAME|.', cid)
+			npcHandler:say('Your current task is to obtain a flask of warrior\'s sweat, |PLAYERNAME|.', cid)
 		elseif addonProgress == 4 then
-			selfSay('Your current task is to bring me royal steel, |PLAYERNAME|.', cid)
+			npcHandler:say('Your current task is to bring me royal steel, |PLAYERNAME|.', cid)
 		elseif addonProgress == 5 then
-			selfSay('Please talk to Sam and tell him I sent you. I\'m sure he will be glad to refine your helmet, |PLAYERNAME|.', cid)
+			npcHandler:say('Please talk to Sam and tell him I sent you. I\'m sure he will be glad to refine your helmet, |PLAYERNAME|.', cid)
 		else
-			selfSay('You\'ve already completed the task and can consider yourself a mighty warrior, |PLAYERNAME|.', cid)
+			npcHandler:say('You\'ve already completed the task and can consider yourself a mighty warrior, |PLAYERNAME|.', cid)
 		end
 
 	elseif msgcontains(msg, 'behemoth fang') then
 		if addonProgress == 1 then
-			selfSay('Have you really managed to fulfil the task and brought me 100 perfect behemoth fangs?', cid)
-			talkState[talkUser] = 3
+			npcHandler:say('Have you really managed to fulfil the task and brought me 100 perfect behemoth fangs?', cid)
+			npcHandler.topic[cid] = 3
 		else
-			selfSay('You\'re not serious asking that, are you? They come from behemoths, of course. Unless there are behemoth rabbits. Duh.', cid)
+			npcHandler:say('You\'re not serious asking that, are you? They come from behemoths, of course. Unless there are behemoth rabbits. Duh.', cid)
 		end
 
 	elseif msgcontains(msg, 'ramsay') then
 		if addonProgress == 2 then
-			selfSay('Did you recover the helmet of Ramsay the Reckless?', cid)
-			talkState[talkUser] = 4
+			npcHandler:say('Did you recover the helmet of Ramsay the Reckless?', cid)
+			npcHandler.topic[cid] = 4
 		else
-			selfSay('These pesky apes steal everything they can get their dirty hands on.', cid)
+			npcHandler:say('These pesky apes steal everything they can get their dirty hands on.', cid)
 		end
 
 	elseif msgcontains(msg, 'sweat') then
 		if addonProgress == 3 then
-			selfSay('Were you able to get hold of a flask with pure warrior\'s sweat?', cid)
-			talkState[talkUser] = 5
+			npcHandler:say('Were you able to get hold of a flask with pure warrior\'s sweat?', cid)
+			npcHandler.topic[cid] = 5
 		else
-			selfSay('Warrior\'s sweat can be magically extracted from headgear worn by a true warrior, but only in small amounts. Djinns are said to be good at magical extractions.', cid)
+			npcHandler:say('Warrior\'s sweat can be magically extracted from headgear worn by a true warrior, but only in small amounts. Djinns are said to be good at magical extractions.', cid)
 		end
 
 	elseif msgcontains(msg, 'royal steel') then
 		if addonProgress == 4 then
-			selfSay('Ah, have you brought the royal steel?', cid)
-			talkState[talkUser] = 6
+			npcHandler:say('Ah, have you brought the royal steel?', cid)
+			npcHandler.topic[cid] = 6
 		else
-			selfSay('Royal steel can only be refined by very skilled smiths.', cid)
+			npcHandler:say('Royal steel can only be refined by very skilled smiths.', cid)
 		end
 
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
-			selfSay({
+			npcHandler:say({
 				'Well then, listen closely. First, you will have to prove that you are a fierce and restless warrior by bringing me 100 perfect behemoth fangs. ...',
 				'Secondly, please retrieve a helmet for us which has been lost a long time ago. The famous Ramsay the Reckless wore it when exploring an ape settlement. ...',
 				'Third, we need a new flask of warrior\'s sweat. We\'ve run out of it recently, but we need a small amount for the show battles in our arena. ...',
 				'Lastly, I will have our smith refine your helmet if you bring me royal steel, an especially noble metal. ...',
 				'Did you understand everything I told you and are willing to handle this task?'
 			}, cid)
-			talkState[talkUser] = 2
+			npcHandler.topic[cid] = 2
 		elseif msgcontains(msg, 'no') then
-			selfSay('Bah. Then you will have to wait for the day these helmets are sold in shops, but that will not happen before hell freezes over.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('Bah. Then you will have to wait for the day these helmets are sold in shops, but that will not happen before hell freezes over.', cid)
+			npcHandler.topic[cid] = 0
 		end
 
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		if msgcontains(msg, 'yes') then
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Ref, math.max(0, getPlayerStorageValue(cid, Storage.OutfitQuest.Ref)) + 1)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonHelmet, 1)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.MissionHelmet, 1)
-			selfSay('Alright then. Come back to me once you have collected 100 perfect behemoth fangs.', cid)
-			talkState[talkUser] = 0
+			player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1)
+			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 1)
+			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 1)
+			npcHandler:say('Alright then. Come back to me once you have collected 100 perfect behemoth fangs.', cid)
+			npcHandler.topic[cid] = 0
 		elseif msgcontains(msg, 'no') then
-			selfSay('Would you like me to repeat the task requirements then?', cid)
-			talkState[talkUser] = 1
+			npcHandler:say('Would you like me to repeat the task requirements then?', cid)
+			npcHandler.topic[cid] = 1
 		end
 
-	elseif talkState[talkUser] == 3 then
+	elseif npcHandler.topic[cid] == 3 then
 		if msgcontains(msg, 'yes') then
-			if not doPlayerRemoveItem(cid, 5893, 100) then
-				selfSay('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
+			if not player:removeItem(5893, 100) then
+				npcHandler:say('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonHelmet, 2)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.MissionHelmet, 2)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.RamsaysHelmetDoor, 1)
-			selfSay('I\'m deeply impressed, brave Knight |PLAYERNAME|. I expected nothing less from you. Now, please retrieve Ramsay\'s helmet.', cid)
+			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 2)
+			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 2)
+			player:setStorageValue(Storage.OutfitQuest.Knight.RamsaysHelmetDoor, 1)
+			npcHandler:say('I\'m deeply impressed, brave Knight |PLAYERNAME|. I expected nothing less from you. Now, please retrieve Ramsay\'s helmet.', cid)
 		elseif msgcontains(msg, 'no') then
-			selfSay('There is no need to rush anyway.', cid)
+			npcHandler:say('There is no need to rush anyway.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 
-	elseif talkState[talkUser] == 4 then
+	elseif npcHandler.topic[cid] == 4 then
 		if msgcontains(msg, 'yes') then
-			if not doPlayerRemoveItem(cid, 5924, 1) then
-				selfSay('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
+			if not player:removeItem(5924, 1) then
+				npcHandler:say('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonHelmet, 3)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.MissionHelmet, 3)
-			selfSay('Good work, brave Knight |PLAYERNAME|! Even though it is damaged, it has a lot of sentimental value. Now, please bring me warrior\'s sweat.', cid)
+			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 3)
+			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 3)
+			npcHandler:say('Good work, brave Knight |PLAYERNAME|! Even though it is damaged, it has a lot of sentimental value. Now, please bring me warrior\'s sweat.', cid)
 		elseif msgcontains(msg, 'no') then
-			selfSay('There is no need to rush anyway.', cid)
+			npcHandler:say('There is no need to rush anyway.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 
-	elseif talkState[talkUser] == 5 then
+	elseif npcHandler.topic[cid] == 5 then
 		if msgcontains(msg, 'yes') then
-			if not doPlayerRemoveItem(cid, 5885, 1) then
-				selfSay('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
+			if not player:removeItem(5885, 1) then
+				npcHandler:say('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonHelmet, 4)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.MissionHelmet, 4)
-			selfSay('Now that is a pleasant surprise, brave Knight |PLAYERNAME|! There is only one task left now: Obtain royal steel to have your helmet refined.', cid)
+			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 4)
+			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 4)
+			npcHandler:say('Now that is a pleasant surprise, brave Knight |PLAYERNAME|! There is only one task left now: Obtain royal steel to have your helmet refined.', cid)
 		elseif msgcontains(msg, 'no') then
-			selfSay('There is no need to rush anyway.', cid)
+			npcHandler:say('There is no need to rush anyway.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 
-	elseif talkState[talkUser] == 6 then
+	elseif npcHandler.topic[cid] == 6 then
 		if msgcontains(msg, 'yes') then
-			if not doPlayerRemoveItem(cid, 5887, 1) then
-				selfSay('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
+			if not player:removeItem(5887, 1) then
+				npcHandler:say('Lying is not exactly honourable, |PLAYERNAME|. Shame on you.', cid)
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.AddonHelmet, 5)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Knight.MissionHelmet, 5)
-			selfSay('You truly deserve to wear an adorned helmet, brave Knight |PLAYERNAME|. Please talk to Sam and tell him I sent you. I\'m sure he will be glad to refine your helmet.', cid)
+			player:setStorageValue(Storage.OutfitQuest.Knight.AddonHelmet, 5)
+			player:setStorageValue(Storage.OutfitQuest.Knight.MissionHelmet, 5)
+			npcHandler:say('You truly deserve to wear an adorned helmet, brave Knight |PLAYERNAME|. Please talk to Sam and tell him I sent you. I\'m sure he will be glad to refine your helmet.', cid)
 		elseif msgcontains(msg, 'no') then
-			selfSay('There is no need to rush anyway.', cid)
+			npcHandler:say('There is no need to rush anyway.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end
 
-keywordHandler:addSpellKeyword({'cure','poison'}, {npcHandler = npcHandler, spellName = 'Cure Poison', price = 150, level = 10, vocation ={4}})
-keywordHandler:addSpellKeyword({'find','person'}, {npcHandler = npcHandler, spellName = 'Find Person', price = 80, level = 8, vocation ={4}})
-keywordHandler:addSpellKeyword({'great','light'}, {npcHandler = npcHandler, spellName = 'Great Light', price = 500, level = 13, vocation ={4}})
-keywordHandler:addSpellKeyword({'light'}, {npcHandler = npcHandler, spellName = 'Light', price = 0, level = 8, vocation ={4}})
-keywordHandler:addKeyword({'healing', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Cure Poison}'."})
-keywordHandler:addKeyword({'support', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Find Person}', '{Great Light}' and '{Light}'."})
-keywordHandler:addKeyword({'spells'}, StdModule.say, {npcHandler = npcHandler, text = 'I can teach you {Healing spells} and {Support spells}.'})
+keywordHandler:addSpellKeyword({'find', 'person'}, {npcHandler = npcHandler, spellName = 'Find Person', price = 80, level = 8, vocation = 4})
+keywordHandler:addSpellKeyword({'light'}, {npcHandler = npcHandler, spellName = 'Light', price = 0, level = 8, vocation = 4})
+keywordHandler:addSpellKeyword({'cure', 'poison'}, {npcHandler = npcHandler, spellName = 'Cure Poison', price = 150, level = 10, vocation = 4})
+keywordHandler:addSpellKeyword({'wound', 'cleansing'}, {npcHandler = npcHandler, spellName = 'Wound Cleansing', price = 0, level = 8, vocation = 4})
+keywordHandler:addSpellKeyword({'great', 'light'}, {npcHandler = npcHandler, spellName = 'Great Light', price = 500, level = 13, vocation = 4})
+
+keywordHandler:addKeyword({'healing', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Wound Cleansing}' and '{Cure Poison}'."})
+keywordHandler:addKeyword({'support', 'spells'}, StdModule.say, {npcHandler = npcHandler, text = "In this category I have '{Light}', '{Find Person}' and '{Great Light}'."})
+keywordHandler:addKeyword({'spells'}, StdModule.say, {npcHandler = npcHandler, text = 'I can teach you {healing spells} and {support spells}. What kind of spell do you wish to learn? You can also tell me for which level you would like to learn a spell, if you prefer that.'})
 
 keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = "I am the first knight. I trained some of the greatest heroes of Tibia."})
 keywordHandler:addKeyword({'heroes'}, StdModule.say, {npcHandler = npcHandler, text = "Of course, you heard of them. Knights are the best fighters in Tibia."})

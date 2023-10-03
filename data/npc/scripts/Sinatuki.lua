@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,28 +13,27 @@ local fishsID = {7158,7159}
 
 function creatureSayCallback(cid, type, msg)
 
-
+local player = Player(cid)
 
 	if(not npcHandler:isFocused(cid)) then
 		return false
 	end
-	local talkUser = NPCHANDLER_CONVBEHAVIOR == CONVERSATION_DEFAULT and 0 or cid
 		
 	if msgcontains(msg, 'Nupi') then
-	if getPlayerStorageValue(cid, Storage.BarbarianTest.Questline) >= 3 and getPlayerStorageValue(cid, Storage.TheIceIslands.Questline) >=5 then
+	if player:getStorageValue(Storage.BarbarianTest.Questline) >= 3 and player:getStorageValue(Storage.TheIceIslands.Questline) >=5 then
 		for i=1, #fishsID do 
-			if getPlayerItemCount(cid, fishsID[i]) >= 100 then		
-				doPlayerRemoveItem(cid, fishsID[i], 100) 							  
-				doPlayerAddItem(cid, 7290, 5)
-				selfSay("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you and gives you five glimmering crystals>", cid)
+			if player:getItemCount(fishsID[i]) >= 100 then		
+				player:removeItem(fishsID[i], 100) 							  
+				player:addItem(7290, 5)
+				npcHandler:say("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you and gives you five glimmering crystals>", cid)
 			break
-			elseif getPlayerItemCount(cid, fishsID[i]) >= 99 then
-				doPlayerRemoveItem(cid, fishsID[i], 99) 							  
-				doPlayerAddItem(cid, 7290, 5)
-				selfSay("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you>", cid)
+			elseif player:getItemCount(fishsID[i]) >= 99 then
+				player:removeItem(fishsID[i], 99) 							  
+				player:addItem(7290, 5)
+				npcHandler:say("Jinuma, suvituka siq chuqua!! Nguraka, nguraka! <happily takes the food from you>", cid)
 			break
 			else 
-				selfSay("Kisavuta! <giggles>", cid)
+				npcHandler:say("Kisavuta! <giggles>", cid)
 			end
 		end	
 	end

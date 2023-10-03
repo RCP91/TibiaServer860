@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Mould Phantom" nameDescription="a Mould Phantom" race="fire" experience="23920" speed="280">
+	<health now="28000" max="28000" />
+	<look type="1298" head="1" body="1" legs="94" feet="1" corpse="38964" />
+	<targetchange interval="4000" chance="20" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="-800" max="-1800"/>
+		<attack name="physical" interval="2000" chance="20" length="8" spread="0" min="-800" max="-1000">
+			<attribute key="areaEffect" value="yellowspark"/>
+		</attack>
+		<attack name="physical" interval="2000" chance="20" length="8" spread="0" min="-800" max="-1000">
+			<attribute key="areaEffect" value="energy"/>
+		</attack>
+		<attack name="physical" interval="2000" chance="20" radius="8" min="-800" max="-900">
+			<attribute key="areaEffect" value="yellowspark"/>
+		</attack>
+		<attack name="big energy wave" interval="2000" chance="20" min="-800" max="-1500"/>
+		<attack name="death" interval="2000" chance="25" radius="4" target="1" min="-750" max="-1200">
+			<attribute key="areaEffect" value="energy"/>
+		</attack>
+		<attack name="anomaly break" interval="2000" chance="40"/>
+	</attacks>
+	<defenses armor="100" defense="100"/>
+	<elements>
+		<element holyPercent="30"/>
+		<element firePercent="30"/>
+		<element energyPercent="30"/>
+		<element icePercent="30"/>
+		<element earthPercent="30"/>
+		<element physicalPercent="70"/>
+	</elements>
+	<immunities>
+		<immunity paralyze="1"/>
+		<immunity invisible="1"/>
+	</immunities>
+	<voices interval="5000" chance="10">
+		<voice sentence="Your soul will be mine!" />
+		<voice sentence="MUHAHAHAHA!" />
+		<voice sentence="CHAMEK ATH UTHUL ARAK!" />
+		<voice sentence="I SMELL FEEEEAAAAAR!" />
+		<voice sentence="Your resistance is futile!" />
+	</voices>
+	<loot>
+		<item name="platinum coin" countmax="80" chance="60000" />
+		<item name="Gold Ingot" chance="9854" />
+		<item name="Green Gem" chance="12000" />
+		<item name="Wand of Starstorm" chance="92300" />
+		<item name="Blue Gem" chance="4750" />
+		<item name="Ornate Crossbow" chance="6000" />
+		<item name="Violet Gem" chance="2000" />
+		<item name="Wand of Defiance" chance="2200" />
+		<item name="Wand of Voodoo" chance="22220" />
+		<item name="Crystal Crossbow" chance="1000" />
+	</loot>
+</monster>

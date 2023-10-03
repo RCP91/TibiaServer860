@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <monster name="Yaga The Crone" nameDescription="Yaga The Crone" race="blood" experience="375" speed="240">
 	<health now="620" max="620"/>
-	<look type="54" corpse="6081"/>
+	<look type="54" corpse="20587"/>
 	<targetchange interval="5000" chance="8"/>
 	<flags>
+		<!-- <flag preyable="0"/> -->
 		<flag summonable="0"/>
 		<flag attackable="1"/>
 		<flag hostile="1"/>
@@ -53,6 +54,7 @@
 	</voices>
 	<loot>
 		<item name="cape" chance="66000"/>
+		<item name="broom" chance="62500"/>
 		<item name="cookie" countmax="8" chance="62500"/>
 		<item name="gold coin" countmax="55" chance="29170"/>
 		<item name="star herb" chance="20833"/>

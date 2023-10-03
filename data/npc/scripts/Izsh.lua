@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -14,12 +13,12 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, 'mission') then
-		if Player(cid):getStorageValue(Storage.WrathoftheEmperor.Questline) >= 33 then
-			selfSay('Oh yez, let me zee ze documentz. Here we go: zree cheztz filled wiz platinum, one houze, a zet of elite armor, and an unending mana cazket. Iz ziz correct?', cid)
-			talkState[talkUser] = 1
+		if Player(cid):getStorageValue(Storage.WrathoftheEmperor.Questline) == 33 then
+			npcHandler:say('Oh yez, let me zee ze documentz. Here we go: zree cheztz filled wiz platinum, one houze, a zet of elite armor, and an unending mana cazket. Iz ziz correct?', cid)
+			npcHandler.topic[cid] = 1
 		end
-	elseif msgcontains(msg, 'yes') and talkState[talkUser] == 1 then
-		selfSay({
+	elseif msgcontains(msg, 'yes') and npcHandler.topic[cid] == 1 then
+		npcHandler:say({
 			'Fine, zo let\'z prozeed. You uzed forged documentz to enter our zity, killed zeveral guardz who enjoyed a quite excluzive and expenzive training, deztroyed rare magical devizez in ze pozzezzion of ze emperor. ...',
 			'Ze good newz iz, your zree cheztz of platinum should be nearly enough to pay ze finez. Lucky you, ziz could have left you broke. ...',
 			'Zere are alzo zertain noble familiez complaining about ze murder of zeveral of zeir beloved onez. ...',
@@ -32,7 +31,7 @@ local function creatureSayCallback(cid, type, msg)
 			'Ze rednezz of your faze and ze zound you make wiz your teez iz obviouzly a zign of gratitude of your zpeziez! I am flattered, but pleaze leave now az I have to attend to zome important buzinezz.'
 		}, cid)
 		Player(cid):setStorageValue(Storage.WrathoftheEmperor.Questline, 34)
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

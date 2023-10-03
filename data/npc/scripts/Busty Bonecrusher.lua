@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,7 +8,7 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()		npcHandler:onThink()		end
 
 local voices = { {text = 'Behave yourself as long as you are in Carlin, commoner!'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local condition = Condition(CONDITION_FIRE)
 condition:setParameter(CONDITION_PARAM_DELAYED, 1)
@@ -20,8 +19,8 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 	if isInArray({"fuck", "idiot", "asshole", "ass", "fag", "stupid", "tyrant", "shit", "lunatic"}, msg) then
-		selfSay("Take this!", cid)
-		
+		npcHandler:say("Take this!", cid)
+		local player = Player(cid)
 		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)
 		player:addCondition(condition)
 		npcHandler:releaseFocus(cid)

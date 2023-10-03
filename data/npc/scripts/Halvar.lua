@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -26,50 +25,49 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	local arenaId = getPlayerStorageValue(cid, Storage.SvargrondArena.Arena)
+	local player = Player(cid)
+	local arenaId = player:getStorageValue(Storage.SvargrondArena.Arena)
 	if msgcontains(msg, 'fight') or msgcontains(msg, 'pit') or msgcontains(msg, 'challenge') or msgcontains(msg, 'arena') then
-		if getPlayerStorageValue(cid, Storage.SvargrondArena.Pit) == 1 then
-			selfSay('You already paid the fee, go and fight!', cid)
+		if player:getStorageValue(Storage.SvargrondArena.Pit) == 1 then
+			npcHandler:say('You already paid the fee, go and fight!', cid)
 			return true
 		end
-		
-				
+
 		if arenaId < 1 then
 			arenaId = 1
-			setPlayerStorageValue(cid, Storage.SvargrondArena.Arena, arenaId)
+			player:setStorageValue(Storage.SvargrondArena.Arena, arenaId)
 		end
 
 		if ARENA[arenaId] then
-			selfSay('So you agree with the {rules} and want to participate in the {challenge}? The {fee} for one try in {' .. ARENA[arenaId].name .. '} is ' .. ARENA[arenaId].price .. ' gold pieces. Do you really want to participate and pay the {fee}?', cid)
-			talkState[talkUser] = 1
+			npcHandler:say('So you agree with the {rules} and want to participate in the {challenge}? The {fee} for one try in {' .. ARENA[arenaId].name .. '} is ' .. ARENA[arenaId].price .. ' gold pieces. Do you really want to participate and pay the {fee}?', cid)
+			npcHandler.topic[cid] = 1
 		else
-			selfSay('You\'ve already completed the arena in all {difficulty levels}.', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('You\'ve already completed the arena in all {difficulty levels}.', cid)
+			npcHandler.topic[cid] = 0
 		end
 
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
 			if not ARENA[arenaId] then
-				talkState[talkUser] = 0
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			if doPlayerRemoveMoney(cid, ARENA[arenaId].price) then
-				setPlayerStorageValue(cid, Storage.SvargrondArena.Pit, 1)
-				selfSay('As you wish! You can pass the door now and enter the teleporter to the pits.', cid)
+			if player:removeMoneyNpc(ARENA[arenaId].price) then
+				player:setStorageValue(Storage.SvargrondArena.Pit, 1)
+				npcHandler:say('As you wish! You can pass the door now and enter the teleporter to the pits.', cid)
 
 				local cStorage = ARENA[arenaId].questLog
-				if getPlayerStorageValue(cid, cStorage) ~= 1 then
-					setPlayerStorageValue(cid, cStorage, 1)
+				if player:getStorageValue(cStorage) ~= 1 then
+					player:setStorageValue(cStorage, 1)
 				end
 			else
-				selfSay('You do not have enough money.', cid)
+				npcHandler:say('You do not have enough money.', cid)
 			end
 		else
-			selfSay('Come back when you are ready then.', cid)
+			npcHandler:say('Come back when you are ready then.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

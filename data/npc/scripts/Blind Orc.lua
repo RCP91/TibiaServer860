@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -17,10 +16,10 @@ local function addBuyableKeyword(keywords, itemid, amount, price, text)
 	end
 
 	keyword:addChildKeyword({'mok'}, StdModule.say, {npcHandler = npcHandler, text = 'Maruk rambo zambo!', reset = true},
-		function(player) return getPlayerBalance(cid) + getPlayerBalance(cid) >= price end,
+		function(player) return player:getMoney() + player:getBankBalance() >= price end,
 		function(player)
-		if doPlayerRemoveMoney(cid, price) then
-		   doPlayerAddItem(cid, itemid, amount)
+		if player:removeMoneyNpc(price) then
+		   player:addItem(itemid, amount)
 			end
  		end
 	)

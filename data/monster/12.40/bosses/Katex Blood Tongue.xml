@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Katex Blood Tongue" nameDescription="a katex blood tongue" race="blood" experience="2200" speed="500">
+	<health now="6700" max="6700" />	
+	<look type="1300" head="18" body="94" legs="18" feet="18" corpse="39029" />
+	<targetchange interval="2000" chance="20" />
+	<targetstrategies nearest="70" health="10" damage="10" random="10" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag staticattack="98" />
+		<flag targetdistance="1" />
+		<flag runonhealth="0" />
+		<flag canwalkonenergy="1" />
+		<flag canwalkonfire="1" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" skill="112" attack="85"/>
+		<attack name="fire" interval="2000" chance="20" range="7" target="1" min="-510" max="-1395">
+			<attribute key="shootEffect" value="fire"/>
+			<attribute key="areaEffect" value="firearea"/>
+		</attack>
+		<attack name="fire" interval="2000" chance="20" range="7" target="1" radius="4" min="-310" max="-995">
+			<attribute key="shootEffect" value="fire"/>
+			<attribute key="areaEffect" value="firearea"/>
+		</attack>
+		<attack name="physical" interval="2000" chance="20" radius="5" min="-110" max="-495">
+			<attribute key="areaEffect" value="yellowspark"/>
+		</attack>
+		<attack name="firecondition" interval="2000" chance="15" radius="5" min="-1100" max="-1100">
+			<attribute key="areaEffect" value="firearea"/>
+		</attack>
+		<attack name="fire" interval="2000" chance="15" length="9" spread="4" min="-710" max="-895">
+			<attribute key="areaEffect" value="firearea"/>
+		</attack>
+		<attack name="fire" interval="2000" chance="15" length="9" spread="0" min="-710" max="-1195">
+			<attribute key="areaEffect" value="fire"/>
+		</attack>
+	</attacks>
+	<defenses armor="55" defense="65">
+		<defense name="healing" interval="3000" chance="25" min="1000" max="2700">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>
+		<defense name="speed" interval="2000" chance="15" speedchange="520" duration="5000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</defense>
+	</defenses>
+	<elements>
+		<element firePercent="50" />
+		<element earthPercent="-10" />
+		<element energyPercent="50" />
+		<element deathPercent="80" />
+		<element physicalPercent="50" />
+		<element holyPercent="80" />
+		<element icePercent="50" />
+	</elements>
+	<immunities>
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<voices interval="50000" chance="30">
+		<voice sentence="May the embrace of darkness kill you!" />
+	</voices>
+	<loot>
+		<item id="2148" countmax="50" chance="10000" /> <!-- Gold Coin -->
+		<item id="2152" countmax="50" chance="10000" /> <!-- Platinum Coin -->
+		<item id="2150" countmax="10" chance="10000" /> <!-- small amethyst -->
+		<item id="2145" countmax="10" chance="10000" /> <!-- small diamond -->
+		<item id="2147" countmax="10" chance="10000" /> <!-- small ruby -->
+		<item id="9970" countmax="10" chance="10000" /> <!-- small topaz -->
+		<item id="7590" countmax="100" chance="10000" /> <!-- Great Mana Potions -->
+		<item id="8472" countmax="100" chance="10000" /> <!-- Great Spirit Potions -->
+		<item id="22396" countmax="2" chance="2000" /> <!-- Cluster of Solace -->
+		<item id="38778" countmax="3" chance="2000" /> <!-- Werehyaena Nose -->
+		<item id="18415" countmax="5" chance="5000" /> <!-- Green Crystal Shard -->
+		<item id="38779" countmax="2" chance="200" /> <!--  Werehyaena Talisman -->
+		<item id="2454" countmax="3" chance="5000" /> <!--  War Axe -->
+		<item id="7382" chance="6000" /> <!--  Demonrage Sword -->
+		<item id="2155" chance="2000" /> <!-- green gem -->
+		<item id="2393" chance="2000" /> <!--  Giant Sword -->
+		<item id="2179" chance="2000" /> <!--  Gold Ring -->
+		<item id="2156" chance="1000" /> <!-- red gem -->
+		<item id="2520" chance="2000" /> <!--  Demon Shield -->
+		<item id="7404" chance="2000" /> <!--  Assassin Dagger -->
+		<item id="2466" chance="1000" /> <!-- Golden Armor -->
+		<item id="15644" chance="1000" /> <!-- Ornate Crossbow -->
+		<item id="7422" chance="1000" /> <!--  Jade Hammer -->
+		<item id="2154" chance="1000" /> <!-- yellow gem -->
+		<item id="26187" chance="1000" /> <!--  Ring of Green Plasma -->
+		<item id="25377" chance="100000" /><!-- Gold Token -->
+		<item id="25172" chance="100000" /><!-- Silver Token -->
+		<item id="5741" chance="200" /> <!-- skull helmet -->
+		<item id="39093" chance="200" /> <!--  Red Silk Flower -->
+		<item id="2472" chance="200" /> <!--  Magic Plate Armor -->
+	</loot>
+</monster>

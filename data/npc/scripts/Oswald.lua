@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -46,31 +45,31 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'invitation') then
-		if getPlayerStorageValue(cid, Storage.thievesGuild.Mission03) == 1 then
-			selfSay('What? So why in the world should I give you an invitation? It\'s not as if you were someone important, are you?', cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.thievesGuild.Mission03) == 1 then
+			npcHandler:say('What? So why in the world should I give you an invitation? It\'s not as if you were someone important, are you?', cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			selfSay('Well, rich and generous people are always welcome in the palace.If you donate 1000 gold to a fund I oversee, I\'ll give you an invitation, ok?', cid)
-			talkState[talkUser] = 3
-		elseif talkState[talkUser] == 3 then
-			if doPlayerRemoveMoney(cid, 1000) then
-				doPlayerAddItem(cid, 8761, 1)
-				setPlayerStorageValue(cid, Storage.thievesGuild.Mission03, 2)
-				selfSay('Excellent! Here is your invitation!', cid)
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say('Well, rich and generous people are always welcome in the palace.If you donate 1000 gold to a fund I oversee, I\'ll give you an invitation, ok?', cid)
+			npcHandler.topic[cid] = 3
+		elseif npcHandler.topic[cid] == 3 then
+			if player:removeMoneyNpc(1000) then
+				player:addItem(8761, 1)
+				player:setStorageValue(Storage.thievesGuild.Mission03, 2)
+				npcHandler:say('Excellent! Here is your invitation!', cid)
 			else
-				selfSay('You don\'t have enough money.', cid)
+				npcHandler:say('You don\'t have enough money.', cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'gold') then
-		if talkState[talkUser] == 1 then
-			selfSay('Not that I am bribeable but I doubt that you own 1000 gold pieces. Or do you?', cid)
-			talkState[talkUser] = 2
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say('Not that I am bribeable but I doubt that you own 1000 gold pieces. Or do you?', cid)
+			npcHandler.topic[cid] = 2
 		end
 	end
 	return true

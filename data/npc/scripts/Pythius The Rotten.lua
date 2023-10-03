@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -15,10 +14,10 @@ local treasureKeyword = keywordHandler:addKeyword({"treasure"}, StdModule.say, {
 local offerKeyword = keywordHandler:addKeyword({"offer"}, StdModule.say, {npcHandler = npcHandler, text = "I GRANT YOU ACCESS TO THE DUNGEON IN THE NORTH. YOU'LL FIND SOME OF MY LIVING BROTHERS THERE....BUT.....EVERY TIME YOU WANT TO ENTER YOU HAVE TO GIVE ME SOMETHING PRECIOUS. ALRIGHT?"}, function(player) return player:getLevel() > 99 end)
 	local mugKeyword = offerKeyword:addChildKeyword({"yes"}, StdModule.say, {npcHandler = npcHandler, text = "AS YOU WISH. WHAT DO YOU HAVE TO OFFER?"})
 		mugKeyword:addChildKeyword({"golden mug"}, StdModule.say, {npcHandler = npcHandler, text = "I LIKE THAT AND GRANT YOU ACCESS TO THE DUNGEON IN THE NORTH FOR THE NEXT FEW MINUTES. COME BACK ANYTIME AND BRING ME MORE TREASURES.", reset = true},
-			function(player) return getPlayerItemCount(cid, 2033) > 0 end,
+			function(player) return player:getItemCount(2033) > 0 end,
 			function(player)
-				doPlayerRemoveItem(cid, 2033, 1)
-				setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.PythiusTheRotten, os.time() + 180)
+				player:removeItem(2033, 1)
+				player:setStorageValue(Storage.hiddenCityOfBeregar.PythiusTheRotten, os.time() + 180)
 			end
 		)
 		mugKeyword:addChildKeyword({"golden mug"}, StdModule.say, {npcHandler = npcHandler, text = "THIS IS NOT WORTH BEING PART OF MY TREASURE! BRING ME SOMETHING ELSE.", reset = true})

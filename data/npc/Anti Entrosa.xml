@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<npc name="Anti Entrosa" script="wararena.lua" walkinterval="2000" floorchange="0">
+	<health now="100" max="100" />
+	<look type="147" head="115" body="50" legs="49" feet="131" addons="1" mount="373" />
+</npc>

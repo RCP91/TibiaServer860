@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,7 +12,7 @@ local voices = {
 	{ text = 'Hail Pumin. Yes, hail.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local function greetCallback(cid)
 	npcHandler:setMessage(MESSAGE_GREET, "Hello " .. (Player(cid):getSex() == PLAYERSEX_FEMALE and "beautiful lady" or "handsome gentleman") .. ", welcome to the atrium of Pumin's Domain. We require some information from you before we can let you pass. Where do you want to go?")
@@ -26,10 +25,10 @@ local function creatureSayCallback(cid, type, msg)
 	end
 
 	if msgcontains(msg, "287") then
-		
-		if getPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin) == 4 then
-			setPlayerStorageValue(cid, Storage.PitsOfInferno.ThronePumin, 5)
-			selfSay("Sure, you can get it from me. Here you are. Bye", cid)
+		local player = Player(cid)
+		if player:getStorageValue(Storage.PitsOfInferno.ThronePumin) == 4 then
+			player:setStorageValue(Storage.PitsOfInferno.ThronePumin, 5)
+			npcHandler:say("Sure, you can get it from me. Here you are. Bye", cid)
 		end
 	end
 	return true

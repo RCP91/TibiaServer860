@@ -18,7 +18,7 @@
 		<flag runonhealth="0"/>
 	</flags>
 	<attacks>
-		<attack name="melee" interval="2000" skill="50" attack="80"/>
+		<attack name="melee" interval="2000" skill="50" attack="56"/>
 		<attack name="physical" interval="1000" chance="14" range="7" min="-0" max="-95">
 			<attribute key="shootEffect" value="explosion"/>
 		</attack>
@@ -60,7 +60,7 @@
 		<item id="8472" chance="1600"/><!-- great spirit potion -->
 		<item id="7591" chance="1900"/><!-- great health potion -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="7439" chance="1350"/><!-- berserk potion -->
 				<item id="9976" chance="1000"/><!-- crystal pedestal -->	
 				<item id="7452" chance="1500"/><!-- spiked squelcher -->	
@@ -69,7 +69,7 @@
 				<item id="2164" chance="650"/><!-- might ring -->
 				<item id="7428" chance="200"/><!-- bonebreaker -->
 				<item id="7590" chance="1500"/><!-- great mana potion -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

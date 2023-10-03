@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,27 +12,27 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 	if msgcontains(msg, "monument tower") or msgcontains(msg, "passage") or msgcontains(msg, "trip") then
-		selfSay("Do you want to travel to the {monument tower} for a 50 gold fee?", cid)
-		talkState[talkUser] = 1
+		npcHandler:say("Do you want to travel to the {monument tower} for a 50 gold fee?", cid)
+		npcHandler.topic[cid] = 1
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			
-			if getPlayerBalance(cid) + getPlayerBalance(cid) >= 50 then
-				doPlayerRemoveMoney(cid, 50)
+		if npcHandler.topic[cid] == 1 then
+			local player = Player(cid)
+			if player:getMoney() + player:getBankBalance() >= 50 then
+				player:removeMoneyNpc(50)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				player:teleportTo(Position(32940, 31182, 7), false)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				talkState[talkUser] = 0
+				npcHandler.topic[cid] = 0
 
-			elseif getPlayerBalance(cid) >= 50 then
+			elseif player:getBankBalance() >= 50 then
 				getBankMoney(cid, 50)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 				player:teleportTo(Position(32940, 31182, 7), false)
 				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-				talkState[talkUser] = 0
+				npcHandler.topic[cid] = 0
 			else
-				selfSay("You don't have enought money.", cid)
-				talkState[talkUser] = 0
+				npcHandler:say("You don't have enought money.", cid)
+				npcHandler.topic[cid] = 0
 			end
 		end
 	end

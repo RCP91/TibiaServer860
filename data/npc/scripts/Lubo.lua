@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,78 +8,78 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()		npcHandler:onThink()		end
 
 local voices = { {text = 'Stop by and rest a while, tired adventurer! Have a look at my wares!'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
 
-	
-	local addonProgress = getPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.AddonBackpack)
+	local player = Player(cid)
+	local addonProgress = player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack)
 	if msgcontains(msg, 'addon') or msgcontains(msg, 'outfit')
 			or (addonProgress == 1 and msgcontains(msg, 'leather'))
 			or ((addonProgress == 1 or addonProgress == 2) and msgcontains(msg, 'backpack')) then
 		if addonProgress < 1 then
-			selfSay('Sorry, the backpack I wear is not for sale. It\'s handmade from rare minotaur leather.', cid)
-			talkState[talkUser] = 1
+			npcHandler:say('Sorry, the backpack I wear is not for sale. It\'s handmade from rare minotaur leather.', cid)
+			npcHandler.topic[cid] = 1
 		elseif addonProgress == 1 then
-			selfSay('Ah, right, almost forgot about the backpack! Have you brought me 100 pieces of minotaur leather as requested?', cid)
-			talkState[talkUser] = 3
+			npcHandler:say('Ah, right, almost forgot about the backpack! Have you brought me 100 pieces of minotaur leather as requested?', cid)
+			npcHandler.topic[cid] = 3
 		elseif addonProgress == 2 then
-			if getPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.AddonBackpackTimer) < os.time() then
-				selfSay('Just in time! Your backpack is finished. Here you go, I hope you like it.', cid)
+			if player:getStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer) < os.time() then
+				npcHandler:say('Just in time! Your backpack is finished. Here you go, I hope you like it.', cid)
 				player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Ref, math.min(0, getPlayerStorageValue(cid, Storage.OutfitQuest.Ref) - 1))
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.MissionBackpack, 0)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.AddonBackpack, 3)
+				player:setStorageValue(Storage.OutfitQuest.Ref, math.min(0, player:getStorageValue(Storage.OutfitQuest.Ref) - 1))
+				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 0)
+				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 3)
 
-				doPlayerAddOutfit(cid, 136, 1)
-				doPlayerAddOutfit(cid, 128, 1)
+				player:addOutfitAddon(136, 1)
+				player:addOutfitAddon(128, 1)
 			else
-				selfSay('Uh... I didn\'t expect you to return that early. Sorry, but I\'m not finished yet with your backpack. I\'m doing the best I can, promised.', cid)
+				npcHandler:say('Uh... I didn\'t expect you to return that early. Sorry, but I\'m not finished yet with your backpack. I\'m doing the best I can, promised.', cid)
 			end
 		elseif addonProgress == 3 then
-			selfSay('Sorry, but I can only make one backpack per person, else I\'d have to close my shop and open a leather manufactory.', cid)
+			npcHandler:say('Sorry, but I can only make one backpack per person, else I\'d have to close my shop and open a leather manufactory.', cid)
 		end
 		return true
 	end
 
-	if talkState[talkUser] == 1 then
+	if npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'backpack') or msgcontains(msg, 'minotaur') or msgcontains(msg, 'leather') then
-			selfSay('Well, if you really like this backpack, I could make one for you, but minotaur leather is hard to come by these days. Are you willing to put some work into this?', cid)
-			talkState[talkUser] = 2
+			npcHandler:say('Well, if you really like this backpack, I could make one for you, but minotaur leather is hard to come by these days. Are you willing to put some work into this?', cid)
+			npcHandler.topic[cid] = 2
 		end
 
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		if msgcontains(msg, 'yes') then
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Ref, math.max(0, getPlayerStorageValue(cid, Storage.OutfitQuest.Ref)) + 1)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.AddonBackpack, 1)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.MissionBackpack, 1)
-			selfSay('Alright then, if you bring me 100 pieces of fine minotaur leather I will see what I can do for you. You probably have to kill really many minotaurs though... so good luck!', cid)
+			player:setStorageValue(Storage.OutfitQuest.Ref, math.max(0, player:getStorageValue(Storage.OutfitQuest.Ref)) + 1)
+			player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 1)
+			player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 1)
+			npcHandler:say('Alright then, if you bring me 100 pieces of fine minotaur leather I will see what I can do for you. You probably have to kill really many minotaurs though... so good luck!', cid)
 			npcHandler:releaseFocus(cid)
 		else
-			selfSay('Sorry, but I don\'t run a welfare office, you know... no pain, no gain.', cid)
+			npcHandler:say('Sorry, but I don\'t run a welfare office, you know... no pain, no gain.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 
-	elseif talkState[talkUser] == 3 then
+	elseif npcHandler.topic[cid] == 3 then
 		if msgcontains(msg, 'yes') then
-			if getPlayerItemCount(cid, 5878) < 100 then
-				selfSay('Sorry, but that\'s not enough leather yet to make one of these backpacks. Would you rather like to buy a normal backpack for 10 gold?', cid)
+			if player:getItemCount(5878) < 100 then
+				npcHandler:say('Sorry, but that\'s not enough leather yet to make one of these backpacks. Would you rather like to buy a normal backpack for 10 gold?', cid)
 			else
-				selfSay('Great! Alright, I need a while to finish this backpack for you. Come ask me later, okay?', cid)
+				npcHandler:say('Great! Alright, I need a while to finish this backpack for you. Come ask me later, okay?', cid)
 
-				doPlayerRemoveItem(cid, 5878, 100)
+				player:removeItem(5878, 100)
 
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.MissionBackpack, 2)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.AddonBackpack, 2)
-				setPlayerStorageValue(cid, Storage.OutfitQuest.Citizen.AddonBackpackTimer, os.time() + 2 * 60 * 60)
+				player:setStorageValue(Storage.OutfitQuest.Citizen.MissionBackpack, 2)
+				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpack, 2)
+				player:setStorageValue(Storage.OutfitQuest.Citizen.AddonBackpackTimer, os.time() + 2 * 60 * 60)
 			end
 		else
-			selfSay('I know, it\'s quite some work... don\'t lose heart, just keep killing minotaurs and you\'ll eventually get lucky. Would you rather like to buy a normal backpack for 10 gold?', cid)
+			npcHandler:say('I know, it\'s quite some work... don\'t lose heart, just keep killing minotaurs and you\'ll eventually get lucky. Would you rather like to buy a normal backpack for 10 gold?', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 end
 

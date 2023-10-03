@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,22 +12,22 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, "weapons") then
-		if getPlayerStorageValue(cid, Storage.secretService.AVINMission06) == 1 then
-			selfSay("Crate of weapons you say.. for me?", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.secretService.AVINMission06) == 1 then
+			npcHandler:say("Crate of weapons you say.. for me?", cid)
+			npcHandler.topic[cid] = 1
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			if doPlayerRemoveItem(cid, 7707, 1) then
-				setPlayerStorageValue(cid, Storage.secretService.AVINMission06, 2)
-				selfSay("Why thank you |PLAYERNAME|.", cid)
+		if npcHandler.topic[cid] == 1 then
+			if player:removeItem(7707, 1) then
+				player:setStorageValue(Storage.secretService.AVINMission06, 2)
+				npcHandler:say("Why thank you |PLAYERNAME|.", cid)
 			else
-				selfSay("You don't have any crate of weapons!", cid)
+				npcHandler:say("You don't have any crate of weapons!", cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

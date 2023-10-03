@@ -67,7 +67,7 @@
 		<item id="2383" chance="8750"/><!-- spike sword -->
 		<item id="2178" chance="7000"/><!-- mind stone -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>		
+					
 				<item id="7590" chance="1000"/><!-- great mana potion-->
 				<item id="6300" chance="900"/><!-- death ring -->
 				<item id="7416" chance="750"/><!-- bloody edge -->
@@ -81,7 +81,7 @@
 				<item id="2387" chance="27500"/><!-- double axe -->
 				<item id="2417" chance="3750"/><!-- battle hammer -->
 				<item id="2152" countmax="4" chance="4100"/><!-- platinum coin -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

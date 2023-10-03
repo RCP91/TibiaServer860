@@ -67,7 +67,7 @@
 		<item id="9808" chance="7000"/><!-- rusty armor -->
 		<item id="2483" chance="10500"/><!-- scale armor -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="9808" chance="7000"/><!-- rusty armor -->
 				<item id="5806" chance="4500"/><!-- silver goblet -->
 				<item id="2457" chance="10500"/><!-- steel helmet -->
@@ -81,7 +81,7 @@
 				<item id="2436" chance="650"/><!-- skull staff -->
 				<item id="2173" chance="50"/><!-- amulet of loss -->
 				<item id="8903" chance="100"/><!-- spellbook of lost souls -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

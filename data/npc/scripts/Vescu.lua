@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -34,7 +33,7 @@ local function greetCallback(cid)
 	if Player(cid):getCondition(CONDITION_DRUNK) then
 		npcHandler:setMessage(MESSAGE_GREET, 'Hey t-there, you look like someone who enjoys a good {booze}.')
 	else
-		selfSay('Oh, two t-trolls. Hellooo, wittle twolls. <hicks>', cid)
+		npcHandler:say('Oh, two t-trolls. Hellooo, wittle twolls. <hicks>', cid)
 		return false
 	end
 	return true
@@ -45,66 +44,66 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'potion') then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.AssassinBaseOutfit) < 1 then
-			selfSay('It\'s so hard to know the exact time when to stop drinking. <hicks> C-could you help me to brew such a potion?', cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) < 1 then
+			npcHandler:say('It\'s so hard to know the exact time when to stop drinking. <hicks> C-could you help me to brew such a potion?', cid)
+			npcHandler.topic[cid] = 1
 		end
-	elseif config[msg] and talkState[talkUser] == 0 then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.AssassinBaseOutfit) == config[msg].storageValue then
-			selfSay(config[msg].text[1], cid)
-			talkState[talkUser] = 3
+	elseif config[msg] and npcHandler.topic[cid] == 0 then
+		if player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) == config[msg].storageValue then
+			npcHandler:say(config[msg].text[1], cid)
+			npcHandler.topic[cid] = 3
 			message[cid] = msg
 		else
-			selfSay(config[msg].text[2], cid)
+			npcHandler:say(config[msg].text[2], cid)
 		end
 	elseif msgcontains(msg, 'secret') then
-		if getPlayerStorageValue(cid, Storage.OutfitQuest.AssassinBaseOutfit) == 8 then
-			selfSay('Right. <hicks> Since you helped me to b-brew that potion and thus ensured the high quality of my work <hicks>, I\'ll give you my old assassin costume. It lacks the head part, but it\'s almost like new. Don\'t pretend to be me though, \'kay? <hicks>', cid)
+		if player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) == 8 then
+			npcHandler:say('Right. <hicks> Since you helped me to b-brew that potion and thus ensured the high quality of my work <hicks>, I\'ll give you my old assassin costume. It lacks the head part, but it\'s almost like new. Don\'t pretend to be me though, \'kay? <hicks>', cid)
 			player:addOutfit(156)
 			player:addOutfit(152)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
-			setPlayerStorageValue(cid, Storage.OutfitQuest.AssassinBaseOutfit, 9)
+			player:setStorageValue(Storage.OutfitQuest.AssassinBaseOutfit, 9)
 		end
 	elseif msgcontains(msg, 'yes') then
-		if talkState[talkUser] == 1 then
-			selfSay({
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say({
 				'You\'re a true buddy. I promise I will t-try to avoid killing you even if someone asks me to. <hicks> ...',
 				'Listen, I have this old formula from my grandma. <hicks> It says... 30 {bonelord eyes}... 10 {red dragon scales}. ...',
 				'Then 30 {lizard scales}... 20 {fish fins} - ew, this sounds disgusting, I wonder if this is really a potion or rather a cleaning agent. ...',
 				'Add 20 ounces of {vampire dust}, 10 ounces of {demon dust} and mix well with one flask of {warrior\'s sweat}. <hicks> ...',
 				'Okayyy, this is a lot... we\'ll take this step by step. <hicks> Will you help me gathering 30 {bonelord eyes}?'
 			}, cid)
-			talkState[talkUser] = 2
-		elseif talkState[talkUser] == 2 then
-			if getPlayerStorageValue(cid, Storage.OutfitQuest.DefaultStart) ~= 1 then
-				setPlayerStorageValue(cid, Storage.OutfitQuest.DefaultStart, 1)
+			npcHandler.topic[cid] = 2
+		elseif npcHandler.topic[cid] == 2 then
+			if player:getStorageValue(Storage.OutfitQuest.DefaultStart) ~= 1 then
+				player:setStorageValue(Storage.OutfitQuest.DefaultStart, 1)
 			end
-			setPlayerStorageValue(cid, Storage.OutfitQuest.AssassinBaseOutfit, 1)
-			selfSay('G-good. Go get them, I\'ll have a beer in the meantime.', cid)
-			talkState[talkUser] = 0
-		elseif talkState[talkUser] == 3 then
+			player:setStorageValue(Storage.OutfitQuest.AssassinBaseOutfit, 1)
+			npcHandler:say('G-good. Go get them, I\'ll have a beer in the meantime.', cid)
+			npcHandler.topic[cid] = 0
+		elseif npcHandler.topic[cid] == 3 then
 			local targetMessage = config[message[cid]]
 			local count = targetMessage.count or 1
-			if not doPlayerRemoveItem(cid, targetMessage.itemId, count) then
-				selfSay('Next time you lie to me I\'ll k-kill you. <hicks> Don\'t think I can\'t aim well just because I\'m d-drunk.', cid)
-				talkState[talkUser] = 0
+			if not player:removeItem(targetMessage.itemId, count) then
+				npcHandler:say('Next time you lie to me I\'ll k-kill you. <hicks> Don\'t think I can\'t aim well just because I\'m d-drunk.', cid)
+				npcHandler.topic[cid] = 0
 				return true
 			end
 
-			setPlayerStorageValue(cid, Storage.OutfitQuest.AssassinBaseOutfit, getPlayerStorageValue(cid, Storage.OutfitQuest.AssassinBaseOutfit) + 1)
-			selfSay(targetMessage.text[3], cid)
-			talkState[talkUser] = 0
+			player:setStorageValue(Storage.OutfitQuest.AssassinBaseOutfit, player:getStorageValue(Storage.OutfitQuest.AssassinBaseOutfit) + 1)
+			npcHandler:say(targetMessage.text[3], cid)
+			npcHandler.topic[cid] = 0
 		end
 	elseif msgcontains(msg, 'no') then
-		if talkState[talkUser] ~= 3 then
-			selfSay('Then not <hicks>.', cid)
-		elseif talkState[talkUser] == 3 then
-			selfSay('H-hurry up! <hicks> I have to start working soon.', cid)
+		if npcHandler.topic[cid] ~= 3 then
+			npcHandler:say('Then not <hicks>.', cid)
+		elseif npcHandler.topic[cid] == 3 then
+			npcHandler:say('H-hurry up! <hicks> I have to start working soon.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

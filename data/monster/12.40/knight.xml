@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<monster name="Knight's Apparition" nameDescription="a knight's apparition" race="blood" experience="22000" speed="480">
+	<health now="25000" max="25000" />
+	<look type="131" head="38" body="76" legs="113" feet="95" addons="0" corpse="20531" />
+	<targetchange interval="4000" chance="10" />
+	<targetstrategies nearest="100" health="0" damage="0" random="0" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="90" />
+		<flag runonhealth="0" />
+		<flag canwalkonenergy="1" />
+		<flag canwalkonfire="1" />
+		<flag canwalkonpoison="1" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="600" max="-900" />
+		<attack name="earth" interval="2000" chance="18" radius="2" min="-400" max="-1000">
+			<attribute key="areaEffect" value="groundshaker" />
+		</attack>
+		<attack name="holy" interval="2000" chance="14" length="5" spread="0" min="-720" max="-960">
+			<attribute key="areaEffect" value="yellowspark" />
+		</attack>
+	</attacks>
+	<defenses armor="86" defense="86" />
+	<elements>
+		<element physicalPercent="30" />
+		<element holyPercent="-5" />
+		<element deathPercent="55" />
+	</elements>
+	<immunities>
+	    <immunity death="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>
+	<voices interval="5000" chance="10">
+		<voice sentence="Mmmhaarrrgh!" />
+	</voices>
+	<loot>
+		<item name="Green Gem" countmax="3" chance="33000" />
+		<item name="Great Health Potion" countmax="3" chance="33000" />
+		<item name="Violet Gem" countmax="3" chance="6333" />
+		<item name="Giant Sword" chance="3000" />
+		<item name="Bag You Desire" chance="5" />
+		<item name="Epee" countmax="3" chance="4580" />
+		<item name="Crystal Mace" chance="2000" />
+		<item name="Crown Shield" chance="3200" />
+		<item name="Jade Hammer" chance="1980" />
+		<item name="Bag You Desire" chance="5" />
+	</loot>
+</monster>

@@ -13,7 +13,9 @@
 		<parameter key="shop_buyable" value="
 			fur backpack, 7342, 20;
 			fur bag, 7343, 5;
-			fishing rod, 2580, 150;			
+			fishing rod, 2580, 150;
+			hand auger, 36169, 25;
+			net, 36324, 50;
 			machete, 2420, 40;
 			pick, 2553, 50;
 			present, 1990, 10;

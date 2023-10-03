@@ -1,0 +1,1 @@
+db.asyncQuery('UPDATE `war_arena` SET `inuse` = 0, `guild1` = 0, `guild2` = 0, `start` = 0, `maxplayers` = 0, `duration` = 0, `challenger` = 0, `playersOnTeamA` = 0, `pending` = 0, `playersOnTeamB` = 0')

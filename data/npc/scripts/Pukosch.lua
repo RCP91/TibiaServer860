@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,31 +11,31 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	-- WAGON TICKET
 	if(msgcontains(msg, "ticket")) then
-		if getPlayerStorageValue(cid, Storage.wagonTicket) < os.time() then
-			selfSay("Do you want to purchase a weekly ticket for the ore wagons? With it you can travel freely and swiftly through Kazordoon for one week. 250 gold only. Deal?", cid)
-			talkState[talkUser] = 1
+		if player:getStorageValue(Storage.wagonTicket) < os.time() then
+			npcHandler:say("Do you want to purchase a weekly ticket for the ore wagons? With it you can travel freely and swiftly through Kazordoon for one week. 250 gold only. Deal?", cid)
+			npcHandler.topic[cid] = 1
 		else
-			selfSay("Your weekly ticket is still valid. Would be a waste of money to purchase a second one", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("Your weekly ticket is still valid. Would be a waste of money to purchase a second one", cid)
+			npcHandler.topic[cid] = 0
 		end
 	elseif(msgcontains(msg, "yes")) then
-		if(talkState[talkUser] == 1) then
-			if getPlayerBalance(cid) + getPlayerBalance(cid) >= 250 then
-				doPlayerRemoveMoney(cid, 250)
-				setPlayerStorageValue(cid, Storage.wagonTicket, os.time() + 7 * 24 * 60 * 60)
-				selfSay("Here is your stamp. It can't be transferred to another person and will last one week from now. You'll get notified upon using an ore wagon when it isn't valid anymore.", cid)
+		if(npcHandler.topic[cid] == 1) then
+			if player:getMoney() + player:getBankBalance() >= 250 then
+				player:removeMoneyNpc(250)
+				player:setStorageValue(Storage.wagonTicket, os.time() + 7 * 24 * 60 * 60)
+				npcHandler:say("Here is your stamp. It can't be transferred to another person and will last one week from now. You'll get notified upon using an ore wagon when it isn't valid anymore.", cid)
 			else
-				selfSay("You don't have enough money.", cid)
+				npcHandler:say("You don't have enough money.", cid)
 			end
-			talkState[talkUser] = 0
+			npcHandler.topic[cid] = 0
 		end
-	elseif(talkState[talkUser] == 1) then
+	elseif(npcHandler.topic[cid] == 1) then
 		if(msgcontains(msg, "no")) then
-			selfSay("No then.", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("No then.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	-- WAGON TICKET
 	end

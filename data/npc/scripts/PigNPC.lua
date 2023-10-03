@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -16,14 +15,14 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 	if (msgcontains(msg, "kiss")) then
-		selfSay("Do you want to try to release me with a kiss?", cid)
-		talkState[talkUser] = 1
+		npcHandler:say("Do you want to try to release me with a kiss?", cid)
+		npcHandler.topic[cid] = 1
 	elseif (msgcontains(msg, "yes")) then
-		if (talkState[talkUser] == 1) then
-			selfSay("Mhm Uhhh. Not bad, not bad at all! But you can still improve your skill a LOT.", cid)
-			talkState[talkUser] = 0
+		if (npcHandler.topic[cid] == 1) then
+			npcHandler:say("Mhm Uhhh. Not bad, not bad at all! But you can still improve your skill a LOT.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 end

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Aspect Of Power" nameDescription="a Aspect Of Power" race="blood" experience="0" speed="500">
+	<health now="50000" max="50000" />	
+	<look type="1306" head="18" body="78" legs="18" feet="18" corpse="0" />
+	<targetchange interval="4000" chance="20" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+			<attack name="melee" interval="2000" min="-1120" max="-1221" />
+		<attack name="manadrain" interval="2000" chance="10" range="7" min="-820" max="-1152" />
+		<attack name="death" interval="1400" chance="20" range="7" radius="7" target="1" min="-1052" max="-1100">
+			<attribute key="shootEffect" value="largerock" />
+			<attribute key="areaEffect" value="energyarea" />
+		</attack>
+		<attack name="lifedrain" interval="2000" chance="10" length="8" spread="0" min="-1001" max="-1020">
+			<attribute key="areaEffect" value="purpleenergy" />
+		</attack>
+		<attack name="energy" interval="1200" chance="10" range="1" min="-980" max="-1135">
+			<attribute key="shootEffect" value="energy" />
+		</attack>
+		<attack name="speed" interval="1300" chance="15" radius="1" target="1" speedchange="-700" duration="30000">
+			<attribute key="areaEffect" value="redshimmer" />
+		</attack>
+	</attacks>
+	<defenses armor="45" defense="50">
+		<defense name="healing" interval="2000" chance="15" min="120" max="210">
+			<attribute key="areaEffect" value="blueshimmer" />
+		</defense>	
+	<defense name="outfit" interval="1500" chance="20" monster="Goshnars Cruelty" duration="6000">
+      <attribute key="areaEffect" value="blueshimmer"/>
+    </defense>
+    <defense name="outfit" interval="1500" chance="20" monster="Goshnars Spite" duration="6000">
+      <attribute key="areaEffect" value="blueshimmer"/>
+    </defense>
+	<defense name="outfit" interval="1500" chance="20" monster="Goshnars Hatred" duration="6000">
+      <attribute key="areaEffect" value="blueshimmer"/>
+    </defense>
+	<defense name="outfit" interval="1500" chance="20" monster="Goshnars Greed" duration="6000">
+      <attribute key="areaEffect" value="blueshimmer"/>
+    </defense>
+	</defenses>
+	<voices interval="5000" chance="10">
+		<voice sentence="Curse you!" />
+		<voice sentence="Snarl!" />
+	</voices>
+	<elements>
+		<element firePercent="50" />	
+		<element earthPercent="40" />
+		<element icePercent="-20" />
+		<element holyPercent="-25" />
+	</elements>
+	<immunities>	
+		<immunity drown="1" />
+		<immunity lifedrain="1" />
+		<immunity paralyze="1" />
+		<immunity invisible="1" />
+	</immunities>		
+	<loot>		
+		<item name="platinum coin" countmax="12" chance="60000" />
+		<item name="great health potion" countmax="3" chance="5000" />	
+		<item name="small enchanted amethyst" countmax="4" chance="2500" />	
+		<item name="red gem" chance="1200" />
+		<item name="halberd" chance="900" />		
+		<item name="axe" chance="6500" />
+		<item name="knife" chance="5900" />
+		<item name="combat knife" chance="5200" />	
+		<item name="meat" chance="8000" />	
+		<item name="red crystal fragment" chance="1100" />		
+		<item name="life preserver" chance="970" />
+		<item name="werehyaena nose" chance="620" />	
+		<item name="werehyaena talisman" chance="510" />
+		<!--<item name="werehyaena trophy" chance="395" />-->
+	</loot>
+</monster>
+
+

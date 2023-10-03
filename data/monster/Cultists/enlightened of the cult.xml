@@ -53,7 +53,7 @@
 		<item id="2148" countmax="80" chance="20000"/><!-- gold coin -->
 		<item id="2654" chance="15000"/><!-- cape -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2200" chance="3000"/><!-- protection amulet -->
 				<item id="2146" chance="2000"/><!-- small sapphire -->
 				<item id="5810" chance="800"/><!-- pirate voodoo doll -->
@@ -68,7 +68,7 @@
 				<item id="5801" chance="50"/><!-- key ring -->
 				<item id="5669" chance="100"/><!-- mysterious voodoo skull -->
 				<item id="7426" chance="50"/><!-- amber staff -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

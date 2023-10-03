@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,15 +12,15 @@ condition:setParameter(CONDITION_PARAM_DELAYED, 1)
 condition:addDamage(150, 2000, -10)
 
 local function greetCallback(cid, message)
-	
+	local player = Player(cid)
 	if not player:getCondition(CONDITION_FIRE) and not msgcontains(message, 'djanni\'hah') then
 		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)
 		player:addCondition(condition)
-		selfSay('Take this!', cid)
+		npcHandler:say('Take this!', cid)
 		return false
 	end
 
-	if getPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission01) < 1 then
+	if player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01) < 1 then
 		npcHandler:setMessage(MESSAGE_GREET, 'You know the code human! Very well then... What do you want, |PLAYERNAME|?')
 	else
 		npcHandler:setMessage(MESSAGE_GREET, 'You are still alive, |PLAYERNAME|? Well, what do you want?')
@@ -34,27 +33,27 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	local missionProgress = getPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission01)
+	local player = Player(cid)
+	local missionProgress = player:getStorageValue(Storage.DjinnWar.EfreetFaction.Mission01)
 	if msgcontains(msg, 'mission') then
 		if missionProgress < 1 then
-			selfSay({
+			npcHandler:say({
 				'Each mission and operation is a crucial step towards our victory! ...',
 				'Now that we speak of it ...',
 				'Since you are no djinn, there is something you could help us with. Are you interested, human?'
 			}, cid)
-			talkState[talkUser] = 1
+			npcHandler.topic[cid] = 1
 
 		elseif isInArray({1, 2}, missionProgress) then
-			selfSay('Did you find the thief of our supplies?', cid)
-			talkState[talkUser] = 2
+			npcHandler:say('Did you find the thief of our supplies?', cid)
+			npcHandler.topic[cid] = 2
 		else
-			selfSay('Did you already talk to Alesar? He has another mission for you!', cid)
+			npcHandler:say('Did you already talk to Alesar? He has another mission for you!', cid)
 		end
 
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		if msgcontains(msg, 'yes') then
-			selfSay({
+			npcHandler:say({
 				'Well ... All right. You may only be a human, but you do seem to have the right spirit. ...',
 				'Listen! Since our base of operations is set in this isolated spot we depend on supplies from outside. These supplies are crucial for us to win the war. ...',
 				'Unfortunately, it has happened that some of our supplies have disappeared on their way to this fortress. At first we thought it was the Marid, but intelligence reports suggest a different explanation. ...',
@@ -62,42 +61,42 @@ local function creatureSayCallback(cid, type, msg)
 				'His identity is still unknown but we have been told that the thief fled to the human settlement called Carlin. I want you to find him and report back to me. Nobody messes with the Efreet and lives to tell the tale! ...',
 				'Now go! Travel to the northern city Carlin! Keep your eyes open and look around for something that might give you a clue!'
 			}, cid)
-			setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Start, 1)
-			setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission01, 1)
+			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Start, 1)
+			player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 1)
 
 		elseif msgcontains(msg, 'no') then
-			selfSay('After all, you\'re just a human.', cid)
+			npcHandler:say('After all, you\'re just a human.', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		if msgcontains(msg, 'yes') then
-			selfSay('Finally! What is his name then?', cid)
-			talkState[talkUser] = 3
+			npcHandler:say('Finally! What is his name then?', cid)
+			npcHandler.topic[cid] = 3
 
 		elseif msgcontains(msg, 'no') then
-			selfSay('Then go to Carlin and search for him! Look for something that might give you a clue!', cid)
-			talkState[talkUser] = 0
+			npcHandler:say('Then go to Carlin and search for him! Look for something that might give you a clue!', cid)
+			npcHandler.topic[cid] = 0
 		end
 
-	elseif talkState[talkUser] == 3 then
+	elseif npcHandler.topic[cid] == 3 then
 		if msgcontains(msg, 'partos') then
 			if missionProgress ~= 2 then
-				selfSay('Hmmm... I don\'t think so. Return to Thais and continue your search!', cid)
+				npcHandler:say('Hmmm... I don\'t think so. Return to Thais and continue your search!', cid)
 			else
-				selfSay({
+				npcHandler:say({
 					'You found the thief! Excellent work, soldier! You are doing well - for a human, that is. Here - take this as a reward. ...',
 					'Since you have proven to be a capable soldier, we have another mission for you. ...',
 					'If you are interested go to Alesar and ask him about it.'
 				}, cid)
 				player:addMoney(600)
-				setPlayerStorageValue(cid, Storage.DjinnWar.EfreetFaction.Mission01, 3)
+				player:setStorageValue(Storage.DjinnWar.EfreetFaction.Mission01, 3)
 			end
 
 		else
-			selfSay('Hmmm... I don\'t think so. Return to Thais and continue your search!', cid)
+			npcHandler:say('Hmmm... I don\'t think so. Return to Thais and continue your search!', cid)
 		end
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end

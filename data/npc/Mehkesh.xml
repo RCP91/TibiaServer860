@@ -6,6 +6,9 @@
 		<parameter key="module_shop" value="1" />
 		<parameter key="shop_buyable" value="
 			great health potion,7591,190;
+			ultimate mp,26029,350;
+			Supreme Health Potion,26031,500;
+			ultimate spirit potion,26030,350;
 			great mana potion,7590,120;
 			great spirit potion,8472,190;
 			health potion,7618,45;

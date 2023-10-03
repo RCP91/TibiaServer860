@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,25 +12,12 @@ local voices = {
 	{ text = 'Oh p.. please. P... lease let me fly us out of this c... cold.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
-
-local function creatureSayCallback(cid, type, msg)
-	if not npcHandler:isFocused(cid) then
-		return false
-	end
-
-	
-	if msgcontains(msg, 'fly') then
-			selfSay('The different places we travel to are: {darashia}, {svargrond}, {femor hills}, {edron}, {Kazordoon}', cid)
-			return true
-	end
-	return true
-end
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Travel
 local function addTravelKeyword(keyword, text, cost, destination)
 	if keyword == 'farmine' then
-		keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Never heard about a place like this.'}, function(player) return getPlayerStorageValue(cid, Storage.TheNewFrontier.Mission10) ~= 1 end)
+		keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Never heard about a place like this.'}, function(player) return player:getStorageValue(Storage.TheNewFrontier.Mission10) ~= 1 end)
 	end
 
 	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a ride to ' .. text .. ' for |TRAVELCOST|?', cost = cost, discount = 'postman'})
@@ -45,10 +31,10 @@ addTravelKeyword('kazordoon', 'Kazordoon', 60, Position(32588, 31941, 0))
 addTravelKeyword('femor hills', 'the Femor Hills', 40, Position(32536, 31837, 4))
 addTravelKeyword('edron', 'Edron', 60, Position(33193, 31784, 3))
 addTravelKeyword('hills', 'the Femor Hills', 40, Position(32536, 31837, 4))
+addTravelKeyword('issavi', 'Issavi', 100, Position(33957, 31515, 0))
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, traveller |PLAYERNAME|. Where do you want me to {fly} you?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye!")
 
-npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new())

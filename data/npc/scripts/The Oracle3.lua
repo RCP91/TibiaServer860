@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 local destination = Position(32206, 32152, 7)
 
 local vocation = {}
@@ -60,18 +59,18 @@ function onCreatureSay(cid, type, msg) npcHandler:onCreatureSay(cid, type, msg) 
 function onThink() npcHandler:onThink() end
 
 local function greetCallback(cid)
-	
+	local player = Player(cid)
 	local level = player:getLevel()
 	if level < 8 then
-		selfSay("CHILD! COME BACK WHEN YOU HAVE GROWN UP!", cid)
+		npcHandler:say("CHILD! COME BACK WHEN YOU HAVE GROWN UP!", cid)
 		npcHandler:resetNpc(cid)
 		return false
 	elseif level > 31 then
-		selfSay(player:getName() ..", I CAN'T LET YOU LEAVE - YOU ARE TOO STRONG ALREADY! YOU CAN ONLY LEAVE WITH LEVEL 9 OR LOWER.", cid)
+		npcHandler:say(player:getName() ..", I CAN'T LET YOU LEAVE - YOU ARE TOO STRONG ALREADY! YOU CAN ONLY LEAVE WITH LEVEL 9 OR LOWER.", cid)
 		npcHandler:resetNpc(cid)
 		return false
 	elseif player:getVocation():getId() > 0 then
-		selfSay("YOU ALREADY HAVE A VOCATION!", cid)
+		npcHandler:say("YOU ALREADY HAVE A VOCATION!", cid)
 		npcHandler:resetNpc(cid)
 		return false
 	else
@@ -85,33 +84,33 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
-	if talkState[talkUser] == 0 then
+	local player = Player(cid)
+	if npcHandler.topic[cid] == 0 then
 		if msgcontains(msg, "yes") then
-			selfSay("IN WHICH TOWN DO YOU WANT TO LIVE: {CARLIN}, {THAIS}, OR {VENORE}?", cid)
-			talkState[talkUser] = 1
+			npcHandler:say("IN WHICH TOWN DO YOU WANT TO LIVE: {CARLIN}, {THAIS}, OR {VENORE}?", cid)
+			npcHandler.topic[cid] = 1
 		end
-	elseif talkState[talkUser] == 1 then
+	elseif npcHandler.topic[cid] == 1 then
 		local cityTable = config.towns[msg:lower()]
 		if cityTable then
 			town[cid] = cityTable
-			selfSay("IN ".. string.upper(msg) .."! AND WHAT PROFESSION HAVE YOU CHOSEN: {KNIGHT}, {PALADIN}, {SORCERER}, OR {DRUID}?", cid)
-			talkState[talkUser] = 2
+			npcHandler:say("IN ".. string.upper(msg) .."! AND WHAT PROFESSION HAVE YOU CHOSEN: {KNIGHT}, {PALADIN}, {SORCERER}, OR {DRUID}?", cid)
+			npcHandler.topic[cid] = 2
 		else
-			selfSay("IN WHICH TOWN DO YOU WANT TO LIVE: {CARLIN}, {THAIS}, OR {VENORE}?", cid)
+			npcHandler:say("IN WHICH TOWN DO YOU WANT TO LIVE: {CARLIN}, {THAIS}, OR {VENORE}?", cid)
 		end
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		local vocationTable = config.vocations[msg:lower()]
 		if vocationTable then
-			selfSay(vocationTable.text, cid)
-			talkState[talkUser] = 3
+			npcHandler:say(vocationTable.text, cid)
+			npcHandler.topic[cid] = 3
 			vocation[cid] = vocationTable.vocationId
 		else
-			selfSay("{KNIGHT}, {PALADIN}, {SORCERER}, OR {DRUID}?", cid)
+			npcHandler:say("{KNIGHT}, {PALADIN}, {SORCERER}, OR {DRUID}?", cid)
 		end
-	elseif talkState[talkUser] == 3 then
+	elseif npcHandler.topic[cid] == 3 then
 		if msgcontains(msg, "yes") then
-			selfSay("SO BE IT!", cid)
+			npcHandler:say("SO BE IT!", cid)
 			player:setVocation(Vocation(vocation[cid]))
 			player:setTown(Town(town[cid]))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
@@ -120,15 +119,15 @@ local function creatureSayCallback(cid, type, msg)
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received a backpack with starting items for reaching the mainlands.")
 			local targetVocation = config.vocations[Vocation(vocation[cid]):getName():lower()]
 			for i = 1, #targetVocation[1] do
-				doPlayerAddItem(cid, targetVocation[1][i][1], targetVocation[1][i][2])
+				player:addItem(targetVocation[1][i][1], targetVocation[1][i][2])
 			end
-			local backpack = doPlayerAddItem(cid, 1988)
+			local backpack = player:addItem(1988)
 			for i = 1, #targetVocation[2] do
 				backpack:addItem(targetVocation[2][i][1], targetVocation[2][i][2])
 			end
 		else
-			selfSay("THEN WHAT? {KNIGHT}, {PALADIN}, {SORCERER}, OR {DRUID}?", cid)
-			talkState[talkUser] = 2
+			npcHandler:say("THEN WHAT? {KNIGHT}, {PALADIN}, {SORCERER}, OR {DRUID}?", cid)
+			npcHandler.topic[cid] = 2
 		end
 	end
 	return true

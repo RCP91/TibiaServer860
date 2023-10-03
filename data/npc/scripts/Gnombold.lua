@@ -2,7 +2,6 @@ local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
 local talkState = {}
-local talkState = {}
 local levels = {50, 79}
 
 function onCreatureAppear(cid)				npcHandler:onCreatureAppear(cid)			end
@@ -15,18 +14,18 @@ function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, 'job') then
-		return selfSay('I\'m the officer responsible for this area. I give out missions, accept mission reports and oversee our defences.', cid)
+		return npcHandler:say('I\'m the officer responsible for this area. I give out missions, accept mission reports and oversee our defences.', cid)
 	end
 
 	if msgcontains(msg, 'gnome') then
-		return selfSay('Gnomes have lived autonomous for so long that it still feels odd to work with strangers for many of us.', cid)
+		return npcHandler:say('Gnomes have lived autonomous for so long that it still feels odd to work with strangers for many of us.', cid)
 	end
 
 	if msgcontains(msg, 'area') then
-		return selfSay({
+		return npcHandler:say({
 			"The levels around us are... well, they are strange. We are still not entirely sure how they were created. It seems obvious that they are artificial, but they seem not to be burrowed or the like. ... ",
 			"We found strange stone formations that were not found on other layers around the Spike, but there is no clue at all if they are as natural as they look. It seems someone used some geomantic force to move the earth. ...",
 			"For what reason this has been done we can't tell as we found no clues of colonisation. ...",
@@ -39,69 +38,69 @@ function creatureSayCallback(cid, type, msg)
 
 	if msgcontains(msg, 'mission') then
 		if player:getLevel() > levels[2] then
-			selfSay('Sorry, but no! Your expertise could be put to better use elsewhere. Here awaits you no challenge. You are desperately needed in the deeper levels of the Spike. Report there immediately. ', cid)
+			npcHandler:say('Sorry, but no! Your expertise could be put to better use elsewhere. Here awaits you no challenge. You are desperately needed in the deeper levels of the Spike. Report there immediately. ', cid)
 		else
-			selfSay(' I can offer you several missions: to gather geomantic {charges}, to {fertilise} the mushroom caves, to destroy monster {nests} and to {kill} some crystal crushers.', cid)
+			npcHandler:say(' I can offer you several missions: to gather geomantic {charges}, to {fertilise} the mushroom caves, to destroy monster {nests} and to {kill} some crystal crushers.', cid)
 		end
 		return
 	end
 
 	if msgcontains(msg, 'report') then
 		talkState[cid] = 'report'
-		return selfSay('What mission do you want to report about: gathering the geomantic {charges}, the {fertilisation} of the mushroom caves, about destroying monster {nests} and the {killing} of crystal crushers?', cid)
+		return npcHandler:say('What mission do you want to report about: gathering the geomantic {charges}, the {fertilisation} of the mushroom caves, about destroying monster {nests} and the {killing} of crystal crushers?', cid)
 	end
 
 	if talkState[cid] == 'report' then
 		if msgcontains(msg, 'charges') then
-			if getPlayerStorageValue(cid, SPIKE_MIDDLE_CHARGE_MAIN) == -1 then
-				selfSay('You have not started that mission.', cid)
-			elseif getPlayerStorageValue(cid, SPIKE_MIDDLE_CHARGE_MAIN) == 2 then
-				selfSay('You have done well. Here, take your reward.', cid)
+			if player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) == -1 then
+				npcHandler:say('You have not started that mission.', cid)
+			elseif player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) == 2 then
+				npcHandler:say('You have done well. Here, take your reward.', cid)
 				player:addFamePoint()
 				player:addExperience(2000, true)
-				setPlayerStorageValue(cid, SPIKE_MIDDLE_CHARGE_MAIN, -1)
+				player:setStorageValue(SPIKE_MIDDLE_CHARGE_MAIN, -1)
 				player:setExhaustion(SPIKE_MIDDLE_CHARGE_DAILY, 86400)
 			else
-				selfSay('Gnowful! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.', cid)
+				npcHandler:say('Gnowful! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.', cid)
 			end
 		elseif msgcontains(msg, 'fertilisation') then
-			if getPlayerStorageValue(cid, SPIKE_MIDDLE_MUSHROOM_MAIN) == -1 then
-				selfSay('You have not started that mission.', cid)
-			elseif getPlayerStorageValue(cid, SPIKE_MIDDLE_MUSHROOM_MAIN) == 4 then
-				selfSay('You have done well. Here, take your reward.', cid)
+			if player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN) == -1 then
+				npcHandler:say('You have not started that mission.', cid)
+			elseif player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN) == 4 then
+				npcHandler:say('You have done well. Here, take your reward.', cid)
 				player:addFamePoint()
 				player:addExperience(2000, true)
-				setPlayerStorageValue(cid, SPIKE_MIDDLE_MUSHROOM_MAIN, -1)
+				player:setStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN, -1)
 				player:setExhaustion(SPIKE_MIDDLE_MUSHROOM_DAILY, 86400)
 			else
-				selfSay('Gnowful! Use the fertiliser on four gardener mushroom in the caves.', cid)
+				npcHandler:say('Gnowful! Use the fertiliser on four gardener mushroom in the caves.', cid)
 			end
 		elseif msgcontains(msg, 'nests') then
-			if getPlayerStorageValue(cid, SPIKE_MIDDLE_NEST_MAIN) == -1 then
-				selfSay('You have not started that mission.', cid)
-			elseif getPlayerStorageValue(cid, SPIKE_MIDDLE_NEST_MAIN) == 8 then
-				selfSay('You have done well. Here, take your reward.', cid)
+			if player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN) == -1 then
+				npcHandler:say('You have not started that mission.', cid)
+			elseif player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN) == 8 then
+				npcHandler:say('You have done well. Here, take your reward.', cid)
 				player:addFamePoint()
 				player:addExperience(2000, true)
-				setPlayerStorageValue(cid, SPIKE_MIDDLE_NEST_MAIN, -1)
+				player:setStorageValue(SPIKE_MIDDLE_NEST_MAIN, -1)
 				player:setExhaustion(SPIKE_MIDDLE_NEST_DAILY, 86400)
 			else
-				selfSay('Gnowful! Step into the transformer and destroy eight monster nests.', cid)
+				npcHandler:say('Gnowful! Step into the transformer and destroy eight monster nests.', cid)
 			end
 		elseif msgcontains(msg, 'killing') then
-			if getPlayerStorageValue(cid, SPIKE_MIDDLE_KILL_MAIN) == -1 then
-				selfSay('You have not started that mission.', cid)
-			elseif getPlayerStorageValue(cid, SPIKE_MIDDLE_KILL_MAIN) == 7 then
-				selfSay('You have done well. Here, take your reward.', cid)
+			if player:getStorageValue(SPIKE_MIDDLE_KILL_MAIN) == -1 then
+				npcHandler:say('You have not started that mission.', cid)
+			elseif player:getStorageValue(SPIKE_MIDDLE_KILL_MAIN) == 7 then
+				npcHandler:say('You have done well. Here, take your reward.', cid)
 				player:addFamePoint()
 				player:addExperience(2000, true)
-				setPlayerStorageValue(cid, SPIKE_MIDDLE_KILL_MAIN, -1)
+				player:setStorageValue(SPIKE_MIDDLE_KILL_MAIN, -1)
 				player:setExhaustion(SPIKE_MIDDLE_KILL_DAILY, 86400)
 			else
-				selfSay('Gnowful! Just go out to the caves and kill at least seven crystalcrushers.', cid)
+				npcHandler:say('Gnowful! Just go out to the caves and kill at least seven crystalcrushers.', cid)
 			end
 		else
-			selfSay('That\'s not a valid mission name.', cid)
+			npcHandler:say('That\'s not a valid mission name.', cid)
 		end
 		talkState[cid] = nil
 		return
@@ -112,29 +111,29 @@ function creatureSayCallback(cid, type, msg)
 	///////////////////////]]
 	if msgcontains(msg, 'charges') then
 		if player:getExhaustion(SPIKE_MIDDLE_CHARGE_DAILY) > 0 then
-			return selfSay('Sorry, you have to wait ' .. string.diff(getPlayerStorageValue(cid, SPIKE_MIDDLE_CHARGE_DAILY)-os.time()) .. ' before this task gets available again.', cid)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_CHARGE_DAILY)-os.time()) .. ' before this task gets available again.', cid)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return selfSay('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
 		end
 
-		if getPlayerStorageValue(cid, SPIKE_MIDDLE_CHARGE_MAIN) == -1 then
-			selfSay({'Our mission for you is to use a magnet on three different monoliths in the cave system here. After the magnet evaporates on the last charge, enter the magnetic extractor here to deliver your charge.', 'If you are interested, I can give you some more {information} about it. Are you willing to accept this mission?'}, cid)
+		if player:getStorageValue(SPIKE_MIDDLE_CHARGE_MAIN) == -1 then
+			npcHandler:say({'Our mission for you is to use a magnet on three different monoliths in the cave system here. After the magnet evaporates on the last charge, enter the magnetic extractor here to deliver your charge.', 'If you are interested, I can give you some more {information} about it. Are you willing to accept this mission?'}, cid)
 			talkState[cid] = 'charges'
 		else
-			selfSay('You have already started that mission.', cid)
+			npcHandler:say('You have already started that mission.', cid)
 		end
 	end
 
 	if talkState[cid] == 'charges' then
 		if msgcontains(msg, 'yes') then
-			doPlayerAddItem(cid, 21557, 1)
-			setPlayerStorageValue(cid, SPIKE_MIDDLE_CHARGE_MAIN, 0)
-			selfSay({'Gnometastic! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.','If you lose the magnet you\'ll have to bring your own. Gnomux sells all the equipment that is required for our missions.'}, cid)
+			player:addItem(21557, 1)
+			player:setStorageValue(SPIKE_MIDDLE_CHARGE_MAIN, 0)
+			npcHandler:say({'Gnometastic! Charge this magnet at three monoliths in the cave system. With three charges, the magnet will disintegrate and charge you with its gathered energies. Step on the magnetic extractor here to deliver the charge to us, then report to me.','If you lose the magnet you\'ll have to bring your own. Gnomux sells all the equipment that is required for our missions.'}, cid)
 			talkState[cid] = nil
 		elseif msgcontains(msg, 'no') then
-			selfSay('Ok then.', cid)
+			npcHandler:say('Ok then.', cid)
 			talkState[cid] = nil
 		end
 	end
@@ -144,29 +143,29 @@ function creatureSayCallback(cid, type, msg)
 	///////////////]]
 	if msgcontains(msg, 'fertilise') then
 		if player:getExhaustion(SPIKE_MIDDLE_MUSHROOM_DAILY) > 0 then
-			return selfSay('Sorry, you have to wait ' .. string.diff(getPlayerStorageValue(cid, SPIKE_MIDDLE_MUSHROOM_DAILY)-os.time()) .. ' before this task gets available again.', cid)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_DAILY)-os.time()) .. ' before this task gets available again.', cid)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return selfSay('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
 		end
 
-		if getPlayerStorageValue(cid, SPIKE_MIDDLE_MUSHROOM_MAIN) == -1 then
-			selfSay('Your mission would be to seek out gardener mushrooms in the caves and use some fertiliser on them. If you are interested, I can give you some more information about it. Are you willing to accept this mission?', cid)
+		if player:getStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN) == -1 then
+			npcHandler:say('Your mission would be to seek out gardener mushrooms in the caves and use some fertiliser on them. If you are interested, I can give you some more information about it. Are you willing to accept this mission?', cid)
 			talkState[cid] = 'fertilise'
 		else
-			selfSay('You have already started that mission.', cid)
+			npcHandler:say('You have already started that mission.', cid)
 		end
 	end
 
 	if talkState[cid] == 'fertilise' then
 		if msgcontains(msg, 'yes') then
-			doPlayerAddItem(cid, 21564)
-			setPlayerStorageValue(cid, SPIKE_MIDDLE_MUSHROOM_MAIN, 0)
-			selfSay('Gnometastic! And here is your fertiliser - use it on four gardener mushroom in the caves. If you lose the fertiliser you\'ll have to bring your own. Gnomux sells all the equipment that is required for our missions.', cid)
+			player:addItem(21564)
+			player:setStorageValue(SPIKE_MIDDLE_MUSHROOM_MAIN, 0)
+			npcHandler:say('Gnometastic! And here is your fertiliser - use it on four gardener mushroom in the caves. If you lose the fertiliser you\'ll have to bring your own. Gnomux sells all the equipment that is required for our missions.', cid)
 			talkState[cid] = nil
 		elseif msgcontains(msg, 'no') then
-			selfSay('Ok then.', cid)
+			npcHandler:say('Ok then.', cid)
 			talkState[cid] = nil
 		end
 	end
@@ -176,28 +175,28 @@ function creatureSayCallback(cid, type, msg)
 	////////////////////]]
 	if msgcontains(msg, 'nests') then
 		if player:getExhaustion(SPIKE_MIDDLE_NEST_DAILY) > 0 then
-			return selfSay('Sorry, you have to wait ' .. string.diff(getPlayerStorageValue(cid, SPIKE_MIDDLE_NEST_DAILY)-os.time()) .. ' before this task gets available again.', cid)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_NEST_DAILY)-os.time()) .. ' before this task gets available again.', cid)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return selfSay('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
 		end
 
-		if getPlayerStorageValue(cid, SPIKE_MIDDLE_NEST_MAIN) == -1 then
-			selfSay('Our mission for you is to step into the gnomish transformer and then destroy eight monster nests in the caves. If you are interested, I can give you some more information about it. Are you willing to accept this mission?', cid)
+		if player:getStorageValue(SPIKE_MIDDLE_NEST_MAIN) == -1 then
+			npcHandler:say('Our mission for you is to step into the gnomish transformer and then destroy eight monster nests in the caves. If you are interested, I can give you some more information about it. Are you willing to accept this mission?', cid)
 			talkState[cid] = 'nests'
 		else
-			selfSay('You have already started that mission.', cid)
+			npcHandler:say('You have already started that mission.', cid)
 		end
 	end
 
 	if talkState[cid] == 'nests' then
 		if msgcontains(msg, 'yes') then
-			setPlayerStorageValue(cid, SPIKE_MIDDLE_NEST_MAIN, 0)
-			selfSay('Gnometastic! Don\'t forget to step into the transformer before you go out and destroy five monster nests. If your transformation runs out, return to the transformer to get another illusion.', cid)
+			player:setStorageValue(SPIKE_MIDDLE_NEST_MAIN, 0)
+			npcHandler:say('Gnometastic! Don\'t forget to step into the transformer before you go out and destroy five monster nests. If your transformation runs out, return to the transformer to get another illusion.', cid)
 			talkState[cid] = nil
 		elseif msgcontains(msg, 'no') then
-			selfSay('Ok then.', cid)
+			npcHandler:say('Ok then.', cid)
 			talkState[cid] = nil
 		end
 	end
@@ -207,28 +206,28 @@ function creatureSayCallback(cid, type, msg)
 	///////////]]
 	if msgcontains(msg, 'kill') then
 		if player:getExhaustion(SPIKE_MIDDLE_KILL_DAILY) > 0 then
-			return selfSay('Sorry, you have to wait ' .. string.diff(getPlayerStorageValue(cid, SPIKE_MIDDLE_KILL_DAILY)-os.time()) .. ' before this task gets available again.', cid)
+			return npcHandler:say('Sorry, you have to wait ' .. string.diff(player:getStorageValue(SPIKE_MIDDLE_KILL_DAILY)-os.time()) .. ' before this task gets available again.', cid)
 		end
 
 		if (player:getLevel() < levels[1]) or (player:getLevel() > levels[2]) then
-			return selfSay('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
+			return npcHandler:say('Sorry, you are not on the required range of levels [' .. levels[1] ..'-' .. levels[2] ..'].', cid)
 		end
 
-		if getPlayerStorageValue(cid, SPIKE_MIDDLE_KILL_MAIN) == -1 then
-			selfSay('This mission will require you to kill some crystal crushers for us. If you are interested, I can give you some more information about it. Are you willing to accept this mission?', cid)
+		if player:getStorageValue(SPIKE_MIDDLE_KILL_MAIN) == -1 then
+			npcHandler:say('This mission will require you to kill some crystal crushers for us. If you are interested, I can give you some more information about it. Are you willing to accept this mission?', cid)
 			talkState[cid] = 'kill'
 		else
-			selfSay('You have already started that mission.', cid)
+			npcHandler:say('You have already started that mission.', cid)
 		end
 	end
 
 	if talkState[cid] == 'kill' then
 		if msgcontains(msg, 'yes') then
-			setPlayerStorageValue(cid, SPIKE_MIDDLE_KILL_MAIN, 0)
-			selfSay('Gnometastic! You should have no trouble to find enough crystal crushers. Killing seven of them should be enough.', cid)
+			player:setStorageValue(SPIKE_MIDDLE_KILL_MAIN, 0)
+			npcHandler:say('Gnometastic! You should have no trouble to find enough crystal crushers. Killing seven of them should be enough.', cid)
 			talkState[cid] = nil
 		elseif msgcontains(msg, 'no') then
-			selfSay('Ok then.', cid)
+			npcHandler:say('Ok then.', cid)
 			talkState[cid] = nil
 		end
 	end

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<monster name="Deathslicer" nameDescription="a deathslicer" race="undead" experience="320" speed="200" manacost="0">
-	<health now="2000" max="2000"/>
+<monster name="Deathslicer" nameDescription="a deathslicer" race="undead" experience="0" speed="200">
+	<health now="1" max="1"/>
 	<look type="102" corpse="2253"/>
 	<targetchange interval="5000" chance="8"/>
-	<strategy attack="100" defense="0"/>
 	<flags>
 		<flag summonable="0"/>
 		<flag attackable="1"/>
@@ -15,20 +14,20 @@
 		<flag canpushcreatures="1"/>
 		<flag targetdistance="1"/>
 		<flag staticattack="90"/>
-		<flag runonhealth="20"/>
+		<flag runonhealth="0"/>
 	</flags>
 	<attacks>
-		<attack name="melee" interval="2000" skill="190" attack="50"/>
+		<attack name="melee" interval="2000" min="0" max="-500"/>
 		<attack name="energy" interval="2000" chance="25" radius="2" target="0" min="-200" max="-400">
 			<attribute key="areaEffect" value="yellowspark"/>
 		</attack>
 	</attacks>
-	<defenses armor="199" defense="199"/>
+	<defenses armor="15" defense="15"/>
 	<immunities>
 		<immunity physical="1"/>
 		<immunity energy="1"/>
 		<immunity fire="1"/>
-		<immunity poison="1"/>
+		<immunity earth="1"/>
 		<immunity ice="1"/>
 		<immunity holy="1"/>
 		<immunity death="1"/>

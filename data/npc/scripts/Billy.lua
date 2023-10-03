@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -17,7 +16,7 @@ local voices = {
 	{ text = 'Hmm, hmm, now which ingredients do I need...' },
 	{ text = 'Need food? I have plenty for sale!' }
 }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Basic keywords
 keywordHandler:addKeyword({'hint'}, StdModule.rookgaardHints, {npcHandler = npcHandler})
@@ -90,10 +89,10 @@ keywordHandler:addAliasKeyword({'zerbrus'})
 -- Health Potion Quest
 local panKeyword = keywordHandler:addKeyword({'pan'}, StdModule.say, {npcHandler = npcHandler, text = 'Have you found a pan for me?'})
 	panKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'A pan! At last! Take this in case you eat something my cousin has cooked.', reset = true},
-			function(player) return getPlayerItemCount(cid, 2563) > 0 end,
+			function(player) return player:getItemCount(2563) > 0 end,
 			function(player)
-				doPlayerRemoveItem(cid, 2563, 1)
-				doPlayerAddItem(cid, 8704, 1)
+				player:removeItem(2563, 1)
+				player:addItem(8704, 1)
 			end
 	)
 	panKeyword:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'Hey! You don\'t have one!', reset = true})

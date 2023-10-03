@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<monster name="Distorted Phantom" nameDescription="a distorted phantom" race="fire" experience="28600" speed="280">
+	<health now="26000" max="26000" />
+	<look type="1298" head="1" body="1" legs="94" feet="1" corpse="39295" />
+	<targetchange interval="4000" chance="20" />
+	<flags>
+		<flag summonable="0" />
+		<flag attackable="1" />
+		<flag hostile="1" />
+		<flag illusionable="0" />
+		<flag convinceable="0" />
+		<flag pushable="0" />
+		<flag canpushitems="1" />
+		<flag canpushcreatures="1" />
+		<flag targetdistance="1" />
+		<flag staticattack="70" />
+		<flag runonhealth="0" />
+	</flags>
+	<attacks>
+		<attack name="melee" interval="2000" min="0" max="-1600"/>
+		<attack name="lifedrain" interval="2000" chance="20" length="10" spread="0" min="-400" max="-800">
+			<attribute key="areaEffect" value="redshimmer"/>
+		</attack>
+		<attack name="death" interval="2000" chance="20" radius="4" target="1" min="-400" max="-800">
+			<attribute key="areaEffect" value="smallclouds"/>
+		</attack>
+		<attack name="big energy wave" interval="2000" chance="20" min="-900" max="-1300"/>
+		<attack name="energy" interval="2000" chance="20" radius="4" target="1" min="-400" max="-800">
+			<attribute key="shootEffect" value="energy"/>
+			<attribute key="areaEffect" value="yellowenergy"/>
+		</attack>
+		<attack name="energy" interval="2000" chance="20" length="10" spread="0" min="-600" max="-1200">
+			<attribute key="areaEffect" value="bluebubble"/>
+		</attack>
+		<attack name="lifedrain" interval="2000" chance="20" radius="8" min="0" max="0">
+			<attribute key="areaEffect" value="redshimmer"/>
+		</attack>
+		<attack name="anomaly break" interval="2000" chance="40"/>
+	</attacks>
+	<defenses armor="150" defense="150"/>
+	<elements>
+		<element physicalPercent="10"/>
+		<element energyPercent="20"/>
+		<element deathPercent="10"/>
+	</elements>
+	<immunities>
+		<immunity paralyze="1"/>
+		<immunity invisible="1"/>
+	</immunities>
+	<voices interval="5000" chance="10">
+		<voice sentence="Your soul will be mine!" />
+		<voice sentence="MUHAHAHAHA!" />
+		<voice sentence="CHAMEK ATH UTHUL ARAK!" />
+		<voice sentence="I SMELL FEEEEAAAAAR!" />
+		<voice sentence="Your resistance is futile!" />
+	</voices>
+	<loot>
+		<item name="crystal coin" countmax="3" chance="60000" />
+		<item name="Great Spirit Potion" countmax="10" chance="7470" />	
+		<item name="Glacial Rod" chance="2800" />
+		<item name="Gold Ingot" countmax="6" chance="19660" />
+		<item name="Springsprout Rod" chance="12550" />
+		<item name="Violet Gem" chance="22220" />
+		<item name="Underworld Rod" chance="19540" />
+	</loot>
+</monster>

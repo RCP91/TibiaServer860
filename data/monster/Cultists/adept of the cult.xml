@@ -51,7 +51,7 @@
 		<item id="2148" countmax="57" chance="20000"/><!-- gold coin -->
 			<item id="5810" chance="850"/><!-- pirate voodoo doll -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2423" chance="3000"/><!-- clerical mace -->
 				<item id="1962" chance="2750"/><!-- orange book -->
 				<item id="2169" chance="1000"/><!-- time ring -->
@@ -63,7 +63,7 @@
 				<item id="2655" chance="500"/><!-- red robe -->
 				<item id="5801" chance="100"/><!-- key ring -->
 				<item id="7424" chance="50"/><!-- lunar staff -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

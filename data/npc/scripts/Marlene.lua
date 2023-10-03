@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -18,7 +17,7 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	elseif msgcontains(msg, "seamonster") then
-		selfSay({
+		npcHandler:say({
 			'Only some days ago I was at the docks late in the night and was looking for my husband\'s ship when suddenly a known noise appeared near the docks. ...',
 			'I know this noise very well because it is the noise of a ship sailing very fast. I searched the horizon in hope to see my husbands ship. ...',
 			'But instead of a ship I saw a huge shape far away. It was like a big snake swimming in the sea. ...',
@@ -28,7 +27,7 @@ local function creatureSayCallback(cid, type, msg)
 			'Just go to the docks at exactly midnight and be very quiet. Look at the horizon and maybe you will hear and see it, too!'
 		}, cid)
 	elseif msgcontains(msg, "aneus") then
-		selfSay({
+		npcHandler:say({
 			'A very nice person. He has a great story to tell with big fights and much magic. Just ask him for his story. ...',
 			'I heard that he came from far, far away. He must have seen soooo many countries, cities, different races. ...',
 			'He must have collected so much wisdom. *sigh* I wish I could also travel around the world. ...',
@@ -36,7 +35,7 @@ local function creatureSayCallback(cid, type, msg)
 			'Maybe I can also find a lovely new dress for me. I have been looking for one for months now but never found a good one. Maybe... *keeps on babbling*'
 		}, cid)
 	elseif msgcontains(msg, "rumours") then
-		selfSay({
+		npcHandler:say({
 			'Well, I heard about evil beings living in a dungeon below us. So once I tried to find them and went down the hole far to the southwest. ...',
 			'I\'m pretty curious, you know. *smiles* So I took the coat of invisibility from my husband and went down there. At first I only found some spiders, snakes, and wolves. ...',
 			'But after some time I found a ladder to a deeper level of the dungeon but I didn\'t dare to go down there because I heard many voices. ...',

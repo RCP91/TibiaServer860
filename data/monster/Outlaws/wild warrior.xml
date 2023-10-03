@@ -41,14 +41,14 @@
 		<item id="2110" chance="2650"/><!-- doll -->
 		<item id="2465" chance="4000"/><!-- brass armor -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2509" chance="2650"/><!-- steel shield -->	
 				<item id="2386" chance="23750"/><!-- axe -->
 				<item id="2458" chance="2650"/><!-- chain helmet -->	
 				<item id="2511" chance="17000"/><!-- brass shield -->
 				<item id="2459" chance="250"/><!-- iron elhmet -->		
 				<item id="2391" chance="100"/><!-- war hammer -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

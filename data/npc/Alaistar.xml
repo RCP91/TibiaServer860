@@ -21,7 +21,10 @@
 			mana potion, 7620, 50;
 			strong health potion, 7588, 100;
 			strong mana potion, 7589, 80;
-			ultimate health potion, 8473, 310;" />
+			supreme health potion, 26031, 500;
+			ultimate mana potion, 26029, 350;
+			ultimate health potion, 8473, 310;
+			ultimate spirit potion, 26030, 350" />
 		<parameter key="shop_sellable" value="
 			cowbell, 23575, 210;
 			empty potion flask, 7634, 5;
@@ -33,10 +36,14 @@
 			glooth injection tube, 23474, 350;
 			metal jaw, 23564, 260;
 			metal toe, 23569, 430;
+			mooh'tah shell, 23573, 110;
+			moohtant horn, 23571, 140;
 			necromantic rust, 23567, 390;
 			poisoned fang, 23566, 130;
+			seacrest hair, 24170, 260;
 			seacrest pearl, 24116, 400;
 			seacrest scale, 24169, 150;
+			slime heart, 23565, 160;
 			slimy leaf tentacle, 23568, 320;
 			vial, 2006, 5;" />
 	</parameters>

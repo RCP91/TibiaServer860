@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -13,34 +12,34 @@ local function creatureSayCallback(cid, type, msg)
 		return false
 	end
 
-	
+	local player = Player(cid)
 
 	if msgcontains(msg, "chocolate cake") then
-		if getPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.SweetAsChocolateCake) == 1 and getPlayerItemCount(cid, 8847) >= 1 then
-			selfSay("Is that for me?", cid)
-			talkState[talkUser] = 1
-		elseif getPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.SweetAsChocolateCake) == 2 then
-			selfSay("So did you tell her that the cake came from me?", cid)
-			talkState[talkUser] = 2
+		if player:getStorageValue(Storage.hiddenCityOfBeregar.SweetAsChocolateCake) == 1 and player:getItemCount(8847) >= 1 then
+			npcHandler:say("Is that for me?", cid)
+			npcHandler.topic[cid] = 1
+		elseif player:getStorageValue(Storage.hiddenCityOfBeregar.SweetAsChocolateCake) == 2 then
+			npcHandler:say("So did you tell her that the cake came from me?", cid)
+			npcHandler.topic[cid] = 2
 		end
 	elseif msgcontains(msg, "yes") then
-		if talkState[talkUser] == 1 then
-			if doPlayerRemoveItem(cid, 8847, 1) then
-				selfSay("Err, thanks. I doubt it's from you. Who sent it?", cid)
-				talkState[talkUser] = 2
-				setPlayerStorageValue(cid, Storage.hiddenCityOfBeregar.SweetAsChocolateCake, 2)
+		if npcHandler.topic[cid] == 1 then
+			if player:removeItem(8847, 1) then
+				npcHandler:say("Err, thanks. I doubt it's from you. Who sent it?", cid)
+				npcHandler.topic[cid] = 2
+				player:setStorageValue(Storage.hiddenCityOfBeregar.SweetAsChocolateCake, 2)
 			else
-				selfSay("Oh, I thought you have one.", cid)
-				talkState[talkUser] = 0
+				npcHandler:say("Oh, I thought you have one.", cid)
+				npcHandler.topic[cid] = 0
 			end
 		end
-	elseif talkState[talkUser] == 2 then
+	elseif npcHandler.topic[cid] == 2 then
 		if msgcontains(msg, "Frafnar") then
-			selfSay("Oh, Frafnar. That's so nice of him. I gotta invite him for a beer.", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("Oh, Frafnar. That's so nice of him. I gotta invite him for a beer.", cid)
+			npcHandler.topic[cid] = 0
 		else
-			selfSay("Never heard that name. Well, I don't mind, thanks for the cake.", cid)
-			talkState[talkUser] = 0
+			npcHandler:say("Never heard that name. Well, I don't mind, thanks for the cake.", cid)
+			npcHandler.topic[cid] = 0
 		end
 	end
 	return true

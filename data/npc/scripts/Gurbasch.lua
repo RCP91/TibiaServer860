@@ -1,7 +1,6 @@
  local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -9,7 +8,7 @@ function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)
 function onThink()		npcHandler:onThink()		end
 
 local voices = { {text = 'Passages to Kazordoon! Gotta try the beer there.'} }
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Travel
 local function addTravelKeyword(keyword, text, cost, discount, destination)
@@ -20,11 +19,11 @@ end
 
 addTravelKeyword('farmine', {'Do you seek a ride to Farmine for |TRAVELCOST|?', 'Hold on!', 'You shouldn\'t miss the experience.'}, 110, {'postman', 'new frontier'},
 	function(player)
-		local destination = Position(33025, 31553, 14)
-		if getPlayerStorageValue(cid, Storage.TheNewFrontier.Mission05) == 7 then --if The New Frontier Quest 'Mission 05: Getting Things Busy' complete then Stage 3
+		local destination = Position(33025, 31552, 10)
+		if player:getStorageValue(Storage.TheNewFrontier.Mission05) == 7 then --if The New Frontier Quest 'Mission 05: Getting Things Busy' complete then Stage 3
 			destination.z = 10
-		elseif getPlayerStorageValue(cid, Storage.TheNewFrontier.Mission03) >= 2 then --if The New Frontier Quest 'Mission 03: Strangers in the Night' complete then Stage 2
-			destination.z = 12
+		elseif player:getStorageValue(Storage.TheNewFrontier.Mission03) >= 2 then --if The New Frontier Quest 'Mission 03: Strangers in the Night' complete then Stage 2
+			destination.z = 10
 		end
 
 		return destination

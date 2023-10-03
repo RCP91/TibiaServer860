@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -12,27 +11,27 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
-	if msgcontains(msg, "trouble") and getPlayerStorageValue(cid, Storage.TheInquisition.TimGuard) < 1 and getPlayerStorageValue(cid, Storage.TheInquisition.Mission01) ~= -1 then
-		selfSay("Ah, well. Just this morning my new toothbrush fell into the toilet.", cid)
-		talkState[talkUser] = 1
+	local player = Player(cid)
+	if msgcontains(msg, "trouble") and player:getStorageValue(Storage.TheInquisition.TimGuard) < 1 and player:getStorageValue(Storage.TheInquisition.Mission01) ~= -1 then
+		npcHandler:say("Ah, well. Just this morning my new toothbrush fell into the toilet.", cid)
+		npcHandler.topic[cid] = 1
 	elseif msgcontains(msg, "authorities") then
-		if talkState[talkUser] == 1 then
-			selfSay("What do you mean? Of course they will immediately send someone with extra long and thin arms to retrieve it! ", cid)
-			talkState[talkUser] = 2
+		if npcHandler.topic[cid] == 1 then
+			npcHandler:say("What do you mean? Of course they will immediately send someone with extra long and thin arms to retrieve it! ", cid)
+			npcHandler.topic[cid] = 2
 		end
 	elseif msgcontains(msg, "avoided") then
-		if talkState[talkUser] == 2 then
-			selfSay("Your humour might let end you up beaten in some dark alley, you know? No, I don't think someone could have prevented that accident! ", cid)
-			talkState[talkUser] = 3
+		if npcHandler.topic[cid] == 2 then
+			npcHandler:say("Your humour might let end you up beaten in some dark alley, you know? No, I don't think someone could have prevented that accident! ", cid)
+			npcHandler.topic[cid] = 3
 		end
 	elseif msgcontains(msg, "gods would allow") then
-		if talkState[talkUser] == 3 then
-			selfSay("It's not a drama!! I think there is just no god who's responsible for toothbrush safety, that's all ... ", cid)
-			talkState[talkUser] = 0
-			if getPlayerStorageValue(cid, Storage.TheInquisition.TimGuard) < 1 then
-				setPlayerStorageValue(cid, Storage.TheInquisition.TimGuard, 1)
-				setPlayerStorageValue(cid, Storage.TheInquisition.Mission01, getPlayerStorageValue(cid, Storage.TheInquisition.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
+		if npcHandler.topic[cid] == 3 then
+			npcHandler:say("It's not a drama!! I think there is just no god who's responsible for toothbrush safety, that's all ... ", cid)
+			npcHandler.topic[cid] = 0
+			if player:getStorageValue(Storage.TheInquisition.TimGuard) < 1 then
+				player:setStorageValue(Storage.TheInquisition.TimGuard, 1)
+				player:setStorageValue(Storage.TheInquisition.Mission01, player:getStorageValue(Storage.TheInquisition.Mission01) + 1) -- The Inquisition Questlog- "Mission 1: Interrogation"
 				player:getPosition():sendMagicEffect(CONST_ME_HOLYAREA)
 			end
 		end

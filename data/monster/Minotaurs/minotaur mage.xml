@@ -55,7 +55,7 @@
 		<item id="2403" chance="10000"/><!-- knife -->
 		<item id="2461" chance="8000"/><!-- leather helmet -->
 		<item id="1987" chance="100000"><!-- bag -->
-			<inside>
+			
 				<item id="2817" chance="17500"/><!-- dead snake -->
 				<item id="2050" chance="20000"/><!-- torch -->
 				<item id="2465" chance="3500"/><!-- brass armor -->
@@ -65,7 +65,7 @@
 				<item id="7425" chance="1000"/><!-- taurus mace -->
 				<item id="2189" chance="1000"/><!-- wand of cosmic energy -->
 				<item id="7620" chance="750"/><!-- mana potion -->
-			</inside>
+			
 		</item>
 	</loot>
 </monster>

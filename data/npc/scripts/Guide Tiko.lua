@@ -1,7 +1,6 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
@@ -16,7 +15,7 @@ local voices = {
 	{ text = 'Need some help finding your way through Port Hope? Let me assist you.' }
 }
 
---npcHandler:addModule(VoiceModule:new(voices))
+npcHandler:addModule(VoiceModule:new(voices))
 
 local configMarks = {
 	{mark = "depot", position = Position(32631, 32742, 7), markId = MAPMARK_LOCK, description = "Depot"},
@@ -27,21 +26,21 @@ local function creatureSayCallback(cid, type, msg)
 	if not npcHandler:isFocused(cid) then
 		return false
 	end
-	
+	local player = Player(cid)
 	if isInArray({"map", "marks"}, msg) then
-		selfSay("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", cid)
-		talkState[talkUser] = 1
-	elseif msgcontains(msg, "yes") and talkState[talkUser] == 1 then
-		selfSay("Here you go.", cid)
+		npcHandler:say("Would you like me to mark locations like - for example - the depot, bank and shops on your map?", cid)
+		npcHandler.topic[cid] = 1
+	elseif msgcontains(msg, "yes") and npcHandler.topic[cid] == 1 then
+		npcHandler:say("Here you go.", cid)
 		local mark
 		for i = 1, #configMarks do
 			mark = configMarks[i]
 			player:addMapMark(mark.position, mark.markId, mark.description)
 		end
-		talkState[talkUser] = 0
-	elseif msgcontains(msg, "no") and talkState[talkUser] >= 1 then
-		selfSay("Well, nothing wrong about exploring the town on your own. Let me know if you need something!", cid)
-		talkState[talkUser] = 0
+		npcHandler.topic[cid] = 0
+	elseif msgcontains(msg, "no") and npcHandler.topic[cid] >= 1 then
+		npcHandler:say("Well, nothing wrong about exploring the town on your own. Let me know if you need something!", cid)
+		npcHandler.topic[cid] = 0
 	end
 	return true
 end
@@ -55,7 +54,7 @@ keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text
 keywordHandler:addKeyword({'town'}, StdModule.say, {npcHandler = npcHandler, text = 'The inhabitants of Port Hope are bravely facing the constant threat from the jungle. The town is built on pile dwellings and most shops are close to each other.'})
 keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m Tiko and your guide today. Have a good day!'})
 
-npcHandler:setMessage(MESSAGE_GREET, "Hello there, and welcome to Port Hope! Would you like some information and a {map} guide?")
+npcHandler:setMessage(MESSAGE_GREET, "Hello there, and welcome to Port Hope! Would you like some information and a map guide?")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and enjoy your stay in Port Hope, |PLAYERNAME|")
 

@@ -1,49 +1,74 @@
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
+
 NpcSystem.parseParameters(npcHandler)
-local talkState = {}
 
 function onCreatureAppear(cid)			npcHandler:onCreatureAppear(cid)			end
 function onCreatureDisappear(cid)		npcHandler:onCreatureDisappear(cid)			end
 function onCreatureSay(cid, type, msg)		npcHandler:onCreatureSay(cid, type, msg)		end
 function onThink()		npcHandler:onThink()		end
 
-local voices = { {text = 'Passages to Thais and Krailos! Visit the strange lands!'} }
---npcHandler:addModule(VoiceModule:new(voices))
+local voices = { {text = 'Passages to Thais, Carlin, Ab\'Dendriel, Krailos, Port Hope, Edron, Darashia, Liberty Bay, Svargrond, Gray Island, Yalahar and Ankrahmun.'} }
+npcHandler:addModule(VoiceModule:new(voices))
 
 -- Travel
-local function addTravelKeyword(keyword, cost, destination, action)
+local function addTravelKeyword(keyword, cost, destination, condition)
+	if condition then
+		keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m sorry but I don\'t sail there.'}, condition)
+	end
+
 	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a passage to ' .. keyword:titleCase() .. ' for |TRAVELCOST|?', cost = cost, discount = 'postman'})
-		travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = cost, discount = 'postman', destination = destination}, nil, action)
+		travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = cost, discount = 'postman', destination = destination})
 		travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true})
 end
 
-addTravelKeyword('thais', 150, Position(32311, 32210, 6))
-addTravelKeyword('krailos', 180, Position(33493, 31712, 6))
+addTravelKeyword('thais', 170, Position(32310, 32210, 6))
+addTravelKeyword('carlin', 130, Position(32387, 31820, 6))
+addTravelKeyword('ab\'dendriel', 90, Position(32734, 31668, 6))
+addTravelKeyword('edron', 40, Position(33173, 31764, 6))
+addTravelKeyword('venore', 150, Position(32954, 32022, 6))
+addTravelKeyword('port hope', 160, Position(32527, 32784, 6))
+addTravelKeyword('svargrond', 150, Position(32341, 31108, 6))
+addTravelKeyword('liberty bay', 180, Position(32285, 32892, 6))
+addTravelKeyword('yalahar', 185, Position(32816, 31272, 6), function(player) return player:getStorageValue(Storage.SearoutesAroundYalahar.Venore) ~= 1 and player:getStorageValue(Storage.SearoutesAroundYalahar.TownsCounter) < 5 end)
+addTravelKeyword('ankrahmun', 150, Position(33092, 32883, 6))
+
+local function addTravelKeyword(keyword, cost, destination, condition)
+	if condition then
+		keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'I\'m sorry but I don\'t sail there.'}, condition)
+	end
+
+	local travelKeyword = keywordHandler:addKeyword({keyword}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a passage to ' .. keyword:titleCase() .. ' for |TRAVELCOST|?', cost = cost, discount = 'postman'})
+		travelKeyword:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = true, cost = cost, discount = 'postman', destination = destination})
+		travelKeyword:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, text = 'We would like to serve you some time.', reset = true})
+end
+addTravelKeyword('gray island', 150, Position(33196, 31984, 7))
+addTravelKeyword('krailos', 185, Position(33493, 31712, 6)) -- {x = 33493, y = 31712, z = 6}
+addTravelKeyword('travora', 1000, Position(32055, 32368, 6))
+addTravelKeyword('issavi', 130, Position(33901, 31462, 6))
+addTravelKeyword('roshamuul', 210, Position(33494, 32567, 7))
+
+-- Darashia
+local travelNode = keywordHandler:addKeyword({'darashia'}, StdModule.say, {npcHandler = npcHandler, text = 'Do you seek a passage to Darashia for |TRAVELCOST|?', cost = 60, discount = 'postman'})
+	local childTravelNode = travelNode:addChildKeyword({'yes'}, StdModule.say, {npcHandler = npcHandler, text = 'I warn you! This route is haunted by a ghostship. Do you really want to go there?'})
+		childTravelNode:addChildKeyword({'yes'}, StdModule.travel, {npcHandler = npcHandler, premium = false, cost = 60, discount = 'postman', destination = function(player) return math.random(10) == 1 and Position(33324, 32173, 6) or Position(33289, 32481, 6) end})
+		childTravelNode:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, reset = true, text = 'We would like to serve you some time.'})
+	travelNode:addChildKeyword({'no'}, StdModule.say, {npcHandler = npcHandler, reset = true, text = 'We would like to serve you some time.'})
 
 -- Kick
---keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = {Position(33487, 31986, 7), Position(33486, 31984, 7)}})
+keywordHandler:addKeyword({'kick'}, StdModule.kick, {npcHandler = npcHandler, destination = {Position(32952, 32031, 6), Position(32955, 32031, 6), Position(32957, 32032, 6)}})
 
 -- Basic
-keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, you may not have heard of me. I am Captain Gulliver, the first Oramondian for a hundred years to have sailed through the mist to your strange lands.'})
-keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of the \'Sea Goddess\', the splendid and beautiful ship you see over there.'})
-keywordHandler:addKeyword({'captain'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of the \'Sea Goddess\', the splendid and beautiful ship you see over there.'})
-keywordHandler:addKeyword({'ship'}, StdModule.say, {npcHandler = npcHandler, text = 'The \'Sea Goddess\' is the most beautiful in Oramond, a whole new model of ship, elegant, sure and swift. There\'s no weather she can\'t take!'})
-keywordHandler:addKeyword({'tibia'}, StdModule.say, {npcHandler = npcHandler, text = 'Ah, your lands are quite a sight! I have only visited Thais so far, but I think of navigating to more cities, when the time - and public demand - comes.'})
-keywordHandler:addKeyword({'good'}, StdModule.say, {npcHandler = npcHandler, text = 'I will gladly take on board everything you wish to transport. No pets, though.'})
-keywordHandler:addKeyword({'passenger'}, StdModule.say, {npcHandler = npcHandler, text = '<bows> I would be delighted to have you on board.'})
+keywordHandler:addKeyword({'sail'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, {Venore}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar}, or {Ankrahmun}, citys premium account {Gray Island}, {Issavi}, {krailos}, {Roshamuul}?'})
+keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, {Venore}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar}, or {Ankrahmun}, citys premium account {Gray Island}, {Issavi}, {krailos}, {Roshamuul}?'})
+keywordHandler:addKeyword({'travel'}, StdModule.say, {npcHandler = npcHandler, text = 'Where do you want to go? To {Thais}, {Carlin}, {Ab\'Dendriel}, {Port Hope}, {Edron}, Venore}, {Darashia}, {Liberty Bay}, {Svargrond}, {Yalahar}, or {Ankrahmun}, citys premium account {Gray Island}, {Issavi}, {krailos}, {Roshamuul}?'})
+keywordHandler:addKeyword({'job'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
+keywordHandler:addKeyword({'captain'}, StdModule.say, {npcHandler = npcHandler, text = 'I am the captain of this ship.'})
+keywordHandler:addKeyword({'venore'}, StdModule.say, {npcHandler = npcHandler, text = 'This is Venore. Where do you want to go?'})
+keywordHandler:addKeyword({'name'}, StdModule.say, {npcHandler = npcHandler, text = 'My name is Captain Fearless from the Royal Tibia Line.'})
 
-keywordHandler:addKeyword({'sail'}, StdModule.say, {npcHandler = npcHandler, text = 'You would like to book a passage for {Thais} or {Krailos}?'})
-keywordHandler:addKeyword({'route'}, StdModule.say, {npcHandler = npcHandler, text = 'You would like to book a passage for {Thais} or {Krailos}?'})
-keywordHandler:addKeyword({'trip'}, StdModule.say, {npcHandler = npcHandler, text = 'You would like to book a passage for {Thais} or {Krailos}?'})
-keywordHandler:addKeyword({'passage'}, StdModule.say, {npcHandler = npcHandler, text = 'You would like to book a passage for {Thais} or {Krailos}?'})
-keywordHandler:addKeyword({'town'}, StdModule.say, {npcHandler = npcHandler, text = 'You would like to book a passage for {Thais} or {Krailos}?'})
-keywordHandler:addKeyword({'destination'}, StdModule.say, {npcHandler = npcHandler, text = 'You would like to book a passage for {Thais} or {Krailos}?'})
-keywordHandler:addKeyword({'go'}, StdModule.say, {npcHandler = npcHandler, text = 'You would like to book a passage for {Thais} or {Krailos}?'})
-
-keywordHandler:addKeyword({'oramond'}, StdModule.say, {npcHandler = npcHandler, text = 'This is the only safe landing place on Oramond. The cliffs surrounding the isle are too dangerous, you see.'})
-
-npcHandler:setMessage(MESSAGE_GREET, 'Welcome on board, Sir |PLAYERNAME|. Where can I {sail} you today?')
+npcHandler:setMessage(MESSAGE_GREET, 'Welcome on board, |PLAYERNAME|. Where can I {sail} you today?')
 npcHandler:setMessage(MESSAGE_FAREWELL, 'Good bye. Recommend us if you were satisfied with our service.')
+npcHandler:setMessage(MESSAGE_WALKAWAY, 'Good bye then.')
 
 npcHandler:addModule(FocusModule:new())
