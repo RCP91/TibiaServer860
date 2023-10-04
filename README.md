@@ -16,8 +16,9 @@ sudo apt-get update
 ```
 
 ```
-sudo apt-get install --no-install-recommends -y git autoconf automake pkg-config build-essential cmake liblua5.1-0-dev libmysqlclient-dev libxml2-dev libgmp3-dev libboost-filesystem-dev libboost-regex-dev libboost-thread-dev
-```
+sudo apt install libboost-all-dev libgmp3-dev liblua5.1-0 liblua5.1-0-dev  lua5.1 libxml2-dev libxml++2.6-dev zlib1g-dev zlib1g libcrypto++-dev libcrypto++6 libssl-dev libmariadb-dev libmariadb-dev-compat cpp gcc g++ make autoconf
+``` 
+Test version >> libcrypto++6 or remove number 6 error installing.
 
 ```
 git clone https://github.com/RCP91/TibiaServer860.git

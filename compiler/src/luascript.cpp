@@ -9286,28 +9286,27 @@ int LuaScriptInterface::luaPlayerIsLiveCaster(lua_State* L)
 }
 int LuaScriptInterface::luaPlayerGetSpectators(lua_State* L)
 {
-	Player* player = getUserdata<Player>(L, 1);
-	if (!player || !player->isLiveCaster()) {
-		lua_pushnil(L);
-		return 1;
-	}
+    Player* player = getUserdata<Player>(L, 1);
+    if (!player || !player->isLiveCaster()) {
+        lua_pushnil(L);
+        return 1;
+    }
 
-	std::lock_guard<std::mutex> lock(player->client->liveCastLock);
-	std::vector<ProtocolSpectator_ptr> spectators;
-	player->getSpectators(spectators);
+    std::lock_guard<std::mutex> lock(player->client->liveCastLock);
+    std::vector<ProtocolSpectator_ptr> spectators;
+    player->getSpectators(spectators);
 
-	lua_createtable(L, spectators.size(), 0);
+    lua_createtable(L, 0, spectators.size());
 
-	int _spectators = 0;
-	for (const auto spectator : spectators){
-		_spectators += 1;
-	}
+    int _spectators = 1;
+    for (const auto& spectator : spectators) {
+        lua_pushnumber(L, _spectators++);
+        pushUserdata<ProtocolSpectator>(L, spectator.get());
+        lua_settable(L, -3);
+    }
 
-	lua_pushnumber(L, _spectators);
-	return 2;
+    return 1;
 }
-
-
 int LuaScriptInterface::luaPlayerHasChaseMode(lua_State* L)
 {
 	// player:hasChaseMode()

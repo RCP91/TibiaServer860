@@ -33,8 +33,7 @@ Database::~Database()
 	}
 }
 
-bool Database::connect()
-{
+bool Database::connect() {
 	// connection handle initialization
 	handle = mysql_init(nullptr);
 	if (!handle) {
@@ -42,12 +41,16 @@ bool Database::connect()
 		return false;
 	}
 
-	// automatic reconnect
+#ifdef _WIN32
+	bool reconnect = true;
+#else
 	my_bool reconnect = true;
+#endif
+
 	mysql_options(handle, MYSQL_OPT_RECONNECT, &reconnect);
 
-	// connects to database
-	if (!mysql_real_connect(handle, g_config.getString(ConfigManager::MYSQL_HOST).c_str(), g_config.getString(ConfigManager::MYSQL_USER).c_str(), g_config.getString(ConfigManager::MYSQL_PASS).c_str(), g_config.getString(ConfigManager::MYSQL_DB).c_str(), g_config.getNumber(ConfigManager::SQL_PORT), g_config.getString(ConfigManager::MYSQL_SOCK).c_str(), 0)) {
+	// connects to the database
+	if (!mysql_real_connect(handle, g_config.getString(ConfigManager::MYSQL_HOST).c_str(), g_config.getString(ConfigManager::MYSQL_USER).c_str(), g_config.getString(ConfigManager::MYSQL_PASS).c_str(), g_config.getString(ConfigManager::MYSQL_DB).c_str(), 0, nullptr, 0)) {
 		std::cout << std::endl << "MySQL Error Message: " << mysql_error(handle) << std::endl;
 		return false;
 	}
